@@ -22,4 +22,8 @@ class TagsService(
 
         return create(Tag(name.toLowerCase(), name, hashSetOf(note)))
     }
+
+    fun readAll(): List<Tag> {
+        return repository.findAll();
+    }
 }

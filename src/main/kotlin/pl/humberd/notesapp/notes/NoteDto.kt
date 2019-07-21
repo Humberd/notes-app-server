@@ -1,7 +1,5 @@
 package pl.humberd.notesapp.notes
 
-import pl.humberd.notesapp.tags.TagDto
-
 data class CreateNoteDto(
     val title: String,
     val content: String,
@@ -12,5 +10,10 @@ data class NoteDto(
     val id: Long,
     val title: String,
     val content: String,
-    val tags: List<TagDto>
+    val tags: List<NoteTagDto>
+)
+
+data class NoteTagDto(
+    val id: String,
+    val displayName: String
 )

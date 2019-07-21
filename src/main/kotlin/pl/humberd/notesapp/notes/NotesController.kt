@@ -2,7 +2,6 @@ package pl.humberd.notesapp.notes
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import pl.humberd.notesapp.tags.TagDto
 
 @RestController
 @RequestMapping("notes")
@@ -29,9 +28,7 @@ class NotesController(
                     note.content,
                     note.tags
                         .map { tag ->
-                            TagDto(
-                                tag.id, tag.displayName
-                            )
+                            NoteTagDto(tag.id, tag.displayName)
                         }
                         .sortedBy { tag -> tag.id }
                 )
