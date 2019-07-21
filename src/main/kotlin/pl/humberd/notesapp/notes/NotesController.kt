@@ -19,8 +19,8 @@ class NotesController(
     }
 
     @GetMapping("")
-    fun readAll(): ResponseEntity.BodyBuilder {
-        return ResponseEntity.ok()
+    fun readAll(): ResponseEntity<List<Note>> {
+        return ResponseEntity.ok(service.readAll())
     }
 
 

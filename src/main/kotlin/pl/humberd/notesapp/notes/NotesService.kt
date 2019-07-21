@@ -1,7 +1,8 @@
 package pl.humberd.notesapp.notes
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import pl.humberd.notesapp.tags.Tag
 import pl.humberd.notesapp.tags.TagsService
 import javax.transaction.Transactional
 
@@ -24,5 +25,13 @@ class NotesService(
                 tags = tags.toSet()
             )
         )
+    }
+
+    fun readAll(): List<Note> {
+        return repository.findAll()
+    }
+
+    fun readPage(pageable: Pageable): Page<Note> {
+        return repository.findAll(pageable)
     }
 }
