@@ -15,4 +15,8 @@ class Note(
         joinColumns = [JoinColumn(name = "note_id")],
         inverseJoinColumns = [JoinColumn(name = "tag_id")])
     val tags: Set<Tag> = hashSetOf()
-) {}
+) {
+    override fun toString(): String {
+        return "Note(id=$id, title='$title', content='$content')"
+    }
+}

@@ -13,8 +13,11 @@ class NotesAppApplication(
     @PostConstruct
     fun init() {
         notesService.create(CreateNoteDto("Raspberry pi Bluetooth", "something", arrayOf("raspberry pi", "linux")))
-        notesService.create(CreateNoteDto("How te setup Jenkins credentials", "something", arrayOf("Jenkins", "linux", "shell", "secret")))
+        notesService.create(CreateNoteDto("How te setup Jenkins ", "", arrayOf("Jenkins", "linux", "shell", "secret")))
         notesService.create(CreateNoteDto("Is spring multithreaded?", "something", arrayOf("Spring", "multithreading")))
+
+        val notes = notesService.readAll(listOf("linux", "spring"))
+        println(notes)
     }
 }
 

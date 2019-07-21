@@ -32,6 +32,11 @@ class NotesService(
         return repository.findAll()
     }
 
+    fun readAll(tagIds: Iterable<String>): List<Note> {
+        val tagIdsLc = tagIds.map { it.toLowerCase() }
+        return repository.findAllByTags_Id_In(tagIdsLc)
+    }
+
     fun readPage(pageable: Pageable): Page<Note> {
         return repository.findAll(pageable)
     }
