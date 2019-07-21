@@ -13,18 +13,19 @@ class NotesService(
 ) {
     @Transactional
     fun create(body: CreateNoteDto) {
-        val tags = body.tags.map {
-            tagsService.createIfNotExists(it)
+        val note = Note(
+            id = 0,
+            title = body.title,
+            content = body.content
+        )
+
+        body.tags.forEach { rawTag ->
+            val tag = tagsService.createIfNotExists(rawTag, note)
+            (note.tags as HashSet).add(tag)
         }
 
-        repository.save(
-            Note(
-                id = 0,
-                title = body.title,
-                content = body.content,
-                tags = tags.toSet()
-            )
-        )
+        repository.save(note)
+
     }
 
     fun readAll(): List<Note> {

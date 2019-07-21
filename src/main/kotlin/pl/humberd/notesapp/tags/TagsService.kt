@@ -1,6 +1,7 @@
 package pl.humberd.notesapp.tags
 
 import org.springframework.stereotype.Service
+import pl.humberd.notesapp.notes.Note
 import javax.transaction.Transactional
 
 @Service
@@ -12,13 +13,13 @@ class TagsService(
         return repository.save(tag)
     }
 
-    fun createIfNotExists(name: String): Tag {
+    fun createIfNotExists(name: String, note: Note): Tag {
         val potentialTag = repository.findById(name)
 
         if (potentialTag.isPresent) {
             return potentialTag.get()
         }
 
-        return create(Tag(name.toLowerCase(), name))
+        return create(Tag(name.toLowerCase(), name, hashSetOf(note)))
     }
 }
