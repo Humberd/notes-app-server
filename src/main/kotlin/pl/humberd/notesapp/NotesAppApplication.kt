@@ -12,11 +12,3 @@ fun main(args: Array<String>) {
     runApplication<NotesAppApplication>(*args)
 }
 
-
-@RestController
-class Foo {
-    @GetMapping
-    fun foo(): String {
-        return "pong"
-    }
-}
