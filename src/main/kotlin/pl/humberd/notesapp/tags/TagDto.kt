@@ -16,7 +16,7 @@ data class TagDto(
 
         fun fromTags(tags: Iterable<Tag>): List<TagDto> {
             return tags.map { fromTag(it) }
-                .sortedBy { it.id }
+                .sortedByDescending { it.notesCount }
         }
     }
 }
