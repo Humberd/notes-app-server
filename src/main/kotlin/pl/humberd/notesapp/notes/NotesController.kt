@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("notes")
+@CrossOrigin
 class NotesController(
     val service: NotesService
 ) {
