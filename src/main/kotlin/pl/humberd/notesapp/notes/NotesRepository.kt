@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface NotesRepository : JpaRepository<Note, Long> {
 
-    fun findAllByTags_Id_In(tagIds: List<String>): List<Note>
+    fun findByTitleContainsIgnoreCaseAndTagsIdIn(title: String, tagIds: List<String>): List<Note>
+    fun findByTitleContainsIgnoreCase(title: String): List<Note>;
     fun findAllByTags_Id_In(tagIds: List<String>, pageable: Pageable): Page<Note>
 }

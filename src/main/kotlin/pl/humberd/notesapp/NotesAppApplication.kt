@@ -17,11 +17,15 @@ class NotesAppApplication(
         notesService.create(CreateNoteDto("How te setup Jenkins ", "", arrayOf("Jenkins", "linux", "shell", "secret")))
         notesService.create(CreateNoteDto("Is spring multithreaded?", "something", arrayOf("Spring", "multithreading")))
 
-        val notes = notesService.readAll(listOf("linux", "spring"))
+        val notes = notesService.readAll(listOf("linux", "spring"), "")
         println(notes)
 
         val pagedNotes = notesService.readPage(listOf("linux", "Spring"), PageRequest.of(0, 2)).toList()
         println(pagedNotes)
+
+        println(notesService.readAll(listOf(), "Raspberry"))
+        println(notesService.readAll(listOf("linux", "spring"), "PI"))
+        println(notesService.readAll(listOf("Spring"), "PI"))
     }
 }
 
