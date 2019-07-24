@@ -35,10 +35,10 @@ class NotesService(
     fun readAll(tagIds: Collection<String>, title: String): List<Note> {
         val tagIdsLc = tagIds.map { it.toLowerCase() }
         if (tagIdsLc.size == 0) {
-            return repository.findByTitleContainsIgnoreCase(title);
+            return repository.findDistinctByTitleContainsIgnoreCase(title);
         }
 
-        return repository.findByTitleContainsIgnoreCaseAndTagsIdIn(title, tagIdsLc)
+        return repository.findDistinctByTitleContainsIgnoreCaseAndTagsIdIn(title, tagIdsLc)
     }
 
     fun readPage(pageable: Pageable): Page<Note> {
