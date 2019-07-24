@@ -21,7 +21,7 @@ class NotesController(
 
     @GetMapping("")
     fun readAll(
-        @RequestParam tags: List<String>,
+        @RequestParam(defaultValue = "") tags: List<String>,
         @RequestParam(defaultValue = "") query: String
     ): ResponseEntity<List<NoteDto>> {
         val notes = service.readAll(tags, query)
