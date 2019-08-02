@@ -13,14 +13,15 @@ class TagsService(
         return repository.save(tag)
     }
 
-    fun createIfNotExists(name: String, note: Note): Tag {
-        val potentialTag = repository.findById(name)
+    fun createIfNotExists(tagName: String, note: Note): Tag {
+        val tagNameLc = tagName.toLowerCase()
+        val potentialTag = repository.findById(tagNameLc)
 
         if (potentialTag.isPresent) {
             return potentialTag.get()
         }
 
-        return create(Tag(name.toLowerCase(), name, hashSetOf(note)))
+        return create(Tag(tagNameLc, tagName, hashSetOf(note)))
     }
 
     fun readAll(): List<Tag> {

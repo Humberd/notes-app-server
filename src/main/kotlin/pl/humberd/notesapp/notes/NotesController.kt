@@ -28,6 +28,8 @@ class NotesController(
             .map { note ->
                 NoteDto(
                     note.id,
+                    note.createdAt!!,
+                    note.lastModifiedAt!!,
                     note.title,
                     note.content,
                     note.tags

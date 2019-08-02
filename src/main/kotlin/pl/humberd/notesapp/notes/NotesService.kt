@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.tags.TagsService
 import javax.transaction.Transactional
+import kotlin.collections.HashSet
 
 @Service
 class NotesService(
@@ -15,6 +16,8 @@ class NotesService(
     fun create(body: CreateNoteDto) {
         val note = Note(
             id = 0,
+            createdAt = null,
+            lastModifiedAt = null,
             title = body.title,
             content = body.content
         )
