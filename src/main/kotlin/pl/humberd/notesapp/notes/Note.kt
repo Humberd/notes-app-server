@@ -22,8 +22,8 @@ class Note(
     @Temporal(TemporalType.TIMESTAMP)
     var lastModifiedAt: Calendar?,
 
-    val title: String,
-    val content: String,
+    var title: String,
+    var content: String,
 
     @ManyToMany(cascade = [CascadeType.ALL])
     @JoinTable(
@@ -31,7 +31,7 @@ class Note(
         joinColumns = [JoinColumn(name = "note_id")],
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
-    val tags: Set<Tag> = hashSetOf()
+    var tags: Set<Tag> = hashSetOf()
 ) {
     override fun toString(): String {
         return "Note(id=$id, createdAt=${createdAt?.toInstant().toString()}, lastModifiedAt=${lastModifiedAt?.toInstant().toString()}, title='$title', content='$content')"

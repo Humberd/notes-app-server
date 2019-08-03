@@ -3,6 +3,7 @@ package pl.humberd.notesapp.notes
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import pl.humberd.notesapp.ResourceNotFoundException
 import pl.humberd.notesapp.tags.TagsService
 import javax.transaction.Transactional
 
@@ -20,15 +21,35 @@ class NotesService(
             title = body.title,
             content = body.content
         )
-        body.tags
-            .distinctBy { it.toLowerCase() }
-            .forEach { rawTag ->
-                val tag = tagsService.createIfNotExists(rawTag, note)
-                (note.tags as HashSet).add(tag)
-            }
+        generateNoteTags(body.tags, note)
 
         repository.save(note)
+    }
 
+    private fun generateNoteTags(tags: Array<String>, note: Note) {
+        val newNoteTags = tags
+            .distinctBy { it.toLowerCase() }
+            .map { tagsService.createIfNotExists(it, note) }
+            .toHashSet()
+
+        note.tags = newNoteTags
+    }
+
+    @Transactional
+    fun update(id: Long, body: CreateNoteDto) {
+        val potentialNote = repository.findById(id)
+        if (!potentialNote.isPresent) {
+            throw ResourceNotFoundException()
+        }
+
+        potentialNote.get().also {
+            it.title = body.title
+            it.content = body.content
+
+            generateNoteTags(body.tags, it)
+
+            repository.save(it)
+        }
     }
 
     fun readAll(): List<Note> {
@@ -53,4 +74,5 @@ class NotesService(
 
         return repository.findAllByTags_Id_In(tagIdsLc, pageable)
     }
+
 }

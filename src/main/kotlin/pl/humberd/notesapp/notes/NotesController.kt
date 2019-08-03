@@ -2,6 +2,7 @@ package pl.humberd.notesapp.notes
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import pl.humberd.notesapp.JSON_OK
 
 @RestController
 @RequestMapping("notes")
@@ -16,7 +17,17 @@ class NotesController(
     ): ResponseEntity<String> {
         service.create(body)
 
-        return ResponseEntity.ok("OK")
+        return JSON_OK()
+    }
+
+    @PutMapping("{id}")
+    fun update(
+        @PathVariable id: Long,
+        @RequestBody body: CreateNoteDto
+    ): ResponseEntity<String> {
+        service.update(id, body)
+
+        return JSON_OK()
     }
 
     @GetMapping("")
