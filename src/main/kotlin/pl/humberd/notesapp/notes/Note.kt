@@ -25,7 +25,7 @@ class Note(
     var title: String,
     var content: String,
 
-    @ManyToMany(cascade = [CascadeType.ALL])
+    @ManyToMany(cascade = [])
     @JoinTable(
         name = "note_tag",
         joinColumns = [JoinColumn(name = "note_id")],
