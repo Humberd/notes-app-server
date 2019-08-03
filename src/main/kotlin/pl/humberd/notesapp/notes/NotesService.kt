@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.tags.TagsService
 import javax.transaction.Transactional
-import kotlin.collections.HashSet
 
 @Service
 class NotesService(
@@ -21,11 +20,12 @@ class NotesService(
             title = body.title,
             content = body.content
         )
-
-        body.tags.forEach { rawTag ->
-            val tag = tagsService.createIfNotExists(rawTag, note)
-            (note.tags as HashSet).add(tag)
-        }
+        body.tags
+            .distinctBy { it.toLowerCase() }
+            .forEach { rawTag ->
+                val tag = tagsService.createIfNotExists(rawTag, note)
+                (note.tags as HashSet).add(tag)
+            }
 
         repository.save(note)
 
