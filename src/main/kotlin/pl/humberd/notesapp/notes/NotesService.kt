@@ -26,7 +26,10 @@ class NotesService(
         repository.save(note)
     }
 
-    private fun generateNoteTags(tags: Array<String>, note: Note) {
+    private fun generateNoteTags(
+        tags: Array<String>,
+        note: Note
+    ) {
         val newNoteTags = tags
             .distinctBy { it.toLowerCase() }
             .map { tagsService.createIfNotExists(it, note) }
@@ -36,7 +39,10 @@ class NotesService(
     }
 
     @Transactional
-    fun update(id: Long, body: CreateNoteDto) {
+    fun update(
+        id: Long,
+        body: CreateNoteDto
+    ) {
         val potentialNote = repository.findById(id)
         if (!potentialNote.isPresent) {
             throw ResourceNotFoundException()
@@ -52,11 +58,19 @@ class NotesService(
         }
     }
 
+    @Transactional
+    fun delete(id: Long) {
+        repository.deleteById(id)
+    }
+
     fun readAll(): List<Note> {
         return repository.findAll()
     }
 
-    fun readAll(tagIds: Collection<String>, title: String): List<Note> {
+    fun readAll(
+        tagIds: Collection<String>,
+        title: String
+    ): List<Note> {
         val tagIdsLc = tagIds.map { it.toLowerCase() }
         if (tagIdsLc.size == 0) {
             return repository.findDistinctByTitleContainsIgnoreCase(title);
@@ -69,7 +83,10 @@ class NotesService(
         return repository.findAll(pageable)
     }
 
-    fun readPage(tagIds: Iterable<String>, pageable: Pageable): Page<Note> {
+    fun readPage(
+        tagIds: Iterable<String>,
+        pageable: Pageable
+    ): Page<Note> {
         val tagIdsLc = tagIds.map { it.toLowerCase() }
 
         return repository.findAllByTags_Id_In(tagIdsLc, pageable)

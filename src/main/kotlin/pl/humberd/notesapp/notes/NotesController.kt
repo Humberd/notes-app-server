@@ -12,9 +12,7 @@ class NotesController(
 ) {
 
     @PostMapping("")
-    fun create(
-        @RequestBody body: CreateNoteDto
-    ): ResponseEntity<String> {
+    fun create(@RequestBody body: CreateNoteDto): ResponseEntity<String> {
         service.create(body)
 
         return JSON_OK()
@@ -28,6 +26,13 @@ class NotesController(
         service.update(id, body)
 
         return JSON_OK()
+    }
+
+    @DeleteMapping("{id}")
+    fun read(@PathVariable id: Long): ResponseEntity<String> {
+        service.delete(id)
+
+        return JSON_OK();
     }
 
     @GetMapping("")
