@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+  >
+  <meta
+    http-equiv="X-UA-Compatible"
+    content="ie=edge"
+  >
+  <title>Login Success</title>
+
+</head>
+<body>
+
+</body>
+<script>
+
+  (function() {
+    var jwt = window.location.search.slice(5);
+    if (!jwt) {
+      document.body.innerText = 'Cannot find token';
+      console.log(jwt);
+      return;
+    }
+
+    window.opener.postMessage(JSON.stringify({
+      type: 'jwt',
+      value: jwt,
+    }), '*');
+    window.close();
+  })();
+
+</script>
+</html>

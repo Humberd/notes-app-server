@@ -2,6 +2,7 @@ package pl.humberd.notesapp
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.AuthenticationManager
@@ -16,8 +17,12 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.ModelAndView
 import pl.humberd.notesapp.account.Account
 import pl.humberd.notesapp.account.AccountService
+import java.util.*
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -38,10 +43,10 @@ class SecurityConfig(
             .formLogin().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-
         http
             .authorizeRequests()
             .antMatchers("/h2-console/**").permitAll()
+            .antMatchers("/oauth2-login-success").permitAll()
             .and()
             .headers().frameOptions().disable()
 
@@ -65,15 +70,36 @@ class SecurityConfig(
                         authentication.principal.attributes.let {
                             this.accountService.getOrCreateFromGoogle(it["email"] as String, it["sub"] as String)
                         }
-
                     }
                     else -> {
                         throw Error("Unsupported clientId ${authentication.authorizedClientRegistrationId}")
                     }
                 }
 
-                response.addHeader("Authorization", "Bearer ${account.googleAuth?.email}")
+                val jwt = Jwts.builder()
+                    .addClaims(
+                        mapOf(
+                            "email" to account.googleAuth?.email
+                        )
+                    )
+                    .setSubject(account.id.toString())
+                    .setId(UUID.randomUUID().toString())
+                    .setExpiration(Date(System.currentTimeMillis() + 1_000_000_000))
+                    .setIssuedAt(Date())
+                    .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
+                    .compact()
+
+
+                response.sendRedirect("/oauth2-login-success?jwt=$jwt")
             }
+    }
+}
+
+@RestController
+class Oauth2Success {
+    @RequestMapping("/oauth2-login-success")
+    fun getLoginSuccessPage(): ModelAndView {
+        return ModelAndView("oauth2-login-success.html")
     }
 }
 
