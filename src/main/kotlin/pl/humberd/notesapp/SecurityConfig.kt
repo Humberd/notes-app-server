@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
@@ -27,24 +28,26 @@ class SecurityConfig(
 
     override fun configure(http: HttpSecurity?) {
         http!!
-//            .cors().disable()
-//            .csrf().disable()
-//            .httpBasic().disable()
-//            .formLogin().disable()
-//            .addFilter(JWTAuthorizationFilter(authenticationManagerBean()))
-//            .exceptionHandling()
-//            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//            .and()
-//            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//            .and()
-////            .authorizeRequests().anyRequest().authenticated()
-////            .and()
-//            .oauth2Login()
-//            .successHandler { request, response, authentication ->
-//                response.addHeader("Authorization", "Bearer xxxx")
-//            }
-//            .and()
-//            .logout()
+            .cors().disable()
+            .csrf().disable()
+            .httpBasic().disable()
+            .formLogin().disable()
+            .addFilter(JWTAuthorizationFilter(authenticationManagerBean()))
+            .exceptionHandling()
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .antMatcher("h2-console/**").anonymous()
+            .and()
+            .authorizeRequests().anyRequest().authenticated()
+            .and()
+            .oauth2Login()
+            .successHandler { request, response, authentication ->
+                response.addHeader("Authorization", "Bearer xxxx")
+            }
+            .and()
+            .logout()
     }
 }
 

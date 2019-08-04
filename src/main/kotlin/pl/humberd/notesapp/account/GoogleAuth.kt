@@ -1,22 +1,23 @@
 package pl.humberd.notesapp.account
 
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.util.*
 import javax.persistence.*
 
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 data class GoogleAuth(
-    @Id
-    val id: Long,
-
     @OneToOne
     @MapsId
     var account: Account,
 
+    var userId: String
+) {
+    @Id
+    var id: Long = 0
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    var createdAt: Calendar?,
-
-
-    var userId: String
-)
+    lateinit var createdAt: Calendar
+}
