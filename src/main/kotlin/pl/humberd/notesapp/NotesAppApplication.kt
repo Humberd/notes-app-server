@@ -4,9 +4,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
-import pl.humberd.notesapp.account.Account
-import pl.humberd.notesapp.account.AccountRepository
-import pl.humberd.notesapp.account.GoogleAuth
+import pl.humberd.notesapp.account.AccountService
 import pl.humberd.notesapp.notes.CreateNoteDto
 import pl.humberd.notesapp.notes.NotesService
 import javax.annotation.PostConstruct
@@ -15,7 +13,7 @@ import javax.annotation.PostConstruct
 @EnableJpaAuditing
 class NotesAppApplication(
     val notesService: NotesService,
-    val accountRepository: AccountRepository
+    val accountService: AccountService
 ) {
     @PostConstruct
     fun init1() {
@@ -36,18 +34,11 @@ class NotesAppApplication(
 
     @PostConstruct
     fun init2() {
-        val account = Account(
-            null
-        )
+        val account1 = accountService.getOrCreateFromGoogle("admin@gmail.com", "41241241")
+        val account2 = accountService.getOrCreateFromGoogle("admin@gmail.com", "41241241")
 
-        val googleAuth = GoogleAuth(
-            account,
-            "3213"
-        )
-
-        account.googleAuth = googleAuth
-
-        accountRepository.save(account)
+        println("foo")
+//        println(account)
     }
 }
 

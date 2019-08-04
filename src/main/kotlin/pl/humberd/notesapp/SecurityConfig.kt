@@ -12,9 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.stereotype.Component
+import pl.humberd.notesapp.account.AccountService
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -23,7 +25,8 @@ import javax.servlet.http.HttpServletResponse
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
+    private val accountService: AccountService
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity?) {
@@ -32,7 +35,7 @@ class SecurityConfig(
             .csrf().disable()
             .httpBasic().disable()
             .formLogin().disable()
-            .addFilter(JWTAuthorizationFilter(authenticationManagerBean()))
+//            .addFilter(JWTAuthorizationFilter(authenticationManagerBean()))
             .exceptionHandling()
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .and()
@@ -44,6 +47,11 @@ class SecurityConfig(
             .and()
             .oauth2Login()
             .successHandler { request, response, authentication ->
+                if (authentication !is OAuth2AuthenticationToken) {
+                    throw Error()
+                }
+                println(authentication.principal)
+
                 response.addHeader("Authorization", "Bearer xxxx")
             }
             .and()
@@ -80,7 +88,7 @@ class JWTAuthorizationFilter(
 
         /* When header is null or doesn't start with a required prefix*/
         if (header === null || !header.startsWith(JWT_TOKEN_PREFIX)) {
-            logger.trace { "Request has no $JWT_HEADER_NAME or it doesn't start with $JWT_TOKEN_PREFIX" }
+            println("Request has no $JWT_HEADER_NAME or it doesn't start with $JWT_TOKEN_PREFIX")
             chain.doFilter(req, res)
             return
         }

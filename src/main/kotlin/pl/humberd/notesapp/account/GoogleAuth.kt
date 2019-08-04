@@ -9,13 +9,13 @@ import javax.persistence.*
 @EntityListeners(AuditingEntityListener::class)
 data class GoogleAuth(
     @OneToOne
-    @MapsId
     var account: Account,
 
-    var userId: String
-) {
     @Id
-    var id: Long = 0
+    var id: String,
+
+    var email: String
+) {
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
