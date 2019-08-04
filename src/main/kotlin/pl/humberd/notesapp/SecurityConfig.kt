@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.stereotype.Component
+import pl.humberd.notesapp.account.Account
 import pl.humberd.notesapp.account.AccountService
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -29,33 +30,50 @@ class SecurityConfig(
     private val accountService: AccountService
 ) : WebSecurityConfigurerAdapter() {
 
-    override fun configure(http: HttpSecurity?) {
-        http!!
+    override fun configure(http: HttpSecurity) {
+        http
             .cors().disable()
             .csrf().disable()
             .httpBasic().disable()
             .formLogin().disable()
-//            .addFilter(JWTAuthorizationFilter(authenticationManagerBean()))
-            .exceptionHandling()
-            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-            .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+
+        http
+            .authorizeRequests()
+            .antMatchers("/h2-console/**").permitAll()
             .and()
-            .antMatcher("h2-console/**").anonymous()
+            .headers().frameOptions().disable()
+
+        http
+            .addFilter(JWTAuthorizationFilter(authenticationManagerBean()))
+            .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .and()
-            .authorizeRequests().anyRequest().authenticated()
+            .authorizeRequests()
+            .anyRequest().authenticated()
             .and()
+
+        http
             .oauth2Login()
             .successHandler { request, response, authentication ->
                 if (authentication !is OAuth2AuthenticationToken) {
                     throw Error()
                 }
-                println(authentication.principal)
 
-                response.addHeader("Authorization", "Bearer xxxx")
+                val account: Account = when (authentication.authorizedClientRegistrationId) {
+                    "google" -> {
+                        authentication.principal.attributes.let {
+                            this.accountService.getOrCreateFromGoogle(it["email"] as String, it["sub"] as String)
+                        }
+
+                    }
+                    else -> {
+                        throw Error("Unsupported clientId ${authentication.authorizedClientRegistrationId}")
+                    }
+                }
+
+                response.addHeader("Authorization", "Bearer ${account.googleAuth?.email}")
             }
-            .and()
-            .logout()
     }
 }
 
