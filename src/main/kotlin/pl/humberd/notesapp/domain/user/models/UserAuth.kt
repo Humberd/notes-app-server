@@ -19,4 +19,7 @@ class UserAuth(
     @Temporal(TemporalType.TIMESTAMP)
     lateinit var updatedAt: Calendar
 
+//    @OneToOne(mappedBy = "id")
+//    lateinit var user: User
+
 }

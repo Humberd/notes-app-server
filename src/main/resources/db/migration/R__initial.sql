@@ -22,6 +22,8 @@ VALUES ('1', 'test');
 insert into User_Auth(user_id)
 values ('1');
 
+-- delete from User where id='1';
+
 --
 -- insert into User
 --     (name)
