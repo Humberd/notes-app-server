@@ -22,10 +22,13 @@ class User(
     @Temporal(TemporalType.TIMESTAMP)
     lateinit var updatedAt: Calendar
 
-//    @OneToOne
-//    lateinit var userAuth: UserAuth
+    @OneToOne
+    @JoinColumn(name = "user_auth_id", referencedColumnName = "id")
+    lateinit var userAuth: UserAuth
 
     override fun toString(): String {
-        return "User(id='$id', name='$name', createdAt=${createdAt.toInstant()}, updatedAt=${updatedAt.toInstant()})"
+        return "User(id='$id', name='$name', createdAt=${createdAt.toInstant()}, updatedAt=${updatedAt.toInstant()}, userAuth=$userAuth)"
     }
+
+
 }

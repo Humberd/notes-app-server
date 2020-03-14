@@ -6,8 +6,8 @@ import javax.persistence.*
 @Entity
 class UserAuth(
     @Id
-    @Column(name="user_id")
-    val userId: String
+    @Column(name="id")
+    val id: String
 ) {
 
     @Column(name = "created_at")
@@ -19,7 +19,12 @@ class UserAuth(
     @Temporal(TemporalType.TIMESTAMP)
     lateinit var updatedAt: Calendar
 
-//    @OneToOne(mappedBy = "id")
-//    lateinit var user: User
+    @OneToOne(mappedBy = "userAuth")
+    lateinit var user: User
+
+    override fun toString(): String {
+        return "UserAuth(id='$id', createdAt=${createdAt.toInstant()}, updatedAt=${updatedAt.toInstant()})"
+    }
+
 
 }
