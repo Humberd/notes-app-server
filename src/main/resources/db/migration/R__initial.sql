@@ -23,6 +23,7 @@ values ('1');
 insert into User(id, name, user_auth_id)
 VALUES ('1', 'test', '1');
 
+
 -- delete from User where id='1';
 
 --

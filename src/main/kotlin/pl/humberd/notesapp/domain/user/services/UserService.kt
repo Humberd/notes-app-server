@@ -16,5 +16,9 @@ class UserService(
             return
         }
         println(user.get())
+
+        userRepository.deleteById("1")
+
+
     }
 }

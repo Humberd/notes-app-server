@@ -22,7 +22,7 @@ class User(
     @Temporal(TemporalType.TIMESTAMP)
     lateinit var updatedAt: Calendar
 
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "user_auth_id", referencedColumnName = "id")
     lateinit var userAuth: UserAuth
 
