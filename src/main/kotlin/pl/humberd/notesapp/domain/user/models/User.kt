@@ -1,9 +1,10 @@
 package pl.humberd.notesapp.domain.user.models
 
-import java.util.*
+import pl.humberd.notesapp.domain._utils.models.EntityMetadata
 import javax.persistence.*
 
 @Entity
+@Table(name="USER")
 class User(
     @Id
     @Column(name = "id")
@@ -13,21 +14,14 @@ class User(
     var name: String
 ) {
 
-    @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    lateinit var createdAt: Calendar
-
-
-    @Column(name = "updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    lateinit var updatedAt: Calendar
+    @Embedded
+    lateinit var metadata: EntityMetadata
 
     @OneToOne(mappedBy = "user")
     lateinit var userAuth: UserAuth
 
     override fun toString(): String {
-        return "User(id='$id', name='$name', createdAt=${createdAt.toInstant()}, updatedAt=${updatedAt.toInstant()}, userAuth=$userAuth)"
+        return "User(id='$id', name='$name', metadata=$metadata, userAuth=$userAuth)"
     }
-
 
 }
