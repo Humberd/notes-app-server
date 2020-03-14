@@ -19,7 +19,8 @@ class UserAuth(
     @Temporal(TemporalType.TIMESTAMP)
     lateinit var updatedAt: Calendar
 
-    @OneToOne(mappedBy = "userAuth")
+    @OneToOne
+    @MapsId
     lateinit var user: User
 
     override fun toString(): String {

@@ -1,30 +1,29 @@
-drop table if exists User;
 drop table if exists User_Auth;
+drop table if exists User;
+
+create table User
+(
+    id           varchar2(30)  not null primary key,
+    name         varchar2(255) not null,
+    created_at   timestamp     not null default current_timestamp,
+    updated_at   timestamp     not null default current_timestamp on update current_timestamp
+);
 
 create table User_Auth
 (
-    id         varchar2(30) not null primary key,
+    user_id    varchar2(30) not null primary key references User(id) on delete cascade ,
     created_at timestamp    not null default current_timestamp,
     updated_at timestamp    not null default current_timestamp on update current_timestamp
 );
 
-create table User
-(
-    id         varchar2(30)  not null primary key,
-    name       varchar2(255) not null,
-    user_auth_id    varchar2(30) not null references User_Auth (id),
-    created_at timestamp     not null default current_timestamp,
-    updated_at timestamp     not null default current_timestamp on update current_timestamp
-);
+insert into User(id, name)
+VALUES ('1', 'test');
 
-insert into User_Auth(id)
+insert into User_Auth(user_id)
 values ('1');
 
-insert into User(id, name, user_auth_id)
-VALUES ('1', 'test', '1');
 
-
--- delete from User where id='1';
+-- delete from User_Auth where user_id='1';
 
 --
 -- insert into User

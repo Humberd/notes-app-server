@@ -22,8 +22,7 @@ class User(
     @Temporal(TemporalType.TIMESTAMP)
     lateinit var updatedAt: Calendar
 
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "user_auth_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "user")
     lateinit var userAuth: UserAuth
 
     override fun toString(): String {
