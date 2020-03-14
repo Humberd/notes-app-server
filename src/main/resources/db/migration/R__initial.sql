@@ -11,7 +11,7 @@ create table User
 
 create table User_Auth
 (
-    user_id    varchar2(30) not null references User (id) on delete cascade,
+    user_id    varchar2(30) not null primary key references User (id) on delete cascade,
     created_at timestamp    not null default current_timestamp,
     updated_at timestamp    not null default current_timestamp on update current_timestamp
 );
@@ -22,9 +22,6 @@ VALUES ('1', 'test');
 insert into User_Auth(user_id)
 values ('1');
 
-delete
-FROM User
-where id = '1'
 --
 -- insert into User
 --     (name)
