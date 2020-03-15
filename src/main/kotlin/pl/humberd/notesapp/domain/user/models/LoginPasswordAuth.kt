@@ -19,7 +19,11 @@ class LoginPasswordAuth(
     @Embedded
     lateinit var metadata: EntityMetadata
 
-    @OneToOne
-    @MapsId
+    @OneToOne(mappedBy = "loginPasswordAuth")
     lateinit var userAuth: UserAuth
+
+    override fun toString(): String {
+        return "LoginPasswordAuth(id='$id', email='$email', passwordHash='$passwordHash', metadata=$metadata)"
+    }
+
 }

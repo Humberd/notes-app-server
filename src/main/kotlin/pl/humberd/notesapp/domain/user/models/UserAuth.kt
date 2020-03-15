@@ -18,10 +18,12 @@ class UserAuth(
     @MapsId
     lateinit var user: User
 
-    @OneToOne(mappedBy = "userAuth")
-    lateinit var loginPasswordAuth: LoginPasswordAuth;
+    @OneToOne
+    @MapsId("user_id")
+    @JoinColumn(name="user_id", referencedColumnName = "user_auth_id")
+    lateinit var loginPasswordAuth: LoginPasswordAuth
 
     override fun toString(): String {
-        return "UserAuth(id='$id', metadata=$metadata)"
+        return "UserAuth(id='$id', metadata=$metadata, loginPasswordAuth=$loginPasswordAuth)"
     }
 }
