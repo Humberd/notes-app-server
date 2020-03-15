@@ -1,3 +1,4 @@
+drop table if exists Note_User_Vote;
 drop table if exists Note_Comment;
 drop table if exists Note;
 drop table if exists Login_Password_Auth;
@@ -64,6 +65,7 @@ create table Note
     is_starred     boolean     not null default FALSE,
     is_deleted     boolean     not null default FALSE,
     comments_count integer     not null default 0,
+    votes_count    integer     not null default 0,
     created_at     timestamp   not null default now(),
     updated_at     timestamp   not null default now()
 );
@@ -95,14 +97,40 @@ execute procedure trigger_set_timestamp();
 create trigger increment_comments_count
     after insert
     on Note_Comment
-    for each ROW
+    for each row
 execute procedure trigger_increment_comments_count();
 
 create trigger decrement_comments_count
     after delete
     on Note_Comment
-    for each ROW
+    for each row
 execute procedure trigger_decrement_comments_count();
+
+
+-------- NoteUserVote
+create table Note_User_Vote
+(
+    id         varchar(32) not null primary key,
+    user_id    varchar(32) not null references "user" (id) on delete cascade,
+    note_id    varchar(32) not null references Note (id) on delete cascade,
+    is_upvote  boolean     not null,
+    created_at timestamp   not null default now(),
+    updated_at timestamp   not null default now()
+);
+
+create unique index unique_vote_per_note_per_user on Note_User_Vote (user_id, note_id);
+
+create trigger set_updated_at
+    before update
+    on Note_User_Vote
+    for each row
+execute procedure trigger_set_timestamp();
+
+create trigger update_comments_count
+    after insert or update or delete
+    on Note_User_Vote
+    for each row
+execute procedure trigger_update_comments_count();
 
 --
 insert into "user"(id, name)
@@ -122,6 +150,9 @@ VALUES ('xyz', '1', '123', '123', '123'),
 insert into Note_Comment(id, author_id, note_id, content)
 values ('a', '1', 'xyz', 'test'),
        ('b', '2', 'xyz', 'this comment rocks');
+
+insert into Note_User_Vote(id, user_id, note_id, is_upvote)
+values ('fff', '1', 'xyz', true);
 
 update Login_Password_Auth
 set email = 'FOO@admin.com'
