@@ -8,7 +8,7 @@ import javax.persistence.*
 class UserAuth(
     @Id
     @Column(name = "id")
-    val id: String
+    val id: UserId
 ) {
 
     @Embedded

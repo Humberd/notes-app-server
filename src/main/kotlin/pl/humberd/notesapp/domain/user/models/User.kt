@@ -9,7 +9,7 @@ import javax.persistence.*
 class User(
     @Id
     @Column(name = "id")
-    val id: String,
+    val id: UserId,
 
     @Column(name = "name")
     var name: String
