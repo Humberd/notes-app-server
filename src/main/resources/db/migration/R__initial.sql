@@ -55,16 +55,15 @@ execute procedure trigger_set_timestamp();
 ------- Note
 create table Note
 (
-    id         varchar(30) not null unique,
-    author_id  varchar(30) not null references "user" (id) on delete cascade,
+    id         varchar(30) not null primary key,
+    author_id  varchar(30) null references "user" (id) on delete set null,
     url        text        not null,
     title      text        not null,
     content    text        not null,
     is_starred boolean     not null default FALSE,
     is_deleted boolean     not null default FALSE,
     created_at timestamp   not null default now(),
-    updated_at timestamp   not null default now(),
-    primary key (id, author_id)
+    updated_at timestamp   not null default now()
 );
 
 create trigger set_updated_at
@@ -89,5 +88,11 @@ VALUES ('xyz', '1', '123', '123', '123'),
 
 update Login_Password_Auth
 set email = 'FOO@admin.com'
-where user_auth_id = '1'
+where user_auth_id = '1';
 
+delete
+from "user"
+where id = '1';
+
+select *
+from note;
