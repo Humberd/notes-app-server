@@ -1,29 +1,28 @@
 drop table if exists Note;
 drop table if exists Login_Password_Auth;
 drop table if exists User_Auth;
-drop table if exists "USER";
+drop table if exists "user";
 
-create table "USER"
+create table "user"
 (
     id         varchar(30)  not null primary key,
     name       varchar(255) not null,
+    name_lc    varchar(255) not null unique generated always as ( lower(name) ) stored,
     created_at timestamp    not null default now(),
     updated_at timestamp    not null default now()
 );
 
 create trigger set_updated_at
     before update
-    on "USER"
+    on "user"
     for each row
 execute procedure trigger_set_timestamp();
-
-
 
 
 ------- User_Auth
 create table User_Auth
 (
-    user_id    varchar(30) not null primary key references "USER" (id) on delete cascade,
+    user_id    varchar(30) not null primary key references "user" (id) on delete cascade,
     created_at timestamp   not null default now(),
     updated_at timestamp   not null default now()
 );
@@ -33,8 +32,6 @@ create trigger set_updated_at
     on User_Auth
     for each row
 execute procedure trigger_set_timestamp();
-
-
 
 
 ------- Login_Password_Auth
@@ -59,7 +56,7 @@ execute procedure trigger_set_timestamp();
 create table Note
 (
     id         varchar(30) not null unique,
-    author_id  varchar(30) not null references "USER" (id) on delete cascade,
+    author_id  varchar(30) not null references "user" (id) on delete cascade,
     url        text        not null,
     title      text        not null,
     content    text        not null,
@@ -76,7 +73,7 @@ create trigger set_updated_at
     for each row
 execute procedure trigger_set_timestamp();
 --
-insert into "USER"(id, name)
+insert into "user"(id, name)
 VALUES ('1', 'test'),
        ('2', 'foo');
 
@@ -89,4 +86,8 @@ values ('1', 'Admin@admin.com', 'xyz');
 insert into Note(id, author_id, url, title, content)
 VALUES ('xyz', '1', '123', '123', '123'),
        ('xyz2', '2', '132', '23', '12');
+
+update Login_Password_Auth
+set email = 'FOO@admin.com'
+where user_auth_id = '1'
 

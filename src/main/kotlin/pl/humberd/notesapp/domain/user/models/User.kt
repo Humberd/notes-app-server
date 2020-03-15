@@ -5,7 +5,7 @@ import pl.humberd.notesapp.domain.note.models.Note
 import javax.persistence.*
 
 @Entity
-@Table(name="USER")
+@Table(name = "user", schema = "public")
 class User(
     @Id
     @Column(name = "id")
@@ -14,6 +14,9 @@ class User(
     @Column(name = "name")
     var name: String
 ) {
+
+    @Column(name = "name_lc", updatable = false, insertable = false)
+    lateinit var nameLc: String;
 
     @Embedded
     lateinit var metadata: EntityMetadata
@@ -25,7 +28,7 @@ class User(
     lateinit var notes: List<Note>
 
     override fun toString(): String {
-        return "User(id='$id', name='$name', metadata=$metadata, userAuth=$userAuth)"
+        return "User(id='$id', name='$name', nameLc='$nameLc', metadata=$metadata, userAuth=$userAuth)"
     }
 
 }
