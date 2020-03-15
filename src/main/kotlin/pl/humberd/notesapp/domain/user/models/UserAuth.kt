@@ -1,6 +1,7 @@
 package pl.humberd.notesapp.domain.user.models
 
 import pl.humberd.notesapp.domain._utils.models.EntityMetadata
+import pl.humberd.notesapp.domain.auth_methods.login_password.models.LoginPasswordAuth
 import javax.persistence.*
 
 @Entity
