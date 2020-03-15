@@ -1,6 +1,7 @@
 package pl.humberd.notesapp.domain.user.models
 
 import pl.humberd.notesapp.domain._utils.models.EntityMetadata
+import pl.humberd.notesapp.domain.note.models.Note
 import javax.persistence.*
 
 @Entity
@@ -19,6 +20,9 @@ class User(
 
     @OneToOne(mappedBy = "user")
     lateinit var userAuth: UserAuth
+
+    @OneToMany(mappedBy = "user")
+    lateinit var notes: List<Note>
 
     override fun toString(): String {
         return "User(id='$id', name='$name', metadata=$metadata, userAuth=$userAuth)"
