@@ -7,7 +7,7 @@ import javax.persistence.*
 @Table(name = "USER_AUTH")
 class UserAuth(
     @Id
-    @Column(name = "id")
+    @Column(name = "user_id")
     val id: UserId
 ) {
 
@@ -17,6 +17,9 @@ class UserAuth(
     @OneToOne
     @MapsId
     lateinit var user: User
+
+    @OneToOne(mappedBy = "userAuth")
+    lateinit var loginPasswordAuth: LoginPasswordAuth;
 
     override fun toString(): String {
         return "UserAuth(id='$id', metadata=$metadata)"
