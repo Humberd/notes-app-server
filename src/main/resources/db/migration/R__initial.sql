@@ -65,7 +65,7 @@ create table Note
     is_starred     boolean     not null default FALSE,
     is_deleted     boolean     not null default FALSE,
     comments_count integer     not null default 0,
-    votes_count    integer     not null default 0,
+    votes_score    integer     not null default 0 check ( votes_score >= 0 ),
     created_at     timestamp   not null default now(),
     updated_at     timestamp   not null default now()
 );

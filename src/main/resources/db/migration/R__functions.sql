@@ -38,21 +38,21 @@ $$
 BEGIN
     if OLD is null then
         if NEW.is_upvote = true then
-            perform update_votes_count(NEW.note_id, 1);
+            perform update_votes_score(NEW.note_id, 1);
         else
-            perform update_votes_count(NEW.note_id, -1);
+            perform update_votes_score(NEW.note_id, -1);
         end if;
     elsif NEW is null then
         if OLD.is_upvote = true then
-            perform update_votes_count(OLD.note_id, -1);
+            perform update_votes_score(OLD.note_id, -1);
         else
-            perform update_votes_count(OLD.note_id, 1);
+            perform update_votes_score(OLD.note_id, 1);
         end if;
     elsif OLD.is_upvote is distinct from NEW.is_upvote then
         if NEW.is_upvote = true then
-            perform update_votes_count(NEW.note_id, 2);
+            perform update_votes_score(NEW.note_id, 2);
         else
-            perform update_votes_count(NEW.note_id, -2);
+            perform update_votes_score(NEW.note_id, -2);
         end if;
     end if;
 
@@ -61,12 +61,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION update_votes_count(note_id varchar(32), update_by integer)
+CREATE OR REPLACE FUNCTION update_votes_score(note_id varchar(32), update_by integer)
     RETURNS void AS
 $$
 BEGIN
     update Note
-    set votes_count = votes_count + update_by
+    set votes_score = votes_score + update_by
     where id = note_id;
 END;
 $$ LANGUAGE plpgsql;
