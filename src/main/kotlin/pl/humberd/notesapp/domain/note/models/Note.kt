@@ -1,6 +1,7 @@
 package pl.humberd.notesapp.domain.note.models
 
 import pl.humberd.notesapp.domain._utils.models.EntityMetadata
+import pl.humberd.notesapp.domain.note_comment.models.NoteComment
 import pl.humberd.notesapp.domain.user.models.User
 import pl.humberd.notesapp.domain.user.models.UserId
 import javax.persistence.*
@@ -24,11 +25,13 @@ class Note(
     @Column(name = "content")
     val content: String
 ) {
-    @Column(name = "is_starred")
-    var isStarred: Boolean = false
+    @Column(name = "comments_count")
+    var commentsCount: Int = 0
+        private set
 
-    @Column(name = "is_deleted")
-    var isDeleted: Boolean = false
+    @Column(name = "votes_score")
+    var votesScore: Int = 0
+        private set
 
     @Embedded
     lateinit var metadata: EntityMetadata
@@ -38,7 +41,12 @@ class Note(
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     lateinit var refUser: User
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    lateinit var refNoteComments: List<NoteComment>
+
     override fun toString(): String {
-        return "Note(id=$id, url='$url', title='$title', content='$content', isStarred=$isStarred, isDeleted=$isDeleted, user=$refUser, metadata=$metadata)"
+        return "Note(id='$id', authorId='$authorId', url='$url', title='$title', content='$content', commentsCount=$commentsCount, votesScore=$votesScore)"
     }
+
 }
