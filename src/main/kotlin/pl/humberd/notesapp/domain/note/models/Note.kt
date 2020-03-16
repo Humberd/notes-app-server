@@ -1,7 +1,6 @@
 package pl.humberd.notesapp.domain.note.models
 
 import pl.humberd.notesapp.domain._utils.models.EntityMetadata
-import pl.humberd.notesapp.domain.note_comment.models.NoteComment
 import pl.humberd.notesapp.domain.user.models.User
 import pl.humberd.notesapp.domain.user.models.UserId
 import javax.persistence.*
@@ -40,10 +39,6 @@ class Note(
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     lateinit var refUser: User
-
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "note_id", referencedColumnName = "id")
-    lateinit var refNoteComments: List<NoteComment>
 
     override fun toString(): String {
         return "Note(id='$id', authorId='$authorId', url='$url', title='$title', content='$content', commentsCount=$commentsCount, votesScore=$votesScore)"

@@ -16,6 +16,5 @@ class NoteService(
             "xyz"
         )
         println(note)
-        println(note?.refNoteComments?.size)
     }
 }

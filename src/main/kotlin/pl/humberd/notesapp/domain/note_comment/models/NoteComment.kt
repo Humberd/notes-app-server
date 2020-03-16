@@ -33,7 +33,7 @@ class NoteComment(
     @MapsId("author_id")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
-    lateinit var refUser: User
+    lateinit var refAuthor: User
 
     override fun toString(): String {
         return "NoteComment(id='$id', authorId=$authorId, noteId='$noteId', content='$content')"
