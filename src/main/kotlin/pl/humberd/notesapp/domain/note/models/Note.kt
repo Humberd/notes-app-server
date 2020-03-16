@@ -42,7 +42,7 @@ class Note(
     lateinit var refUser: User
 
     @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "note_id", referencedColumnName = "id")
     lateinit var refNoteComments: List<NoteComment>
 
     override fun toString(): String {
