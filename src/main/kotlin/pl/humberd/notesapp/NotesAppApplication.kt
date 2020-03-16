@@ -45,4 +45,3 @@ class NotesAppApplication(
 fun main(args: Array<String>) {
     runApplication<NotesAppApplication>(*args)
 }
-
