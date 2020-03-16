@@ -15,15 +15,15 @@ class UserAuth(
     @Embedded
     lateinit var metadata: EntityMetadata
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id", referencedColumnName = "id")
     lateinit var refUser: User
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "user_auth_id")
     lateinit var refLoginPasswordAuth: LoginPasswordAuth
 
     override fun toString(): String {
-        return "UserAuth(userId='$userId', metadata=$metadata, refLoginPasswordAuth=$refLoginPasswordAuth)"
+        return "UserAuth(userId='$userId')"
     }
 }

@@ -37,11 +37,11 @@ class Note(
     lateinit var metadata: EntityMetadata
 
     @MapsId("author_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     lateinit var refUser: User
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "id", referencedColumnName = "id")
     lateinit var refNoteComments: List<NoteComment>
 
