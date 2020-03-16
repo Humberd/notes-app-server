@@ -6,11 +6,11 @@ import pl.humberd.notesapp.domain.user.models.UserId
 import javax.persistence.*
 
 @Entity
-@Table(name = "LOGIN_PASSWORD_AUTH")
+@Table(name = "login_password_auth")
 class LoginPasswordAuth(
     @Id
     @Column(name = "user_auth_id")
-    val id: UserId,
+    val userAuthId: UserId,
 
     @Column(name = "email")
     var email: String,
@@ -25,11 +25,11 @@ class LoginPasswordAuth(
     @Embedded
     lateinit var metadata: EntityMetadata
 
-    @OneToOne(mappedBy = "loginPasswordAuth")
-    lateinit var userAuth: UserAuth
+    @OneToOne(mappedBy = "loginPasswordAuth", fetch = FetchType.LAZY)
+    lateinit var refUserAuth: UserAuth
 
     override fun toString(): String {
-        return "LoginPasswordAuth(id='$id', email='$email', emailLc='$emailLc' passwordHash='$passwordHash', metadata=$metadata)"
+        return "LoginPasswordAuth(userAuthId='$userAuthId', email='$email', emailLc='$emailLc' passwordHash='$passwordHash', metadata=$metadata)"
     }
 
 }

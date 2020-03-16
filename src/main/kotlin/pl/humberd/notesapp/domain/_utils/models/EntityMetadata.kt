@@ -8,11 +8,11 @@ import javax.persistence.TemporalType
 
 @Embeddable
 data class EntityMetadata(
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false, insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
     val createdAt: Calendar,
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", updatable = false, insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
     val updatedAt: Calendar
 ) {

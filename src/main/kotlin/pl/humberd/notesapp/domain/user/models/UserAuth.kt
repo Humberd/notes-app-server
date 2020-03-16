@@ -5,26 +5,26 @@ import pl.humberd.notesapp.domain.auth_methods.login_password.models.LoginPasswo
 import javax.persistence.*
 
 @Entity
-@Table(name = "USER_AUTH")
+@Table(name = "user_auth")
 class UserAuth(
     @Id
     @Column(name = "user_id")
-    val id: UserId
+    val userId: UserId
 ) {
 
     @Embedded
     lateinit var metadata: EntityMetadata
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
-    lateinit var user: User
+    lateinit var refUser: User
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId("user_id")
     @JoinColumn(name="user_id", referencedColumnName = "user_auth_id")
-    lateinit var loginPasswordAuth: LoginPasswordAuth
+    lateinit var refLoginPasswordAuth: LoginPasswordAuth
 
     override fun toString(): String {
-        return "UserAuth(id='$id', metadata=$metadata, loginPasswordAuth=$loginPasswordAuth)"
+        return "UserAuth(userId='$userId', metadata=$metadata, refLoginPasswordAuth=$refLoginPasswordAuth)"
     }
 }

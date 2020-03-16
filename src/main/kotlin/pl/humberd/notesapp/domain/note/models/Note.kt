@@ -5,7 +5,7 @@ import pl.humberd.notesapp.domain.user.models.User
 import javax.persistence.*
 
 @Entity
-@Table(name = "NOTE")
+@Table(name = "note")
 class Note(
     @EmbeddedId
     val id: NoteId,
@@ -25,15 +25,15 @@ class Note(
     @Column(name = "is_deleted")
     var isDeleted: Boolean = false
 
-    @MapsId("author_id")
-    @ManyToOne
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
-    lateinit var user: User
-
     @Embedded
     lateinit var metadata: EntityMetadata
 
+    @MapsId("author_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    lateinit var refUser: User
+
     override fun toString(): String {
-        return "Note(id=$id, url='$url', title='$title', content='$content', isStarred=$isStarred, isDeleted=$isDeleted, user=$user, metadata=$metadata)"
+        return "Note(id=$id, url='$url', title='$title', content='$content', isStarred=$isStarred, isDeleted=$isDeleted, user=$refUser, metadata=$metadata)"
     }
 }

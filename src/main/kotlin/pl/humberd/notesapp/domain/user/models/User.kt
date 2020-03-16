@@ -21,14 +21,14 @@ class User(
     @Embedded
     lateinit var metadata: EntityMetadata
 
-    @OneToOne(mappedBy = "user")
-    lateinit var userAuth: UserAuth
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    lateinit var refUserAuth: UserAuth
 
-    @OneToMany(mappedBy = "user")
-    lateinit var notes: List<Note>
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    lateinit var refNotes: List<Note>
 
     override fun toString(): String {
-        return "User(id='$id', name='$name', nameLc='$nameLc', metadata=$metadata, userAuth=$userAuth)"
+        return "User(id='$id', name='$name', nameLc='$nameLc', metadata=$metadata, userAuth=$refUserAuth)"
     }
 
 }
