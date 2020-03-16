@@ -2,13 +2,18 @@ package pl.humberd.notesapp.domain.note.models
 
 import pl.humberd.notesapp.domain._utils.models.EntityMetadata
 import pl.humberd.notesapp.domain.user.models.User
+import pl.humberd.notesapp.domain.user.models.UserId
 import javax.persistence.*
 
 @Entity
 @Table(name = "note")
 class Note(
-    @EmbeddedId
+    @Id
+    @Column(name = "id")
     val id: NoteId,
+
+    @Column(name = "author_id")
+    val authorId: UserId,
 
     @Column(name = "url")
     val url: String,

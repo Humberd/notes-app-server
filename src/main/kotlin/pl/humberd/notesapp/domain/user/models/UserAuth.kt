@@ -16,8 +16,8 @@ class UserAuth(
     lateinit var metadata: EntityMetadata
 
     @OneToOne(fetch = FetchType.LAZY)
-    @MapsId(value = "user_id")
-    lateinit var user: User
+    @JoinColumn(name="user_id", referencedColumnName = "id")
+    lateinit var refUser: User
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_auth_id")

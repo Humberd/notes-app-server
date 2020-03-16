@@ -23,7 +23,7 @@ class User(
     lateinit var metadata: EntityMetadata
         private set
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "refUser", fetch = FetchType.LAZY)
     lateinit var refUserAuth: UserAuth
 
     @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
