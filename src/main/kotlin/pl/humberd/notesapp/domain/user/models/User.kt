@@ -16,10 +16,12 @@ class User(
 ) {
 
     @Column(name = "name_lc", updatable = false, insertable = false)
-    lateinit var nameLc: String;
+    lateinit var nameLc: String
+        private set
 
     @Embedded
     lateinit var metadata: EntityMetadata
+        private set
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     lateinit var refUserAuth: UserAuth
