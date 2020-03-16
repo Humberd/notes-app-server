@@ -26,7 +26,7 @@ class User(
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     lateinit var refUserAuth: UserAuth
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
     lateinit var refNotes: List<Note>
 
     override fun toString(): String {

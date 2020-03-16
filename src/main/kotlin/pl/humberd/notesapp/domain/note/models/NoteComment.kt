@@ -23,9 +23,9 @@ class NoteComment(
     @Embedded
     lateinit var metadata: EntityMetadata
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "note_id", referencedColumnName = "id")
-    lateinit var refNote: Note
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "note_id", referencedColumnName = "id")
+//    lateinit var refNote: Note
 
     override fun toString(): String {
         return "NoteComment(id='$id', authorId=$authorId, noteId='$noteId', content='$content', metadata=$metadata)"

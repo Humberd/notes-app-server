@@ -25,7 +25,7 @@ class LoginPasswordAuth(
     @Embedded
     lateinit var metadata: EntityMetadata
 
-    @OneToOne(mappedBy = "loginPasswordAuth", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "refLoginPasswordAuth", fetch = FetchType.LAZY)
     lateinit var refUserAuth: UserAuth
 
     override fun toString(): String {

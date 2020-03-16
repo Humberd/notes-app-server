@@ -16,12 +16,11 @@ class UserAuth(
     lateinit var metadata: EntityMetadata
 
     @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    lateinit var refUser: User
+    @MapsId(value = "user_id")
+    lateinit var user: User
 
     @OneToOne(fetch = FetchType.LAZY)
-    @MapsId("user_id")
-    @JoinColumn(name="user_id", referencedColumnName = "user_auth_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_auth_id")
     lateinit var refLoginPasswordAuth: LoginPasswordAuth
 
     override fun toString(): String {
