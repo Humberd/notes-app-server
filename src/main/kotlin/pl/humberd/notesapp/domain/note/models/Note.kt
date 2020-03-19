@@ -1,9 +1,10 @@
 package pl.humberd.notesapp.domain.note.models
 
 import pl.humberd.notesapp.domain._utils.models.EntityMetadata
-import pl.humberd.notesapp.domain.user.models.User
 import pl.humberd.notesapp.domain.user.models.UserId
 import javax.persistence.*
+
+typealias NoteId = String
 
 @Entity
 @Table(name = "note")
@@ -34,11 +35,6 @@ class Note(
 
     @Embedded
     lateinit var metadata: EntityMetadata
-
-    @MapsId("author_id")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
-    lateinit var refUser: User
 
     override fun toString(): String {
         return "Note(id='$id', authorId='$authorId', url='$url', title='$title', content='$content', commentsCount=$commentsCount, votesScore=$votesScore)"

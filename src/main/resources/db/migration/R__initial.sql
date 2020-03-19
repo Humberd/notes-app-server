@@ -2,7 +2,6 @@ drop table if exists Note_User_Vote;
 drop table if exists Note_Comment;
 drop table if exists Note;
 drop table if exists Login_Password_Auth;
-drop table if exists User_Auth;
 drop table if exists "user";
 
 create table "user"
@@ -20,26 +19,10 @@ create trigger set_updated_at
     for each row
 execute procedure trigger_set_timestamp();
 
-
-------- User_Auth
-create table User_Auth
-(
-    user_id    varchar(32) not null primary key references "user" (id) on delete cascade,
-    created_at timestamp   not null default now(),
-    updated_at timestamp   not null default now()
-);
-
-create trigger set_updated_at
-    before update
-    on User_Auth
-    for each row
-execute procedure trigger_set_timestamp();
-
-
 ------- Login_Password_Auth
 create table Login_Password_Auth
 (
-    user_auth_id  varchar(32)  not null primary key references User_Auth (user_id) on delete cascade,
+    user_id  varchar(32)  not null primary key references "user" (id) on delete cascade,
     email         varchar(255) not null,
     email_lc      varchar(255) not null unique generated always as ( lower(email) ) STORED,
     password_hash varchar(255) not null,
@@ -135,10 +118,8 @@ insert into "user"(id, name)
 VALUES ('1', 'test'),
        ('2', 'foo');
 
-insert into User_Auth(user_id)
-values ('1');
 --
-insert into Login_Password_Auth(user_auth_id, email, password_hash)
+insert into Login_Password_Auth(user_id, email, password_hash)
 values ('1', 'Admin@admin.com', 'xyz');
 
 insert into Note(id, author_id, url, title, content)
@@ -154,4 +135,4 @@ values ('fff', '1', 'xyz', true);
 
 update Login_Password_Auth
 set email = 'FOO@admin.com'
-where user_auth_id = '1';
+where user_id = '1';

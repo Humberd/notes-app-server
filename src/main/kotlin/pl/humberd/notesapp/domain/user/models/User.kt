@@ -3,6 +3,8 @@ package pl.humberd.notesapp.domain.user.models
 import pl.humberd.notesapp.domain._utils.models.EntityMetadata
 import javax.persistence.*
 
+typealias UserId = String
+
 @Entity
 @Table(name = "user", schema = "public")
 class User(
@@ -27,3 +29,4 @@ class User(
     }
 
 }
+// http://www.vinsguru.com/cloud-design-patterns-materialized-view-pattern-using-spring-boot-postgresql/
