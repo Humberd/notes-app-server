@@ -8,8 +8,8 @@ import javax.persistence.*
 @Table(name = "login_password_auth")
 class LoginPasswordAuth(
     @Id
-    @Column(name = "user_auth_id")
-    val userAuthId: UserId,
+    @Column(name = "user_id")
+    val userId: UserId,
 
     @Column(name = "email")
     var email: String,
@@ -25,7 +25,7 @@ class LoginPasswordAuth(
     lateinit var metadata: EntityMetadata
 
     override fun toString(): String {
-        return "LoginPasswordAuth(userAuthId='$userAuthId', email='$email', emailLc='$emailLc' passwordHash='$passwordHash')"
+        return "LoginPasswordAuth(userId='$userId', email='$email', emailLc='$emailLc' passwordHash='$passwordHash')"
     }
 
 }
