@@ -5,18 +5,20 @@ import kotlin.streams.asSequence
 
 object IdGenerator {
     private const val source = "abcdefghijklmnopqrstuvwxyz0123456789"
+    private const val idLength = 32
+    private val random = java.util.Random()
 
     fun random(type: KClass<*>): String {
-        return getRandomId(type.simpleName?.toLowerCase() ?: "", 15)
+        return getRandomId(type.simpleName?.toLowerCase() ?: "")
     }
 
     private fun getRandomId(
-        prefix: String,
-        length: Long
+        prefix: String
     ): String {
-        return java.util.Random().ints(length, 0, source.length)
+        return random.ints(idLength.toLong(), 0, source.length)
             .asSequence()
             .map(source::get)
             .joinToString("", "$prefix-")
+            .padEnd(idLength)
     }
 }
