@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.humberd.notesapp.application.command.note.NoteCommandHandler
 import pl.humberd.notesapp.application.command.note.model.NoteCreateCommand
+import pl.humberd.notesapp.application.command.note.model.NoteDeleteCommand
 import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
 import pl.humberd.notesapp.application.query.note.NoteQueryHandler
 import pl.humberd.notesapp.application.query.note.model.NoteListFilter
@@ -36,6 +37,16 @@ class NoteController(
         return ResponseBuilder.created(view)
     }
 
+    @GetMapping("/{id}")
+    fun read(@PathVariable("id") id: String): ResponseEntity<NoteView> {
+        return ResponseBuilder.ok(noteQueryHandler.view(id))
+    }
+
+    @GetMapping("")
+    fun readList(pageable: Pageable): ResponseEntity<NoteListView> {
+        return ResponseBuilder.ok(noteQueryHandler.listView(NoteListFilter(pageable)))
+    }
+
     @PatchMapping("/{id}")
     fun patch(
         @PathVariable("id") id: String,
@@ -55,13 +66,12 @@ class NoteController(
         return ResponseBuilder.updated(view)
     }
 
-    @GetMapping("")
-    fun readList(pageable: Pageable): ResponseEntity<NoteListView> {
-        return ResponseBuilder.ok(noteQueryHandler.listView(NoteListFilter(pageable)))
-    }
+    @DeleteMapping("/{id}")
+    fun delete(
+        @PathVariable("id") id: String
+    ): ResponseEntity<Unit> {
+        noteCommandHandler.delete(NoteDeleteCommand(id))
 
-    @GetMapping("/{id}")
-    fun read(@PathVariable("id") id: String): ResponseEntity<NoteView> {
-        return ResponseBuilder.ok(noteQueryHandler.view(id))
+        return ResponseBuilder.notContent();
     }
 }

@@ -15,4 +15,8 @@ object ResponseBuilder {
     fun <T> updated(body: T): ResponseEntity<T> {
         return ok(body)
     }
+
+    fun notContent(): ResponseEntity<Unit> {
+        return ResponseEntity.noContent().build()
+    }
 }
