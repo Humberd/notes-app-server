@@ -2,6 +2,7 @@ package pl.humberd.notesapp.application.query.note
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import pl.humberd.notesapp.application.exceptions.NotFoundException
 import pl.humberd.notesapp.application.query.ListViewExtra
 import pl.humberd.notesapp.application.query.note.model.NoteListFilter
 import pl.humberd.notesapp.application.query.note.model.NoteListView
@@ -12,7 +13,6 @@ import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
 import pl.humberd.notesapp.domain.entity.user.models.User
-import pl.humberd.notesapp.domain.exceptions.NotFoundError
 
 @Service
 class NoteQueryHandler(
@@ -32,7 +32,7 @@ class NoteQueryHandler(
     fun view(id: NoteId): NoteView {
         val note = noteRepository.findByIdOrNull(id)
         if (note === null) {
-            throw NotFoundError(Note::class, id)
+            throw NotFoundException(Note::class, id)
         }
 
         return mapView(note, userQueryHandler.minimalView(note.authorId))
@@ -45,7 +45,7 @@ class NoteQueryHandler(
         return notes.map {
             val author = authors.get(it.authorId)
             if (author === null) {
-                throw NotFoundError(User::class, it.authorId)
+                throw NotFoundException(User::class, it.authorId)
             }
 
             return@map mapView(it, author)

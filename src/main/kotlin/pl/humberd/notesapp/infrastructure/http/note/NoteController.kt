@@ -14,15 +14,18 @@ import pl.humberd.notesapp.application.query.note.model.NoteView
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.note.model.NoteCreateRequest
 import pl.humberd.notesapp.infrastructure.http.note.model.NotePatchRequest
+import javax.validation.Valid
+import kotlin.contracts.ExperimentalContracts
 
 @RestController
+@ExperimentalContracts
 @RequestMapping("/notes")
 class NoteController(
     private val noteCommandHandler: NoteCommandHandler,
     private val noteQueryHandler: NoteQueryHandler
 ) {
     @PostMapping("")
-    fun create(@RequestBody body: NoteCreateRequest): ResponseEntity<NoteView> {
+    fun create(@RequestBody @Valid body: NoteCreateRequest): ResponseEntity<NoteView> {
         val note = noteCommandHandler.create(
             NoteCreateCommand(
                 authorId = "2",

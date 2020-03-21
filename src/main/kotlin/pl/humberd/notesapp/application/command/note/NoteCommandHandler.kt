@@ -5,32 +5,36 @@ import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.note.model.NoteCreateCommand
 import pl.humberd.notesapp.application.command.note.model.NoteDeleteCommand
 import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
+import pl.humberd.notesapp.application.common.NOT_NULL
+import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
-import pl.humberd.notesapp.domain.exceptions.NotFoundError
 import javax.transaction.Transactional
+import kotlin.contracts.ExperimentalContracts
 
 @Service
 @Transactional
+@ExperimentalContracts
 class NoteCommandHandler(
     private val noteRepository: NoteRepository
 ) {
     fun create(command: NoteCreateCommand): Note {
-        return noteRepository.save(
+        val entity = noteRepository.save(
             Note(
+                id = IdGenerator.random(Note::class),
                 authorId = command.authorId,
                 title = command.title,
                 url = command.url,
                 content = command.content
             )
         )
+
+        return entity
     }
 
     fun patch(command: NotePatchCommand): Note {
         val existingNote = noteRepository.findByIdOrNull(command.noteId)
-        if (existingNote === null) {
-            throw NotFoundError(Note::class, command.noteId)
-        }
+        NOT_NULL(existingNote, command.noteId)
 
         existingNote.also {
             it.url = command.url ?: it.url
@@ -43,12 +47,11 @@ class NoteCommandHandler(
 
     fun delete(command: NoteDeleteCommand) {
         val note = noteRepository.findByIdOrNull(command.noteId)
-        if (note === null){
-            throw NotFoundError(Note::class, command.noteId)
-        }
+        NOT_NULL(note, command.noteId)
 
         return noteRepository.deleteById(command.noteId)
     }
 
 
 }
+

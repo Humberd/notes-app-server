@@ -9,6 +9,10 @@ typealias NoteId = String
 @Entity
 @Table(name = "note")
 class Note(
+    @Id
+    @Column(name = "id")
+    val id: NoteId,
+
     @Column(name = "author_id")
     val authorId: UserId,
 
@@ -21,11 +25,6 @@ class Note(
     @Column(name = "content")
     var content: String
 ) {
-    @Id
-    @Column(name = "id")
-    var id: NoteId = ""
-        private set
-
     @Column(name = "comments_count", updatable = false, insertable = false)
     var commentsCount: Int = 0
         private set
@@ -35,7 +34,7 @@ class Note(
         private set
 
     @Embedded
-    lateinit var metadata: EntityMetadata
+    var metadata: EntityMetadata = EntityMetadata()
 
     override fun toString(): String {
         return "Note(id='$id', authorId='$authorId', url='$url', title='$title', content='$content', commentsCount=$commentsCount, votesScore=$votesScore)"
