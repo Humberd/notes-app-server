@@ -3,7 +3,7 @@ package pl.humberd.notesapp
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
-import pl.humberd.notesapp.domain.user.services.UserService
+import pl.humberd.notesapp.domain.entities.user.services.UserService
 
 @SpringBootApplication
 @EnableJpaAuditing
