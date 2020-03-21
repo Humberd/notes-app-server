@@ -19,7 +19,7 @@ class NoteCommandHandler(
     private val noteRepository: NoteRepository
 ) {
     fun create(command: NoteCreateCommand): Note {
-        val entity = noteRepository.save(
+        val entity = noteRepository.saveFlushRefresh(
             Note(
                 id = IdGenerator.random(Note::class),
                 authorId = command.authorId,

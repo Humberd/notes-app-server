@@ -2,11 +2,12 @@ package pl.humberd.notesapp
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import pl.humberd.notesapp.domain.configuration.repository.RefreshableJpaRepositoryImpl
 import kotlin.contracts.ExperimentalContracts
 
 @SpringBootApplication
-@EnableJpaAuditing
+@EnableJpaRepositories(repositoryBaseClass = RefreshableJpaRepositoryImpl::class)
 class NotesAppApplication
 
 @ExperimentalContracts

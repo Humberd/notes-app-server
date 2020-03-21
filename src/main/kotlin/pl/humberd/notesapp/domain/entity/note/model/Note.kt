@@ -34,7 +34,7 @@ class Note(
         private set
 
     @Embedded
-    var metadata: EntityMetadata = EntityMetadata()
+    lateinit var metadata: EntityMetadata
 
     override fun toString(): String {
         return "Note(id='$id', authorId='$authorId', url='$url', title='$title', content='$content', commentsCount=$commentsCount, votesScore=$votesScore)"

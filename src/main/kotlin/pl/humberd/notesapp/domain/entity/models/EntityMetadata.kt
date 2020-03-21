@@ -10,12 +10,12 @@ import javax.persistence.TemporalType
 class EntityMetadata {
     @Column(name = "created_at", updatable = false, insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    var createdAt: Calendar = Calendar.getInstance()
+    lateinit var createdAt: Calendar
         private set
 
     @Column(name = "updated_at", updatable = false, insertable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    var updatedAt: Calendar = Calendar.getInstance()
+    lateinit var updatedAt: Calendar
         private set
 
     override fun toString(): String {
