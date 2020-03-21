@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 import pl.humberd.notesapp.application.command.user.UserCommandHandler
 import pl.humberd.notesapp.application.command.user.model.UserWithPasswordCredentialsCreateCommand
 import pl.humberd.notesapp.application.query.user.UserQueryHandler
-import pl.humberd.notesapp.domain.entity.user.model.User
+import pl.humberd.notesapp.application.query.user.model.UserView
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.credentials.model.PasswordCredentialsRegisterRequest
 import javax.validation.Valid
@@ -23,7 +23,7 @@ class PasswordCredentialsController(
 ) {
 
     @PostMapping("/register")
-    fun register(@RequestBody @Valid body: PasswordCredentialsRegisterRequest): ResponseEntity<User> {
+    fun register(@RequestBody @Valid body: PasswordCredentialsRegisterRequest): ResponseEntity<UserView> {
         val user = userCommandHandler.create(
             UserWithPasswordCredentialsCreateCommand(
                 name = body.name,
@@ -32,6 +32,8 @@ class PasswordCredentialsController(
             )
         )
 
-        return ResponseBuilder.created(user)
+        val userView = userQueryHandler.view(user.id)
+
+        return ResponseBuilder.created(userView)
     }
 }

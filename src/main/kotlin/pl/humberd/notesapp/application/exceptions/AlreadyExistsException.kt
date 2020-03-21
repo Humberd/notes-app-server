@@ -8,4 +8,4 @@ import kotlin.reflect.KClass
 class AlreadyExistsException(
     type: KClass<*>,
     key: String
-) : RuntimeException("${type} with $key already exists.")
+) : RuntimeException("${type.simpleName} with [$key] already exists.")

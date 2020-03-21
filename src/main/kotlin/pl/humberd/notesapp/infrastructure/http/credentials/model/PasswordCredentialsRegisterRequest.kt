@@ -1,7 +1,14 @@
 package pl.humberd.notesapp.infrastructure.http.credentials.model
 
-data class PasswordCredentialsRegisterRequest(
-    val name: String,
-    val email: String,
-    val password: String
-)
+import javax.validation.constraints.NotBlank
+
+class PasswordCredentialsRegisterRequest{
+    @NotBlank
+    lateinit var name: String
+
+    @NotBlank
+    lateinit var email: String
+
+    @NotBlank
+    lateinit var password: String
+}
