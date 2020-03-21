@@ -1,12 +1,12 @@
-package pl.humberd.notesapp.domain.entity.user.models
+package pl.humberd.notesapp.domain.entity.user.model
 
-import pl.humberd.notesapp.domain.entity.models.EntityMetadata
+import pl.humberd.notesapp.domain.common.EntityMetadata
 import javax.persistence.*
 
 typealias UserId = String
 
 @Entity
-@Table(name = "user", schema = "public")
+@Table(name = "user")
 class User(
     @Id
     @Column(name = "id")

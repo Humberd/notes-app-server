@@ -2,7 +2,7 @@ package pl.humberd.notesapp.application.query.note
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import pl.humberd.notesapp.application.exceptions.NotFoundException
+import pl.humberd.notesapp.application.common.NOT_NULL
 import pl.humberd.notesapp.application.query.ListViewExtra
 import pl.humberd.notesapp.application.query.note.model.NoteListFilter
 import pl.humberd.notesapp.application.query.note.model.NoteListView
@@ -12,8 +12,9 @@ import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
-import pl.humberd.notesapp.domain.entity.user.models.User
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @Service
 class NoteQueryHandler(
     private val noteRepository: NoteRepository,
@@ -31,22 +32,18 @@ class NoteQueryHandler(
 
     fun view(id: NoteId): NoteView {
         val note = noteRepository.findByIdOrNull(id)
-        if (note === null) {
-            throw NotFoundException(Note::class, id)
-        }
+        NOT_NULL(note, id)
 
         return mapView(note, userQueryHandler.minimalView(note.authorId))
     }
 
     private fun mapViewList(notes: List<Note>): List<NoteView> {
         val authorIds = notes.map { it.authorId }
-        val authors = userQueryHandler.minimalViewMap(authorIds)
+        val authors = userQueryHandler.minimalViewDictionary(authorIds)
 
         return notes.map {
             val author = authors.get(it.authorId)
-            if (author === null) {
-                throw NotFoundException(User::class, it.authorId)
-            }
+            NOT_NULL(author, it.authorId)
 
             return@map mapView(it, author)
         }

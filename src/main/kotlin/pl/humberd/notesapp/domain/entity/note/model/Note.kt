@@ -1,7 +1,7 @@
 package pl.humberd.notesapp.domain.entity.note.model
 
-import pl.humberd.notesapp.domain.entity.models.EntityMetadata
-import pl.humberd.notesapp.domain.entity.user.models.UserId
+import pl.humberd.notesapp.domain.common.EntityMetadata
+import pl.humberd.notesapp.domain.entity.user.model.UserId
 import javax.persistence.*
 
 typealias NoteId = String
@@ -35,6 +35,7 @@ class Note(
 
     @Embedded
     lateinit var metadata: EntityMetadata
+        private set
 
     override fun toString(): String {
         return "Note(id='$id', authorId='$authorId', url='$url', title='$title', content='$content', commentsCount=$commentsCount, votesScore=$votesScore)"

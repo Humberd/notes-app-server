@@ -18,6 +18,7 @@ import kotlin.contracts.ExperimentalContracts
 class NoteCommandHandler(
     private val noteRepository: NoteRepository
 ) {
+
     fun create(command: NoteCreateCommand): Note {
         val entity = noteRepository.saveFlushRefresh(
             Note(

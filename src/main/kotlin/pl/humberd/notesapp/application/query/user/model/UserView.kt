@@ -1,9 +1,12 @@
 package pl.humberd.notesapp.application.query.user.model
 
 import pl.humberd.notesapp.domain.entity.user.model.UserId
+import java.util.*
 
-data class UserMinimalView(
+data class UserView(
     val id: UserId,
-    val name: String
+    val name: String,
+    val createdAt: Calendar,
+    val updatedAt: Calendar
 )
 

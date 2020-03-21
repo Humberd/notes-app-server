@@ -1,4 +1,4 @@
-package pl.humberd.notesapp.domain.entity.models
+package pl.humberd.notesapp.domain.common
 
 import java.util.*
 import javax.persistence.Column

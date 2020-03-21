@@ -1,12 +1,11 @@
-package pl.humberd.notesapp.domain.entity.login_password.models
+package pl.humberd.notesapp.domain.entity.user.model
 
-import pl.humberd.notesapp.domain.entity.models.EntityMetadata
-import pl.humberd.notesapp.domain.entity.user.models.UserId
+import pl.humberd.notesapp.domain.common.EntityMetadata
 import javax.persistence.*
 
 @Entity
-@Table(name = "login_password_auth")
-class LoginPasswordAuth(
+@Table(name = "user_password_credentials")
+class UserPasswordCredentials(
     @Id
     @Column(name = "user_id")
     val userId: UserId,
@@ -20,9 +19,11 @@ class LoginPasswordAuth(
 
     @Column(name = "email_lc", updatable = false, insertable = false)
     lateinit var emailLc: String
+        private set
 
     @Embedded
     lateinit var metadata: EntityMetadata
+        private set
 
     override fun toString(): String {
         return "LoginPasswordAuth(userId='$userId', email='$email', emailLc='$emailLc' passwordHash='$passwordHash')"

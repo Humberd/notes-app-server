@@ -28,7 +28,7 @@ class NoteController(
     fun create(@RequestBody @Valid body: NoteCreateRequest): ResponseEntity<NoteView> {
         val note = noteCommandHandler.create(
             NoteCreateCommand(
-                authorId = "2",
+                authorId = "user-2",
                 title = body.title,
                 url = body.url,
                 content = body.content
