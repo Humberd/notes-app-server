@@ -6,7 +6,7 @@ import javax.persistence.*
 typealias UserId = String
 
 @Entity
-@Table(name = "user")
+@Table(name = "user", schema = "public")
 class User(
     @Id
     @Column(name = "id")
