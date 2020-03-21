@@ -1,5 +1,6 @@
 package pl.humberd.notesapp.application.query.note
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.query.ListViewExtra
 import pl.humberd.notesapp.application.query.note.model.NoteListFilter
@@ -8,6 +9,7 @@ import pl.humberd.notesapp.application.query.note.model.NoteView
 import pl.humberd.notesapp.application.query.user.UserQueryHandler
 import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.domain.entities.note.model.Note
+import pl.humberd.notesapp.domain.entities.note.model.NoteId
 import pl.humberd.notesapp.domain.entities.note.repository.NoteRepository
 import pl.humberd.notesapp.domain.entities.user.models.User
 import pl.humberd.notesapp.domain.exceptions.NotFoundError
@@ -25,7 +27,15 @@ class NoteQueryHandler(
             data = mapViewList(page.content),
             extra = ListViewExtra.from(page)
         )
+    }
 
+    fun view(id: NoteId): NoteView {
+        val note = noteRepository.findByIdOrNull(id)
+        if (note === null) {
+            throw NotFoundError(Note::class, id)
+        }
+
+        return mapView(note, userQueryHandler.minimalView(note.authorId))
     }
 
     private fun mapViewList(notes: List<Note>): List<NoteView> {
