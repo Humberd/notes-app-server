@@ -1,6 +1,6 @@
 package pl.humberd.notesapp.application.command.note.model
 
-import pl.humberd.notesapp.domain.entities.user.models.UserId
+import pl.humberd.notesapp.domain.entity.user.models.UserId
 
 data class NoteCreateCommand(
     val authorId: UserId,

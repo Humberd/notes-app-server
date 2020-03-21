@@ -1,6 +1,6 @@
 package pl.humberd.notesapp.application.command.note.model
 
-import pl.humberd.notesapp.domain.entities.note.model.NoteId
+import pl.humberd.notesapp.domain.entity.note.model.NoteId
 
 data class NotePatchCommand(
     val noteId: NoteId,

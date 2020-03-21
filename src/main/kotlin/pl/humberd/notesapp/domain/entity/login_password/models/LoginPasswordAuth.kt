@@ -1,7 +1,7 @@
-package pl.humberd.notesapp.domain.entities.login_password.models
+package pl.humberd.notesapp.domain.entity.login_password.models
 
-import pl.humberd.notesapp.domain.entities.models.EntityMetadata
-import pl.humberd.notesapp.domain.entities.user.models.UserId
+import pl.humberd.notesapp.domain.entity.models.EntityMetadata
+import pl.humberd.notesapp.domain.entity.user.models.UserId
 import javax.persistence.*
 
 @Entity

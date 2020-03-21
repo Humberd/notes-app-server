@@ -8,10 +8,10 @@ import pl.humberd.notesapp.application.query.note.model.NoteListView
 import pl.humberd.notesapp.application.query.note.model.NoteView
 import pl.humberd.notesapp.application.query.user.UserQueryHandler
 import pl.humberd.notesapp.application.query.user.model.UserMinimalView
-import pl.humberd.notesapp.domain.entities.note.model.Note
-import pl.humberd.notesapp.domain.entities.note.model.NoteId
-import pl.humberd.notesapp.domain.entities.note.repository.NoteRepository
-import pl.humberd.notesapp.domain.entities.user.models.User
+import pl.humberd.notesapp.domain.entity.note.model.Note
+import pl.humberd.notesapp.domain.entity.note.model.NoteId
+import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
+import pl.humberd.notesapp.domain.entity.user.models.User
 import pl.humberd.notesapp.domain.exceptions.NotFoundError
 
 @Service

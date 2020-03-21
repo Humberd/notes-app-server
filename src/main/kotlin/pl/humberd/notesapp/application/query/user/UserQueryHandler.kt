@@ -3,9 +3,9 @@ package pl.humberd.notesapp.application.query.user
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.query.user.model.UserMinimalView
-import pl.humberd.notesapp.domain.entities.user.models.User
-import pl.humberd.notesapp.domain.entities.user.models.UserId
-import pl.humberd.notesapp.domain.entities.user.services.UserRepository
+import pl.humberd.notesapp.domain.entity.user.models.User
+import pl.humberd.notesapp.domain.entity.user.models.UserId
+import pl.humberd.notesapp.domain.entity.user.services.UserRepository
 import pl.humberd.notesapp.domain.exceptions.NotFoundError
 
 @Service

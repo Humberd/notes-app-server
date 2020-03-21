@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.note.model.NoteCreateCommand
 import pl.humberd.notesapp.application.command.note.model.NoteDeleteCommand
 import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
-import pl.humberd.notesapp.domain.entities.note.model.Note
-import pl.humberd.notesapp.domain.entities.note.repository.NoteRepository
+import pl.humberd.notesapp.domain.entity.note.model.Note
+import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
 import pl.humberd.notesapp.domain.exceptions.NotFoundError
 import javax.transaction.Transactional
 
@@ -42,6 +42,11 @@ class NoteCommandHandler(
     }
 
     fun delete(command: NoteDeleteCommand) {
+        val note = noteRepository.findByIdOrNull(command.noteId)
+        if (note === null){
+            throw NotFoundError(Note::class, command.noteId)
+        }
+
         return noteRepository.deleteById(command.noteId)
     }
 

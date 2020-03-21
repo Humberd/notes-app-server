@@ -1,6 +1,6 @@
-package pl.humberd.notesapp.domain.entities.user.models
+package pl.humberd.notesapp.domain.entity.user.models
 
-import pl.humberd.notesapp.domain.entities.models.EntityMetadata
+import pl.humberd.notesapp.domain.entity.models.EntityMetadata
 import javax.persistence.*
 
 typealias UserId = String

@@ -1,6 +1,6 @@
 package pl.humberd.notesapp.application.query.user.model
 
-import pl.humberd.notesapp.domain.entities.user.models.UserId
+import pl.humberd.notesapp.domain.entity.user.models.UserId
 
 data class UserMinimalView(
     val id: UserId,

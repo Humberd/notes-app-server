@@ -1,4 +1,4 @@
-package pl.humberd.notesapp.domain.entities.user.services
+package pl.humberd.notesapp.domain.entity.user.services
 
 import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
