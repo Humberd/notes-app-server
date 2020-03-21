@@ -70,3 +70,28 @@ BEGIN
     where id = note_id;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION trigger_increment_notes_count()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    update Tag
+    set notes_count = notes_count + 1
+    where id = NEW.tag_id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION trigger_decrement_notes_count()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    update Tag
+    set notes_count = notes_count - 1
+    where id = OLD.tag_id;
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
