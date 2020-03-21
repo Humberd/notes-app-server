@@ -8,4 +8,4 @@ import kotlin.reflect.KClass
 class NotFoundError(
     type: KClass<*>,
     id: String
-) : Error("${type.simpleName}($id) does not exist.")
+) : RuntimeException("${type.simpleName}($id) does not exist.")
