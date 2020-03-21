@@ -25,6 +25,11 @@ class UserCommandHandler(
             throw AlreadyExistsException(User::class, command.name)
         }
 
+        val emailExists = userPasswordCredentialsRepository.existsByEmailLc(command.email.toLowerCase())
+        if (emailExists) {
+            throw AlreadyExistsException(UserPasswordCredentials::class, command.email)
+        }
+
         val user = userRepository.save(
             User(
                 id = IdGenerator.random(User::class),

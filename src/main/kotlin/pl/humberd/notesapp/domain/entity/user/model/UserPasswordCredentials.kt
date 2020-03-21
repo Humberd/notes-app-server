@@ -26,7 +26,7 @@ class UserPasswordCredentials(
         private set
 
     override fun toString(): String {
-        return "LoginPasswordAuth(userId='$userId', email='$email', emailLc='$emailLc' passwordHash='$passwordHash')"
+        return "UserPasswordCredentials(userId='$userId', email='$email', emailLc='$emailLc' passwordHash='$passwordHash')"
     }
 
 }
