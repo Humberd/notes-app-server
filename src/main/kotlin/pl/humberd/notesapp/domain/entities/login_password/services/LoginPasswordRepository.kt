@@ -6,4 +6,4 @@ import pl.humberd.notesapp.domain.entities.login_password.models.LoginPasswordAu
 import pl.humberd.notesapp.domain.entities.user.models.UserId
 
 @Repository
-interface LoginPasswordRepository: JpaRepository<LoginPasswordAuth, UserId>
+interface LoginPasswordRepository : JpaRepository<LoginPasswordAuth, UserId>

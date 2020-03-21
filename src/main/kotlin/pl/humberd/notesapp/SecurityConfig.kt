@@ -44,13 +44,13 @@ class SecurityConfig(
             .and()
             .headers().frameOptions().disable()
 
-        http
-            .addFilter(JWTAuthorizationFilter(authenticationManagerBean()))
-            .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-            .and()
-            .authorizeRequests()
-            .anyRequest().authenticated()
-            .and()
+//        http
+//            .addFilter(JWTAuthorizationFilter(authenticationManagerBean()))
+//            .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//            .and()
+//            .authorizeRequests()
+//            .anyRequest().authenticated()
+//            .and()
     }
 }
 
