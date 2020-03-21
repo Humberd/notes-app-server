@@ -75,6 +75,6 @@ class NoteController(
     ): ResponseEntity<Unit> {
         noteCommandHandler.delete(NoteDeleteCommand(id))
 
-        return ResponseBuilder.notContent();
+        return ResponseBuilder.noContent();
     }
 }

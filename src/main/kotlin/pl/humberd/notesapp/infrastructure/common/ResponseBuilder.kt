@@ -16,7 +16,7 @@ object ResponseBuilder {
         return ok(body)
     }
 
-    fun notContent(): ResponseEntity<Unit> {
+    fun noContent(): ResponseEntity<Unit> {
         return ResponseEntity.noContent().build()
     }
 }
