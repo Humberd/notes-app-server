@@ -5,7 +5,7 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 @ExperimentalContracts
-inline fun <reified T> NOT_NULL(
+inline fun <reified T> ASSERT_NOT_NULL(
     entity: T?,
     id: String
 ) {

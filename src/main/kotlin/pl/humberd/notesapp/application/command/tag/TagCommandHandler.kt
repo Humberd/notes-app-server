@@ -4,7 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.tag.model.TagCreateCommand
 import pl.humberd.notesapp.application.command.tag.model.TagPatchCommand
-import pl.humberd.notesapp.application.common.NOT_NULL
+import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.AlreadyExistsException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.tag.model.Tag
@@ -36,7 +36,7 @@ class TagCommandHandler(
 
     fun patch(command: TagPatchCommand): Tag {
         val tag = tagRepository.findByIdOrNull(command.id)
-        NOT_NULL(tag, command.id)
+        ASSERT_NOT_NULL(tag, command.id)
 
         tag.also {
             it.name = command.name?: it.name

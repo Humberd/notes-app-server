@@ -3,9 +3,9 @@ package pl.humberd.notesapp.application.command.note
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.note.model.*
-import pl.humberd.notesapp.application.common.EXISTS
-import pl.humberd.notesapp.application.common.NOT_EXIST
-import pl.humberd.notesapp.application.common.NOT_NULL
+import pl.humberd.notesapp.application.common.ASSERT_EXISTS
+import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
+import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.note.model.Note
@@ -43,7 +43,7 @@ class NoteCommandHandler(
 
     fun patch(command: NotePatchCommand): Note {
         val note = noteRepository.findByIdOrNull(command.noteId)
-        NOT_NULL(note, command.noteId)
+        ASSERT_NOT_NULL(note, command.noteId)
 
         note.also {
             it.url = command.url ?: it.url
@@ -56,14 +56,14 @@ class NoteCommandHandler(
 
     fun delete(command: NoteDeleteCommand) {
         val noteExists = noteRepository.existsById(command.noteId)
-        EXISTS<Note>(noteExists, command.noteId)
+        ASSERT_EXISTS<Note>(noteExists, command.noteId)
 
         noteRepository.deleteById(command.noteId)
     }
 
     fun ensureIsAuthor(command: NoteIsAuthorCommand) {
         val note = noteRepository.findByIdOrNull(command.noteId)
-        NOT_NULL(note, command.noteId)
+        ASSERT_NOT_NULL(note, command.noteId)
         if (note.authorId != command.userId) {
             throw ForbiddenException(Note::class, command.noteId)
         }
@@ -75,13 +75,13 @@ class NoteCommandHandler(
             tagId = command.tagId
         )
         val noteTagExists = noteTagRepository.existsById(noteTagId)
-        NOT_EXIST<NoteTag>(noteTagExists, noteTagId.toString())
+        ASSERT_NOT_EXIST<NoteTag>(noteTagExists, noteTagId.toString())
 
         val noteExists = noteRepository.existsById(command.noteId)
-        EXISTS<Note>(noteExists, command.noteId)
+        ASSERT_EXISTS<Note>(noteExists, command.noteId)
 
         val tagExists = tagRepository.existsById(command.tagId)
-        EXISTS<Tag>(tagExists, command.tagId)
+        ASSERT_EXISTS<Tag>(tagExists, command.tagId)
 
 
         return noteTagRepository.save(
@@ -97,7 +97,7 @@ class NoteCommandHandler(
             tagId = command.tagId
         )
         val noteTagExists = noteTagRepository.existsById(noteTagId)
-        EXISTS<NoteTag>(noteTagExists, noteTagId.toString())
+        ASSERT_EXISTS<NoteTag>(noteTagExists, noteTagId.toString())
 
         noteTagRepository.deleteById(noteTagId)
     }

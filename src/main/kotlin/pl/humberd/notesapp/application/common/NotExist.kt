@@ -5,7 +5,7 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 @ExperimentalContracts
-inline fun <reified T> NOT_EXIST(
+inline fun <reified T> ASSERT_NOT_EXIST(
     exists: Boolean,
     id: String
 ) {

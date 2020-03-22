@@ -2,7 +2,7 @@ package pl.humberd.notesapp.application.query.note
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import pl.humberd.notesapp.application.common.NOT_NULL
+import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.query.ListViewExtra
 import pl.humberd.notesapp.application.query.note.model.NoteListFilter
 import pl.humberd.notesapp.application.query.note.model.NoteListView
@@ -32,7 +32,7 @@ class NoteQueryHandler(
 
     fun view(id: NoteId): NoteView {
         val note = noteRepository.findByIdOrNull(id)
-        NOT_NULL(note, id)
+        ASSERT_NOT_NULL(note, id)
 
         return mapView(note, userQueryHandler.minimalView(note.authorId))
     }
@@ -43,7 +43,7 @@ class NoteQueryHandler(
 
         return notes.map {
             val author = authors.get(it.authorId)
-            NOT_NULL(author, it.authorId)
+            ASSERT_NOT_NULL(author, it.authorId)
 
             return@map mapView(it, author)
         }
