@@ -7,7 +7,7 @@ import javax.persistence.*
 typealias NoteId = String
 
 @Entity
-@Table(name = "note")
+@Table(name = "note", schema = "public")
 class Note(
     @Id
     @Column(name = "id")

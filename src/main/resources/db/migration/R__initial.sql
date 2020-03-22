@@ -47,8 +47,8 @@ create table Note
     url            text        not null,
     title          text        not null,
     content        text        not null,
-    comments_count integer     not null default 0,
-    votes_score    integer     not null default 0 check ( votes_score >= 0 ),
+    comments_count integer     not null default 0 check ( comments_count >= 0 ),
+    votes_score    integer     not null default 0,
     created_at     timestamp   not null default now(),
     updated_at     timestamp   not null default now()
 );
@@ -171,7 +171,7 @@ VALUES ('user-1', 'test'),
 
 --
 insert into User_Password_Credentials(user_id, email, password_hash)
-values ('user-1', 'Admin@admin.com', 'xyz');
+values ('user-1', 'Admin@admin.com', '$2a$10$0T765q/oG9wvUDiYZ8EqGuIsA1wi4WrYWqRQ73Oj6tpeizyJdY0Pq');
 
 insert into Note(id, author_id, url, title, content)
 VALUES ('note-1', 'user-1', '123', '123', '123'),
