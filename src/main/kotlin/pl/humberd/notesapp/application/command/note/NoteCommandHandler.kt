@@ -4,8 +4,10 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.note.model.NoteCreateCommand
 import pl.humberd.notesapp.application.command.note.model.NoteDeleteCommand
+import pl.humberd.notesapp.application.command.note.model.NoteIsAuthorCommand
 import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
 import pl.humberd.notesapp.application.common.NOT_NULL
+import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
@@ -53,6 +55,13 @@ class NoteCommandHandler(
         return noteRepository.deleteById(command.noteId)
     }
 
+    fun ensureIsAuthor(command: NoteIsAuthorCommand) {
+        val note = noteRepository.findByIdOrNull(command.noteId)
+        NOT_NULL(note, command.noteId)
+        if (note.authorId != command.userId) {
+            throw ForbiddenException(Note::class, command.noteId)
+        }
+    }
 
 }
 

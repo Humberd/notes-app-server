@@ -22,7 +22,7 @@ class NoteQueryHandler(
 ) {
 
     fun listView(filter: NoteListFilter): NoteListView {
-        val page = noteRepository.findAll(filter.pageable)
+        val page = noteRepository.findAllByAuthorId(filter.authorId, filter.pageable)
 
         return NoteListView(
             data = mapViewList(page.content),
