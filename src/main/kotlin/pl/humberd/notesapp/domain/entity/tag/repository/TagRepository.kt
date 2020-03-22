@@ -8,4 +8,5 @@ import pl.humberd.notesapp.domain.entity.tag.model.TagId
 @Repository
 interface TagRepository : RefreshableJpaRepository<Tag, TagId> {
     fun existsByNameLc(nameLc: String): Boolean
+    fun findByNameLc(nameLc: String): Tag?
 }

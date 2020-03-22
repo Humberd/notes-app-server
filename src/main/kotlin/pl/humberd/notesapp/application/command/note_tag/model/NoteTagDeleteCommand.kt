@@ -1,4 +1,4 @@
-package pl.humberd.notesapp.application.command.note.model
+package pl.humberd.notesapp.application.command.note_tag.model
 
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.tag.model.TagId

@@ -2,19 +2,16 @@ package pl.humberd.notesapp.application.command.note
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import pl.humberd.notesapp.application.command.note.model.*
-import pl.humberd.notesapp.application.common.ASSERT_EXISTS
-import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
+import pl.humberd.notesapp.application.command.note.model.NoteCreateCommand
+import pl.humberd.notesapp.application.command.note.model.NoteDeleteCommand
+import pl.humberd.notesapp.application.command.note.model.NoteIsAuthorCommand
+import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
+import pl.humberd.notesapp.application.common.ASSERT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.note.model.Note
-import pl.humberd.notesapp.domain.entity.note.model.NoteTag
-import pl.humberd.notesapp.domain.entity.note.model.NoteTagId
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
-import pl.humberd.notesapp.domain.entity.note.repository.NoteTagRepository
-import pl.humberd.notesapp.domain.entity.tag.model.Tag
-import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
 import javax.transaction.Transactional
 import kotlin.contracts.ExperimentalContracts
 
@@ -22,13 +19,11 @@ import kotlin.contracts.ExperimentalContracts
 @Transactional
 @ExperimentalContracts
 class NoteCommandHandler(
-    private val noteRepository: NoteRepository,
-    private val tagRepository: TagRepository,
-    private val noteTagRepository: NoteTagRepository
+    private val noteRepository: NoteRepository
 ) {
 
     fun create(command: NoteCreateCommand): Note {
-        val entity = noteRepository.saveFlushRefresh(
+        val entity = noteRepository.save(
             Note(
                 id = IdGenerator.random(Note::class),
                 authorId = command.authorId,
@@ -39,6 +34,12 @@ class NoteCommandHandler(
         )
 
         return entity
+    }
+
+    fun createAndRefresh(command: NoteCreateCommand): Note {
+        return create(command).also {
+            noteRepository.saveFlushRefresh(it)
+        }
     }
 
     fun patch(command: NotePatchCommand): Note {
@@ -54,9 +55,15 @@ class NoteCommandHandler(
         return noteRepository.save(note)
     }
 
+    fun patchAndRefresh(command: NotePatchCommand): Note {
+        return patch(command).also {
+            noteRepository.saveFlushRefresh(it)
+        }
+    }
+
     fun delete(command: NoteDeleteCommand) {
         val noteExists = noteRepository.existsById(command.noteId)
-        ASSERT_EXISTS<Note>(noteExists, command.noteId)
+        ASSERT_EXIST<Note>(noteExists, command.noteId)
 
         noteRepository.deleteById(command.noteId)
     }
@@ -67,39 +74,6 @@ class NoteCommandHandler(
         if (note.authorId != command.userId) {
             throw ForbiddenException(Note::class, command.noteId)
         }
-    }
-
-    fun create(command: NoteTagCreateCommand): NoteTag {
-        val noteTagId = NoteTagId(
-            noteId = command.noteId,
-            tagId = command.tagId
-        )
-        val noteTagExists = noteTagRepository.existsById(noteTagId)
-        ASSERT_NOT_EXIST<NoteTag>(noteTagExists, noteTagId.toString())
-
-        val noteExists = noteRepository.existsById(command.noteId)
-        ASSERT_EXISTS<Note>(noteExists, command.noteId)
-
-        val tagExists = tagRepository.existsById(command.tagId)
-        ASSERT_EXISTS<Tag>(tagExists, command.tagId)
-
-
-        return noteTagRepository.save(
-            NoteTag(
-                id = noteTagId
-            )
-        )
-    }
-
-    fun delete(command: NoteTagDeleteCommand) {
-        val noteTagId = NoteTagId(
-            noteId = command.noteId,
-            tagId = command.tagId
-        )
-        val noteTagExists = noteTagRepository.existsById(noteTagId)
-        ASSERT_EXISTS<NoteTag>(noteTagExists, noteTagId.toString())
-
-        noteTagRepository.deleteById(noteTagId)
     }
 
 }

@@ -4,8 +4,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.tag.model.TagCreateCommand
 import pl.humberd.notesapp.application.command.tag.model.TagPatchCommand
+import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
-import pl.humberd.notesapp.application.exceptions.AlreadyExistsException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.tag.model.Tag
 import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
@@ -20,9 +20,7 @@ class TagCommandHandler(
 ) {
     fun create(command: TagCreateCommand): Tag {
         val tagExists = tagRepository.existsByNameLc(command.name.toLowerCase())
-        if (tagExists) {
-            throw AlreadyExistsException(Tag::class, command.name)
-        }
+        ASSERT_NOT_EXIST<Tag>(tagExists, command.name)
 
         return tagRepository.save(
             Tag(

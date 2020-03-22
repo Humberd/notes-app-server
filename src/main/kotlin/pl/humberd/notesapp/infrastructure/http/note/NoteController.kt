@@ -15,6 +15,7 @@ import pl.humberd.notesapp.application.query.note.model.NoteView
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.note.model.NoteCreateRequest
 import pl.humberd.notesapp.infrastructure.http.note.model.NotePatchRequest
+import pl.humberd.notesapp.infrastructure.http.note.model.NoteTagCreateRequest
 import java.security.Principal
 import javax.validation.Valid
 import kotlin.contracts.ExperimentalContracts
@@ -31,7 +32,7 @@ class NoteController(
         @RequestBody @Valid body: NoteCreateRequest,
         principal: Principal
     ): ResponseEntity<NoteView> {
-        val note = noteCommandHandler.create(
+        val note = noteCommandHandler.createAndRefresh(
             NoteCreateCommand(
                 authorId = principal.name,
                 title = body.title,
@@ -88,7 +89,7 @@ class NoteController(
             )
         )
 
-        val note = noteCommandHandler.patch(
+        val note = noteCommandHandler.patchAndRefresh(
             NotePatchCommand(
                 noteId = id,
                 url = body.url,
@@ -104,15 +105,34 @@ class NoteController(
 
     @DeleteMapping("/{id}")
     fun delete(
-        @PathVariable("id") id: String
+        @PathVariable("id") id: String,
+        principal: Principal
     ): ResponseEntity<Unit> {
+        noteCommandHandler.ensureIsAuthor(
+            NoteIsAuthorCommand(
+                noteId = id,
+                userId = principal.name
+            )
+        )
+
         noteCommandHandler.delete(NoteDeleteCommand(id))
 
-        return ResponseBuilder.noContent();
+        return ResponseBuilder.noContent()
     }
 
     @PostMapping("/{noteId}/tags")
-    fun createTag() {
+    fun createTag(
+        @PathVariable("noteId") id: String,
+        @RequestBody body: NoteTagCreateRequest,
+        principal: Principal
+    ) {
+        noteCommandHandler.ensureIsAuthor(
+            NoteIsAuthorCommand(
+                noteId = id,
+                userId = principal.name
+            )
+        )
+
 
     }
 }

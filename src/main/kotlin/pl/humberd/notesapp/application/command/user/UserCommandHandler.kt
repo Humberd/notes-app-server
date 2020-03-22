@@ -58,8 +58,8 @@ class UserCommandHandler(
             )
         )
 
-        userRepository.flush()
-        userRepository.refresh(user)
+        userRepository.saveFlushRefresh(user)
+
         return user
     }
 

@@ -1,6 +1,7 @@
-package pl.humberd.notesapp.domain.entity.note.model
+package pl.humberd.notesapp.domain.entity.note_tag.model
 
 import pl.humberd.notesapp.domain.common.EntityMetadata
+import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.tag.model.TagId
 import java.io.Serializable
 import javax.persistence.*
