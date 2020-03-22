@@ -47,6 +47,7 @@ create table Note
     url            text        not null,
     title          text        not null,
     content        text        not null,
+    search_vector  tsvector    not null,
     comments_count integer     not null default 0 check ( comments_count >= 0 ),
     votes_score    integer     not null default 0,
     created_at     timestamp   not null default now(),
@@ -58,6 +59,12 @@ create trigger set_updated_at
     on Note
     for each row
 execute procedure trigger_set_timestamp();
+
+create trigger set_search_vector
+    before insert or update
+    on Note
+    for each row
+execute procedure trigger_set_search_vector();
 
 
 -------- NoteComment
