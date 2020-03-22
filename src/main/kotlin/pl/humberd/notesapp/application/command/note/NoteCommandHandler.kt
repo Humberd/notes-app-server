@@ -2,15 +2,19 @@ package pl.humberd.notesapp.application.command.note
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import pl.humberd.notesapp.application.command.note.model.NoteCreateCommand
-import pl.humberd.notesapp.application.command.note.model.NoteDeleteCommand
-import pl.humberd.notesapp.application.command.note.model.NoteIsAuthorCommand
-import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
+import pl.humberd.notesapp.application.command.note.model.*
+import pl.humberd.notesapp.application.common.EXISTS
+import pl.humberd.notesapp.application.common.NOT_EXIST
 import pl.humberd.notesapp.application.common.NOT_NULL
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.note.model.Note
+import pl.humberd.notesapp.domain.entity.note.model.NoteTag
+import pl.humberd.notesapp.domain.entity.note.model.NoteTagId
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
+import pl.humberd.notesapp.domain.entity.note.repository.NoteTagRepository
+import pl.humberd.notesapp.domain.entity.tag.model.Tag
+import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
 import javax.transaction.Transactional
 import kotlin.contracts.ExperimentalContracts
 
@@ -18,7 +22,9 @@ import kotlin.contracts.ExperimentalContracts
 @Transactional
 @ExperimentalContracts
 class NoteCommandHandler(
-    private val noteRepository: NoteRepository
+    private val noteRepository: NoteRepository,
+    private val tagRepository: TagRepository,
+    private val noteTagRepository: NoteTagRepository
 ) {
 
     fun create(command: NoteCreateCommand): Note {
@@ -36,23 +42,23 @@ class NoteCommandHandler(
     }
 
     fun patch(command: NotePatchCommand): Note {
-        val existingNote = noteRepository.findByIdOrNull(command.noteId)
-        NOT_NULL(existingNote, command.noteId)
+        val note = noteRepository.findByIdOrNull(command.noteId)
+        NOT_NULL(note, command.noteId)
 
-        existingNote.also {
+        note.also {
             it.url = command.url ?: it.url
             it.title = command.title ?: it.title
             it.content = command.content ?: it.content
         }
 
-        return noteRepository.save(existingNote)
+        return noteRepository.save(note)
     }
 
     fun delete(command: NoteDeleteCommand) {
-        val note = noteRepository.findByIdOrNull(command.noteId)
-        NOT_NULL(note, command.noteId)
+        val noteExists = noteRepository.existsById(command.noteId)
+        EXISTS<Note>(noteExists, command.noteId)
 
-        return noteRepository.deleteById(command.noteId)
+        noteRepository.deleteById(command.noteId)
     }
 
     fun ensureIsAuthor(command: NoteIsAuthorCommand) {
@@ -61,6 +67,39 @@ class NoteCommandHandler(
         if (note.authorId != command.userId) {
             throw ForbiddenException(Note::class, command.noteId)
         }
+    }
+
+    fun create(command: NoteTagCreateCommand): NoteTag {
+        val noteTagId = NoteTagId(
+            noteId = command.noteId,
+            tagId = command.tagId
+        )
+        val noteTagExists = noteTagRepository.existsById(noteTagId)
+        NOT_EXIST<NoteTag>(noteTagExists, noteTagId.toString())
+
+        val noteExists = noteRepository.existsById(command.noteId)
+        EXISTS<Note>(noteExists, command.noteId)
+
+        val tagExists = tagRepository.existsById(command.tagId)
+        EXISTS<Tag>(tagExists, command.tagId)
+
+
+        return noteTagRepository.save(
+            NoteTag(
+                id = noteTagId
+            )
+        )
+    }
+
+    fun delete(command: NoteTagDeleteCommand) {
+        val noteTagId = NoteTagId(
+            noteId = command.noteId,
+            tagId = command.tagId
+        )
+        val noteTagExists = noteTagRepository.existsById(noteTagId)
+        EXISTS<NoteTag>(noteTagExists, noteTagId.toString())
+
+        noteTagRepository.deleteById(noteTagId)
     }
 
 }

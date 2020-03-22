@@ -110,4 +110,9 @@ class NoteController(
 
         return ResponseBuilder.noContent();
     }
+
+    @PostMapping("/{noteId}/tags")
+    fun createTag() {
+
+    }
 }

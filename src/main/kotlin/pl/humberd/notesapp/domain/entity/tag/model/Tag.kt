@@ -20,7 +20,7 @@ class Tag(
     var name: String,
 
     @Column(name = "background_color")
-    var backgroundColor: String
+    var backgroundColor: String?
 ) {
 
     @Column(name = "name_lc", updatable = false, insertable = false)
