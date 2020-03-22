@@ -4,7 +4,7 @@ import pl.humberd.notesapp.domain.common.EntityMetadata
 import javax.persistence.*
 
 @Entity
-@Table(name = "user_password_credentials")
+@Table(name = "user_password_credentials", schema = "public")
 class UserPasswordCredentials(
     @Id
     @Column(name = "user_id")

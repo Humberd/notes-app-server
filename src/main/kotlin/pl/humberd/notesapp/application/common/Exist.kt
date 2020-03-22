@@ -5,15 +5,15 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 @ExperimentalContracts
-inline fun <reified T> ASSERT_NOT_NULL(
-    entity: T?,
+inline fun <reified T> ASSERT_EXIST(
+    exists: Boolean,
     id: String
 ) {
     contract {
-        returns() implies (entity !== null)
+        returns() implies (exists)
     }
 
-    if (entity === null) {
+    if (!exists) {
         throw NotFoundException(T::class, id)
     }
 }
