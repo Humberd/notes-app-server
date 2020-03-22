@@ -13,7 +13,7 @@ inline fun <reified T> ASSERT_NOT_EXIST(
         returns() implies (!exists)
     }
 
-    if (!exists) {
+    if (exists) {
         throw AlreadyExistsException(T::class, id)
     }
 }

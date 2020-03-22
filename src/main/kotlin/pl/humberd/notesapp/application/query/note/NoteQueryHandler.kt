@@ -59,14 +59,13 @@ class NoteQueryHandler(
 
         val noteIds = notes.map { it.id }
         val tags =
-            tagRepository.PROJECT_findAllByNotes(noteIds, Pageable.unpaged()).content.groupBy({ it.noteId }, { it.tag })
+            tagRepository.PROJECT_findAllByNotes(noteIds).groupBy({ it.noteId }, { it.tagInstance })
 
         return notes.map {
             val author = authors.get(it.authorId)
             ASSERT_NOT_NULL(author, it.authorId)
 
-            val noteTags = tags.get(it.id)
-            ASSERT_NOT_NULL(noteTags, it.id)
+            val noteTags = tags.getOrElse(it.id){ emptyList()}
 
             return@map mapView(
                 note = it,
