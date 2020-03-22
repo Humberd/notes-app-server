@@ -65,7 +65,7 @@ class NoteQueryHandler(
             val author = authors.get(it.authorId)
             ASSERT_NOT_NULL(author, it.authorId)
 
-            val noteTags = tags.getOrElse(it.id){ emptyList()}
+            val noteTags = tags.getOrElse(it.id){ emptyList()}.sortedBy { it.name }
 
             return@map mapView(
                 note = it,

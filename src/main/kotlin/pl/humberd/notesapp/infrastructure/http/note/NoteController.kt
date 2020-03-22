@@ -10,6 +10,7 @@ import pl.humberd.notesapp.application.command.note.model.NoteIsAuthorCommand
 import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
 import pl.humberd.notesapp.application.command.note_tag.NoteTagCommandHandler
 import pl.humberd.notesapp.application.command.note_tag.model.NoteTagCreateCommand
+import pl.humberd.notesapp.application.command.note_tag.model.NoteTagDeleteCommand
 import pl.humberd.notesapp.application.query.note.NoteQueryHandler
 import pl.humberd.notesapp.application.query.note.model.NoteListFilter
 import pl.humberd.notesapp.application.query.note.model.NoteListView
@@ -145,5 +146,28 @@ class NoteController(
         )
 
         return ResponseBuilder.ok(noteQueryHandler.view(id))
+    }
+
+    @DeleteMapping("/{noteId}/tags/{tagId}")
+    fun deleteTag(
+        @PathVariable("noteId") noteId: String,
+        @PathVariable("tagId") tagId: String,
+        principal: Principal
+    ): ResponseEntity<Unit> {
+        noteCommandHandler.ensureIsAuthor(
+            NoteIsAuthorCommand(
+                noteId = noteId,
+                userId = principal.name
+            )
+        )
+
+        noteTagCommandHandler.delete(
+            NoteTagDeleteCommand(
+                noteId = noteId,
+                tagId = tagId
+            )
+        )
+
+        return ResponseBuilder.noContent()
     }
 }
