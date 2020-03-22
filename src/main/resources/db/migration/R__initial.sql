@@ -196,6 +196,7 @@ values ('tag-1', 'user-1', 'java'),
 insert into Note_Tag(note_id, tag_id)
 values ('note-1', 'tag-1'),
        ('note-1', 'tag-2'),
+       ('note-3', 'tag-3'),
        ('note-1', 'tag-3'),
        ('note-3', 'tag-4'),
        ('note-2', 'tag-5');

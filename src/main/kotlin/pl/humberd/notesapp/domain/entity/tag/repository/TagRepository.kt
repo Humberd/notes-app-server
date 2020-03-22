@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import pl.humberd.notesapp.domain.configuration.repository.RefreshableJpaRepository
 import pl.humberd.notesapp.domain.entity.tag.model.Tag
+import pl.humberd.notesapp.domain.entity.tag.model.TagByNote
 import pl.humberd.notesapp.domain.entity.tag.model.TagId
 import pl.humberd.notesapp.domain.entity.user.model.UserId
 import java.util.*
@@ -26,7 +27,13 @@ interface TagRepository : RefreshableJpaRepository<Tag, TagId> {
 
     @Query("select tag from Tag tag inner join NoteTag nt on tag.id = nt.id.tagId where nt.id.noteId = :noteId")
     fun findAllByNote(
-        @Param("noteId") nameLc: String,
+        @Param("noteId") noteId: String,
         pageable: Pageable
     ): Page<Tag>
+
+    @Query("select new pl.humberd.notesapp.domain.entity.tag.model.TagByNote(tag, nt.id.noteId) from Tag tag inner join NoteTag nt on tag.id = nt.id.tagId where nt.id.noteId in (:noteIds)")
+    fun PROJECT_findAllByNotes(
+        @Param("noteIds") noteIds: Collection<String>,
+        pageable: Pageable
+    ): Page<TagByNote>
 }

@@ -21,9 +21,9 @@ class TagQueryHandler(
         )
     }
 
-    private fun mapViewList(tags: List<Tag>) = tags.map(this::mapView)
+    fun mapViewList(tags: List<Tag>) = tags.map(this::mapView)
 
-    private fun mapView(tag: Tag) = TagView(
+    fun mapView(tag: Tag) = TagView(
         id = tag.id,
         name = tag.name,
         backgroundColor = tag.backgroundColor
