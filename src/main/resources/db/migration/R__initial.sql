@@ -122,11 +122,12 @@ create table Tag
     id               varchar(32) not null primary key,
     user_id          varchar(32) not null references "user" (id) on delete cascade,
     name             text        not null,
-    name_lc          text        not null unique generated always as ( lower(name) ) stored,
+    name_lc          text        not null generated always as ( lower(name) ) stored,
     background_color text        null,
     notes_count      integer     not null default 0,
     created_at       timestamp   not null default now(),
-    updated_at       timestamp   not null default now()
+    updated_at       timestamp   not null default now(),
+    unique (user_id, name_lc)
 );
 
 create trigger set_updated_at
@@ -174,8 +175,9 @@ insert into User_Password_Credentials(user_id, email, password_hash)
 values ('user-1', 'Admin@admin.com', '$2a$10$0T765q/oG9wvUDiYZ8EqGuIsA1wi4WrYWqRQ73Oj6tpeizyJdY0Pq');
 
 insert into Note(id, author_id, url, title, content)
-VALUES ('note-1', 'user-1', '123', '123', '123'),
-       ('note-2', 'user-2', '132', '23', '12');
+VALUES ('note-1', 'user-1', '123', 'USER 1 NOTE 1', '123'),
+       ('note-2', 'user-2', '132', 'USER 2 NOTE 1', '12'),
+       ('note-3', 'user-1', '123', 'USER 1 NOTE 2', '123');
 
 insert into Note_Comment(id, author_id, note_id, content)
 values ('ncomment-1', 'user-1', 'note-1', 'test'),
@@ -185,8 +187,16 @@ insert into Note_User_Vote(id, user_id, note_id, is_upvote)
 values ('nuvote-1', 'user-1', 'note-1', true);
 
 insert into Tag(id, user_id, name)
-values ('tag-1', 'user-1', 'java');
+values ('tag-1', 'user-1', 'java'),
+       ('tag-2', 'user-1', 'sql'),
+       ('tag-3', 'user-1', 'python'),
+       ('tag-4', 'user-1', 'very interesting'),
+       ('tag-5', 'user-2', 'sql');
 
 insert into Note_Tag(note_id, tag_id)
-values ('note-1', 'tag-1');
+values ('note-1', 'tag-1'),
+       ('note-1', 'tag-2'),
+       ('note-1', 'tag-3'),
+       ('note-3', 'tag-4'),
+       ('note-2', 'tag-5');
 

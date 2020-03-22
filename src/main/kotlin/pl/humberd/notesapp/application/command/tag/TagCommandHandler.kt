@@ -19,7 +19,10 @@ class TagCommandHandler(
     private val tagRepository: TagRepository
 ) {
     fun create(command: TagCreateCommand): Tag {
-        val tagExists = tagRepository.existsByNameLc(command.name.toLowerCase())
+        val tagExists = tagRepository.existsByUserIdAndNameLc(
+            userId = command.userId,
+            nameLc = command.name.toLowerCase()
+        )
         ASSERT_NOT_EXIST<Tag>(tagExists, command.name)
 
         return tagRepository.save(

@@ -12,7 +12,6 @@ import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
 import pl.humberd.notesapp.domain.entity.note_tag.model.NoteTag
 import pl.humberd.notesapp.domain.entity.note_tag.model.NoteTagId
 import pl.humberd.notesapp.domain.entity.note_tag.repository.NoteTagRepository
-import pl.humberd.notesapp.domain.entity.tag.model.Tag
 import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
 import javax.transaction.Transactional
 import kotlin.contracts.ExperimentalContracts
@@ -27,20 +26,33 @@ class NoteTagCommandHandler(
     private val tagCommandHandler: TagCommandHandler
 ) {
 
-    fun create(command: NoteTagCreateCommand.ExistingTag): NoteTag {
+    fun create(command: NoteTagCreateCommand): NoteTag {
+        val potentialTag = tagRepository.findByUserIdAndNameLc(
+            userId = command.userId,
+            nameLc = command.tagName.toLowerCase()
+        )
+        val tag =
+            if (potentialTag.isEmpty) {
+                tagCommandHandler.create(
+                    TagCreateCommand(
+                        userId = command.userId,
+                        name = command.tagName
+                    )
+                )
+            } else {
+                potentialTag.get()
+            }
+
+
         val noteTagId = NoteTagId(
             noteId = command.noteId,
-            tagId = command.tagId
+            tagId = tag.id
         )
         val noteTagExists = noteTagRepository.existsById(noteTagId)
         ASSERT_NOT_EXIST<NoteTag>(noteTagExists, noteTagId.toString())
 
         val noteExists = noteRepository.existsById(command.noteId)
         ASSERT_EXIST<Note>(noteExists, command.noteId)
-
-        val tagExists = tagRepository.existsById(command.tagId)
-        ASSERT_EXIST<Tag>(tagExists, command.tagId)
-
 
         return noteTagRepository.save(
             NoteTag(
@@ -49,33 +61,10 @@ class NoteTagCommandHandler(
         )
     }
 
-    fun create(command: NoteTagCreateCommand.NotExistingTag): NoteTag {
-        val tagExists = tagRepository.existsByNameLc(command.tagName.toLowerCase())
-        ASSERT_NOT_EXIST<Tag>(tagExists, command.tagName)
-
-        val tag = tagCommandHandler.create(
-            TagCreateCommand(
-                userId = command.userId,
-                name = command.tagName
-            )
-        )
-
-        val noteTagId = NoteTagId(
-            noteId = command.noteId,
-            tagId = tag.id
-        )
-
-        val noteExists = noteRepository.existsById(command.noteId)
-        ASSERT_EXIST<Note>(noteExists, command.noteId)
-
-
-
-
-        return noteTagRepository.save(
-            NoteTag(
-                id = noteTagId
-            )
-        )
+    fun createAndRefresh(command: NoteTagCreateCommand): NoteTag {
+        return create(command).also {
+            noteTagRepository.saveFlushRefresh(it)
+        }
     }
 
     fun delete(command: NoteTagDeleteCommand) {

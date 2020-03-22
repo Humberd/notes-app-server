@@ -8,6 +8,8 @@ import pl.humberd.notesapp.application.command.note.model.NoteCreateCommand
 import pl.humberd.notesapp.application.command.note.model.NoteDeleteCommand
 import pl.humberd.notesapp.application.command.note.model.NoteIsAuthorCommand
 import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
+import pl.humberd.notesapp.application.command.note_tag.NoteTagCommandHandler
+import pl.humberd.notesapp.application.command.note_tag.model.NoteTagCreateCommand
 import pl.humberd.notesapp.application.query.note.NoteQueryHandler
 import pl.humberd.notesapp.application.query.note.model.NoteListFilter
 import pl.humberd.notesapp.application.query.note.model.NoteListView
@@ -25,7 +27,8 @@ import kotlin.contracts.ExperimentalContracts
 @RequestMapping("/notes")
 class NoteController(
     private val noteCommandHandler: NoteCommandHandler,
-    private val noteQueryHandler: NoteQueryHandler
+    private val noteQueryHandler: NoteQueryHandler,
+    private val noteTagCommandHandler: NoteTagCommandHandler
 ) {
     @PostMapping("")
     fun create(
@@ -120,12 +123,12 @@ class NoteController(
         return ResponseBuilder.noContent()
     }
 
-    @PostMapping("/{noteId}/tags")
+    @PostMapping("/{id}/tags")
     fun createTag(
-        @PathVariable("noteId") id: String,
+        @PathVariable("id") id: String,
         @RequestBody body: NoteTagCreateRequest,
         principal: Principal
-    ) {
+    ): ResponseEntity<NoteView> {
         noteCommandHandler.ensureIsAuthor(
             NoteIsAuthorCommand(
                 noteId = id,
@@ -133,6 +136,14 @@ class NoteController(
             )
         )
 
+        noteTagCommandHandler.createAndRefresh(
+            NoteTagCreateCommand(
+                noteId = id,
+                tagName = body.tagName,
+                userId = principal.name
+            )
+        )
 
+        return ResponseBuilder.ok(noteQueryHandler.view(id))
     }
 }

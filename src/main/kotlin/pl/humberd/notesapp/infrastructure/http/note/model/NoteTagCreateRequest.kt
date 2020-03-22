@@ -1,8 +1,8 @@
 package pl.humberd.notesapp.infrastructure.http.note.model
 
-import pl.humberd.notesapp.domain.entity.tag.model.TagId
+import javax.validation.constraints.NotBlank
 
 class NoteTagCreateRequest {
-    var tagId: TagId? = null
-    var tagName: String? = null
+    @NotBlank
+    lateinit var tagName: String
 }
