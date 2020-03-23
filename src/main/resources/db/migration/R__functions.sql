@@ -95,3 +95,16 @@ BEGIN
     RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION trigger_set_search_vector()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    new.search_vector =
+        setweight(to_tsvector(new.title), 'D') ||
+        setweight(to_tsvector(new.url), 'C') ||
+        setweight(to_tsvector(new.content), 'D');
+
+    return new;
+END;
+$$ LANGUAGE plpgsql;

@@ -24,7 +24,6 @@ interface TagRepository : RefreshableJpaRepository<Tag, TagId> {
         nameLc: String
     ): Optional<Tag>
 
-
     @Query("select tag from Tag tag inner join NoteTag nt on tag.id = nt.id.tagId where nt.id.noteId = :noteId")
     fun findAllByNote(
         @Param("noteId") noteId: String,
@@ -35,4 +34,10 @@ interface TagRepository : RefreshableJpaRepository<Tag, TagId> {
     fun PROJECT_findAllByNotes(
         @Param("noteIds") noteIds: Collection<String>
     ): List<TagWithNoteIdProjection>
+
+    fun findAllByUserId(
+        userId: UserId,
+        pageable: Pageable
+    ): Page<Tag>
+
 }
