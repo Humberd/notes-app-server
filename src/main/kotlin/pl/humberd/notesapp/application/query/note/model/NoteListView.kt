@@ -1,5 +1,5 @@
 package pl.humberd.notesapp.application.query.note.model
 
-import pl.humberd.notesapp.application.query.DefaultListView
+import pl.humberd.notesapp.application.query.DefaultViewList
 
-typealias NoteListView = DefaultListView<NoteView>
+typealias NoteListView = DefaultViewList<NoteView>

@@ -44,8 +44,8 @@ class NoteQueryHandler(
         return mapView(
             note = note,
             author = userQueryHandler.minimalView(note.authorId),
-            tags = tagQueryHandler.listView(
-                TagListFilter(
+            tags = tagQueryHandler.listMinimalView(
+                TagListFilter.ByNote(
                     noteId = id,
                     pageable = Pageable.unpaged()
                 )
