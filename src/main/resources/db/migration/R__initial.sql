@@ -54,6 +54,8 @@ create table Note
     updated_at     timestamp   not null default now()
 );
 
+create index search_vector_index on Note using gist(search_vector);
+
 create trigger set_updated_at
     before update
     on Note
