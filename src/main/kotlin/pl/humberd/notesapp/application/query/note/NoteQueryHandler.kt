@@ -10,7 +10,7 @@ import pl.humberd.notesapp.application.query.note.model.NoteListView
 import pl.humberd.notesapp.application.query.note.model.NoteView
 import pl.humberd.notesapp.application.query.tag.TagQueryHandler
 import pl.humberd.notesapp.application.query.tag.model.TagListFilter
-import pl.humberd.notesapp.application.query.tag.model.TagView
+import pl.humberd.notesapp.application.query.tag.model.TagMinimalView
 import pl.humberd.notesapp.application.query.user.UserQueryHandler
 import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.domain.entity.note.model.Note
@@ -70,7 +70,7 @@ class NoteQueryHandler(
             return@map mapView(
                 note = it,
                 author = author,
-                tags = tagQueryHandler.mapViewList(noteTags)
+                tags = tagQueryHandler.mapMinimalViewList(noteTags)
             )
         }
     }
@@ -78,7 +78,7 @@ class NoteQueryHandler(
     private fun mapView(
         note: Note,
         author: UserMinimalView,
-        tags: List<TagView>
+        tags: List<TagMinimalView>
     ) = NoteView(
         id = note.id,
         author = author,

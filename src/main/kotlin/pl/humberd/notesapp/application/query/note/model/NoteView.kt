@@ -1,6 +1,6 @@
 package pl.humberd.notesapp.application.query.note.model
 
-import pl.humberd.notesapp.application.query.tag.model.TagView
+import pl.humberd.notesapp.application.query.tag.model.TagMinimalView
 import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import java.util.*
@@ -11,7 +11,7 @@ data class NoteView(
     val url: String,
     val title: String,
     val content: String,
-    val tags: List<TagView>,
+    val tags: List<TagMinimalView>,
     val createAt: Calendar,
     val updatedAt: Calendar
 )
