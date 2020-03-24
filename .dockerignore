@@ -1,0 +1,7 @@
+.gitignore
+.gradle
+gradle
+.idea
+build
+Dockerfile
+postgresql.docker-compose.yml
