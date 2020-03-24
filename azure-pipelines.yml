@@ -18,7 +18,7 @@ steps:
       containerRegistry: 'DockerHub - Humberd'
 
   - task: Docker@2
-    displayName: Build amd64
+    displayName: Build linux/amd64
     inputs:
       containerRegistry: 'DockerHub - Humberd'
       repository: 'humberd/notes-app-server'
@@ -36,3 +36,26 @@ steps:
       Dockerfile: 'docker/armv7.Dockerfile'
       tags: armv7-$(Build.BuildId)
       buildContext:
+
+  - task: Docker@2
+      displayName: Push linux/amd64
+      inputs:
+        containerRegistry: 'DockerHub - Humberd'
+        repository: 'humberd/notes-app-server'
+        command: 'push'
+        tags: amd64-$(Build.BuildId)
+
+  - task: Docker@2
+      displayName: Push linux/arm/v7
+      inputs:
+        containerRegistry: 'DockerHub - Humberd'
+        repository: 'humberd/notes-app-server'
+        command: 'push'
+        tags: armv7-$(Build.BuildId)
+
+  - task: Docker@2
+    displayName: Logout
+    condition: always()
+    inputs:
+      command: logout
+      containerRegistry: 'DockerHub - Humberd'
