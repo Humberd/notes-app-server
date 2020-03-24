@@ -16,5 +16,5 @@ steps:
     containerRegistry: 'DockerHub - Humberd'
     repository: 'notes-app-server'
     command: 'buildAndPush'
-    Dockerfile: '**/docker/amd64.Dockerfile'
-    tags: '$(Build.BuildId)'
+    Dockerfile: 'docker/amd64.Dockerfile'
+    buildContext: 
