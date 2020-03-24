@@ -38,20 +38,20 @@ steps:
       buildContext:
 
   - task: Docker@2
-      displayName: Push linux/amd64
-      inputs:
-        containerRegistry: 'DockerHub - Humberd'
-        repository: 'humberd/notes-app-server'
-        command: 'push'
-        tags: amd64-$(Build.BuildId)
+    displayName: Push linux/amd64
+    inputs:
+      containerRegistry: 'DockerHub - Humberd'
+      repository: 'humberd/notes-app-server'
+      command: 'push'
+      tags: amd64-$(Build.BuildId)
 
   - task: Docker@2
-      displayName: Push linux/arm/v7
-      inputs:
-        containerRegistry: 'DockerHub - Humberd'
-        repository: 'humberd/notes-app-server'
-        command: 'push'
-        tags: armv7-$(Build.BuildId)
+    displayName: Push linux/arm/v7
+    inputs:
+      containerRegistry: 'DockerHub - Humberd'
+      repository: 'humberd/notes-app-server'
+      command: 'push'
+      tags: armv7-$(Build.BuildId)
 
   - task: Docker@2
     displayName: Logout
