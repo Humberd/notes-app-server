@@ -1,6 +1,6 @@
 FROM gradle:6.2.2-jdk11 AS builder
 WORKDIR /usr/project
-COPY .. .
+COPY . .
 RUN gradle build -x test
 
 FROM adoptopenjdk/openjdk11:jdk-11.0.3.7-alpine-slim
