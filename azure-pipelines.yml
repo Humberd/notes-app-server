@@ -12,10 +12,16 @@ pool:
 
 steps:
   - task: Docker@2
+    displayName: Login
+    inputs:
+      command: login
+      containerRegistry: 'DockerHub - Humberd'
+
+  - task: Docker@2
     displayName: Build amd64
     inputs:
       containerRegistry: 'DockerHub - Humberd'
-      repository: 'notes-app-server'
+      repository: 'humberd/notes-app-server'
       command: 'build'
       Dockerfile: 'docker/amd64.Dockerfile'
       tags: amd64-$(Build.BuildId)
@@ -25,7 +31,7 @@ steps:
     displayName: Build linux/arm/v7
     inputs:
       containerRegistry: 'DockerHub - Humberd'
-      repository: 'notes-app-server'
+      repository: 'humberd/notes-app-server'
       command: 'build'
       Dockerfile: 'docker/armv7.Dockerfile'
       tags: armv7-$(Build.BuildId)
