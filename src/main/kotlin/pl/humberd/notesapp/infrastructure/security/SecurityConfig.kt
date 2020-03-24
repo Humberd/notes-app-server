@@ -28,6 +28,7 @@ class SecurityConfig(
             .authorizeRequests()
             .antMatchers("/h2-console/**").permitAll()
             .antMatchers("/auth/password-credentials/register", "/auth/password-credentials/login").permitAll()
+            .antMatchers("/healthcheck").permitAll()
             .anyRequest().authenticated()
             .and()
             .headers().frameOptions().disable()
