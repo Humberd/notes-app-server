@@ -27,6 +27,6 @@ steps:
       containerRegistry: 'DockerHub - Humberd'
       repository: 'notes-app-server'
       command: 'build'
-      Dockerfile: 'docker/arm.Dockerfile'
+      Dockerfile: 'docker/armv7.Dockerfile'
       tags: armv7-$(Build.BuildId)
       buildContext:
