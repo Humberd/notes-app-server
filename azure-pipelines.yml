@@ -5,23 +5,28 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 trigger:
-- master
+  - master
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: Gradle@2
-  inputs:
-    gradleWrapperFile: 'gradlew'
-    tasks: 'build -x test'
-    publishJUnitResults: false
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
+  - task: Docker@2
+    displayName: Build amd64
+    inputs:
+      containerRegistry: 'DockerHub - Humberd'
+      repository: 'notes-app-server'
+      command: 'build'
+      Dockerfile: 'docker/amd64.Dockerfile'
+      tags: amd64-$(Build.BuildId)
+      buildContext:
 
-- task: CopyPublishBuildArtifacts@1
-  inputs:
-    CopyRoot: '$(Agent.BuildDirectory)/build/libs'
-    Contents: '*.jar'
-    ArtifactName: 'app.jar'
-    ArtifactType: 'FilePath'
+  - task: Docker@2
+    displayName: Build linux/arm/v7
+    inputs:
+      containerRegistry: 'DockerHub - Humberd'
+      repository: 'notes-app-server'
+      command: 'build'
+      Dockerfile: 'docker/arm.Dockerfile'
+      tags: armv7-$(Build.BuildId)
+      buildContext:
