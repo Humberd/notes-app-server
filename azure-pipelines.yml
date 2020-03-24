@@ -11,10 +11,17 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: Docker@2
+- task: Gradle@2
   inputs:
-    containerRegistry: 'DockerHub - Humberd'
-    repository: 'notes-app-server'
-    command: 'buildAndPush'
-    Dockerfile: 'docker/amd64.Dockerfile'
-    buildContext: 
+    gradleWrapperFile: 'gradlew'
+    tasks: 'build -x test'
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+
+- task: CopyPublishBuildArtifacts@1
+  inputs:
+    CopyRoot: '$(Agent.BuildDirectory)/build/libs'
+    Contents: '*.jar'
+    ArtifactName: 'app.jar'
+    ArtifactType: 'FilePath'
