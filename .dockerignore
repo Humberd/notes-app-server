@@ -1,0 +1,7 @@
+.gitignore
+.gradle
+gradle
+.idea
+build
+docker/amd64.Dockerfile
+postgresql.docker-compose.yml
