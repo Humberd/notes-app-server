@@ -7,6 +7,12 @@
 trigger:
   - master
 
+variables:
+  image-name: humberd/notes-app-server
+  amd64-tag: amd64-$(Build.BuildId)
+  armv7-tag: amd64-$(Build.BuildId)
+  manifest-tag: $(build.BuildId)
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -20,38 +26,49 @@ steps:
   - task: Docker@2
     displayName: Build linux/amd64
     inputs:
-      containerRegistry: 'DockerHub - Humberd'
-      repository: 'humberd/notes-app-server'
+      repository: $(image-name)
       command: 'build'
       Dockerfile: 'docker/amd64.Dockerfile'
-      tags: amd64-$(Build.BuildId)
       buildContext:
+      tags: $(amd64-tag)
+      addPipelineData: false
 
   - task: Docker@2
     displayName: Build linux/arm/v7
     inputs:
-      containerRegistry: 'DockerHub - Humberd'
-      repository: 'humberd/notes-app-server'
+      repository: $(image-name)
       command: 'build'
       Dockerfile: 'docker/armv7.Dockerfile'
-      tags: armv7-$(Build.BuildId)
       buildContext:
+      tags: $(armv7-tag)
+      addPipelineData: false
 
   - task: Docker@2
-    displayName: Push linux/amd64
+    displayName: Push images
     inputs:
       containerRegistry: 'DockerHub - Humberd'
-      repository: 'humberd/notes-app-server'
+      repository: $(image-name)
       command: 'push'
-      tags: amd64-$(Build.BuildId)
+      tags: |
+        $(amd64-tag)
+        $(armv7-tag)
 
-  - task: Docker@2
-    displayName: Push linux/arm/v7
+  - task: Bash@3
+    displayName: Build and Push Manifest
     inputs:
-      containerRegistry: 'DockerHub - Humberd'
-      repository: 'humberd/notes-app-server'
-      command: 'push'
-      tags: armv7-$(Build.BuildId)
+      targetType: 'inline'
+      script: |
+        # Write your commands here
+        docker manifest create $(image-name):latest /
+                $(image-name):$(amd64-tag) /
+                $(image-name):$(armv7-tag)
+
+        docker manifest create $(image-name):$(manifest-tag) /
+                $(image-name):$(amd64-tag) /
+                $(image-name):$(armv7-tag)
+
+        docker manifest push $(image-name):latest
+        docker manifest push $(image-name):$(manifest-tag)
 
   - task: Docker@2
     displayName: Logout
