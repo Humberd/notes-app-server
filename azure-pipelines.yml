@@ -11,7 +11,7 @@ variables:
   DOCKER_CLI_EXPERIMENTAL: enabled
   image-name: humberd/notes-app-server
   amd64-tag: amd64-$(Build.BuildId)
-  armv7-tag: amd64-$(Build.BuildId)
+  armv7-tag: armv7-$(Build.BuildId)
   manifest-tag: $(build.BuildId)
 
 pool:
