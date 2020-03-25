@@ -37,11 +37,10 @@ steps:
   - task: Docker@2
     displayName: Build linux/arm/v7
     inputs:
-      repository: $(image-name)
+      repository: '$(image-name)'
       command: 'build'
       Dockerfile: 'docker/armv7.Dockerfile'
-      buildContext:
-      tags: $(armv7-tag)
+      tags: '$(armv7-tag)'
       addPipelineData: false
 
   - task: Docker@2
@@ -53,7 +52,7 @@ steps:
       tags: $(amd64-tag)
 
   - task: Docker@2
-    displayName: Push linud/arm/v7
+    displayName: Push linux/arm/v7
     inputs:
       containerRegistry: 'DockerHub - Humberd'
       repository: $(image-name)
@@ -66,13 +65,9 @@ steps:
       targetType: 'inline'
       script: |
         # Write your commands here
-        docker manifest create $(image-name):latest /
-                $(image-name):$(amd64-tag) /
-                $(image-name):$(armv7-tag)
+        docker manifest create $(image-name):latest $(image-name):$(amd64-tag) $(image-name):$(armv7-tag)
 
-        docker manifest create $(image-name):$(manifest-tag) /
-                $(image-name):$(amd64-tag) /
-                $(image-name):$(armv7-tag)
+        docker manifest create $(image-name):$(manifest-tag) $(image-name):$(amd64-tag) $(image-name):$(armv7-tag)
 
         docker manifest push $(image-name):latest
         docker manifest push $(image-name):$(manifest-tag)
