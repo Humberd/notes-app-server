@@ -8,6 +8,7 @@ trigger:
   - master
 
 variables:
+  DOCKER_CLI_EXPERIMENTAL: enabled
   image-name: humberd/notes-app-server
   amd64-tag: amd64-$(Build.BuildId)
   armv7-tag: amd64-$(Build.BuildId)
@@ -44,14 +45,20 @@ steps:
       addPipelineData: false
 
   - task: Docker@2
-    displayName: Push images
+    displayName: Push linux/amd64
     inputs:
       containerRegistry: 'DockerHub - Humberd'
       repository: $(image-name)
       command: 'push'
-      tags: |
-        $(amd64-tag)
-        $(armv7-tag)
+      tags: $(amd64-tag)
+
+  - task: Docker@2
+    displayName: Push linud/arm/v7
+    inputs:
+      containerRegistry: 'DockerHub - Humberd'
+      repository: $(image-name)
+      command: 'push'
+      tags: $(armv7-tag)
 
   - task: Bash@3
     displayName: Build and Push Manifest
