@@ -3,5 +3,5 @@
 gradle
 .idea
 build
-docker/amd64.Dockerfile
+docker
 postgresql.docker-compose.yml
