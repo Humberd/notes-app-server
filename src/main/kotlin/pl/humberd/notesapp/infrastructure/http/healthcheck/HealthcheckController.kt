@@ -11,7 +11,7 @@ import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 class HealthcheckController {
 
     @GetMapping
-    fun ping(): ResponseEntity<String> {
-        return ResponseBuilder.ok("pong")
+    fun healthcheck(): ResponseEntity<String> {
+        return ResponseBuilder.ok("ok")
     }
 }
