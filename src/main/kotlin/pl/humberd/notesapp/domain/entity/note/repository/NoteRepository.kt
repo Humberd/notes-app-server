@@ -22,7 +22,7 @@ interface NoteRepository : RefreshableJpaRepository<Note, NoteId> {
     @Suppress("JpaQlInspection")
     @Language("PostgreSQL")
     @Query(
-        value = "select * from Note note where note.author_id = :authorId and note.search_vector @@ plainto_tsquery(:webSearchQuery)",
+        value = "select * from Note note where note.author_id = :authorId and note.search_vector @@ plainto_tsquery('english', :webSearchQuery)",
         countQuery = "select count(*) from Note",
         nativeQuery = true
     )
