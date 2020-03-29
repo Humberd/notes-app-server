@@ -68,16 +68,26 @@ class NoteController(
     @GetMapping("")
     fun readList(
         pageable: Pageable,
-        principal: Principal
+        principal: Principal,
+        @RequestParam("query") query: String?
     ): ResponseEntity<NoteListView> {
-        return ResponseBuilder.ok(
-            noteQueryHandler.listView(
-                NoteListFilter(
-                    pageable = pageable,
-                    authorId = principal.name
-                )
+        val listQuery: NoteListFilter = if (query === null || query.isBlank()) {
+            NoteListFilter.Regular(
+                pageable = pageable,
+                authorId = principal.name
             )
-        )
+        } else {
+            NoteListFilter.ByQuery(
+                pageable = pageable,
+                authorId = principal.name,
+                query = query
+            )
+        }
+
+        println(query)
+        println(listQuery)
+
+        return ResponseBuilder.ok(noteQueryHandler.listView(listQuery))
     }
 
     @PatchMapping("/{id}")

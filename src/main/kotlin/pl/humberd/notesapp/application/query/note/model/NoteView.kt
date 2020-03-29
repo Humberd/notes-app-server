@@ -8,9 +8,9 @@ import java.util.*
 data class NoteView(
     val id: NoteId,
     val author: UserMinimalView,
-    val url: String,
+    val url: String?,
     val title: String,
-    val content: String,
+    val content: String?,
     val tags: List<TagMinimalView>,
     val createAt: Calendar,
     val updatedAt: Calendar

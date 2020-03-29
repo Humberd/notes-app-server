@@ -17,13 +17,13 @@ class Note(
     val authorId: UserId,
 
     @Column(name = "url")
-    var url: String,
+    var url: String?,
 
     @Column(name = "title")
     var title: String,
 
     @Column(name = "content")
-    var content: String
+    var content: String?
 ) {
     @Column(name = "comments_count", updatable = false, insertable = false)
     var commentsCount: Int = 0
