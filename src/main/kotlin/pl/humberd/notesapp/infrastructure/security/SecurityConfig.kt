@@ -27,9 +27,10 @@ class SecurityConfig(
 
         http
             .authorizeRequests()
-            .antMatchers("/h2-console/**").permitAll()
             .antMatchers("/auth/password-credentials/register", "/auth/password-credentials/login").permitAll()
             .antMatchers("/healthcheck").permitAll()
+            .antMatchers("/actuator/**").permitAll()
+            .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**").permitAll()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .anyRequest().authenticated()
             .and()
