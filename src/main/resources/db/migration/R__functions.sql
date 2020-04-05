@@ -100,9 +100,9 @@ CREATE OR REPLACE FUNCTION trigger_set_search_vector()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    new.search_vector = setweight(to_tsvector('english', new.title), 'D') ||
-                        setweight(to_tsvector('english', coalesce(new.url, '')), 'C') ||
-                        setweight(to_tsvector('english', coalesce(new.content, '')), 'B');
+    new.search_vector = setweight(to_tsvector('simple', new.title), 'D') ||
+                        setweight(to_tsvector('simple', coalesce(new.url, '')), 'C') ||
+                        setweight(to_tsvector('simple', coalesce(new.content, '')), 'B');
 
     return new;
 END;

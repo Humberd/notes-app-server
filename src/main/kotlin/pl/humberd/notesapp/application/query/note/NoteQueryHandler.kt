@@ -31,7 +31,7 @@ class NoteQueryHandler(
     fun listView(filter: NoteListFilter): NoteListView {
         val page = when (filter) {
             is NoteListFilter.Regular -> noteRepository.findAllByAuthorId(filter.authorId, filter.pageable)
-            is NoteListFilter.ByQuery -> noteRepository.findAllByWebSearchQuery(filter.authorId, filter.query, filter.pageable)
+            is NoteListFilter.ByQuery -> noteRepository.findAllByWebSearchQuery(filter.authorId, filter.query.toLowerCase(), filter.pageable)
         }
 
 

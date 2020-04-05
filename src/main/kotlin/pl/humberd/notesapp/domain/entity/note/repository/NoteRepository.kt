@@ -22,13 +22,26 @@ interface NoteRepository : RefreshableJpaRepository<Note, NoteId> {
     @Suppress("JpaQlInspection")
     @Language("PostgreSQL")
     @Query(
-        value = "select * from Note note where note.author_id = :authorId and note.search_vector @@ plainto_tsquery('english', :webSearchQuery)",
+        value = """
+        select distinct on(note)*
+        from Note note
+             left join note_tag nt on note.id = nt.note_id
+             join tag t on nt.tag_id = t.id
+where note.author_id = :authorId
+  and (
+        t.name_lc like '%' || :webSearchQueryLc || '%'
+        or note.url ilike '%' || :webSearchQueryLc || '%'
+        or note.title ilike '%' || :webSearchQueryLc || '%'
+        or note.content ilike '%' || :webSearchQueryLc || '%'
+    )
+            """,
         countQuery = "select count(*) from Note",
         nativeQuery = true
+
     )
     fun findAllByWebSearchQuery(
         @Param("authorId") authorId: String,
-        @Param("webSearchQuery") webSearchQuery: String,
+        @Param("webSearchQueryLc") webSearchQueryLc: String,
         pageable: Pageable
     ): Page<Note>
 }
