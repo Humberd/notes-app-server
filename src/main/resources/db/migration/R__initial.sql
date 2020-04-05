@@ -185,11 +185,16 @@ values ('user-1', 'Admin@admin.com', '$2a$10$0T765q/oG9wvUDiYZ8EqGuIsA1wi4WrYWqR
 
 insert into Note(id, author_id, url, title, content)
 VALUES ('note-1', 'user-1', null, 'k3s config export', '```kubectl config view --raw >~/.kube/config```'),
-       ('note-2', 'user-1', 'https://github.com/rancher/k3s/issues/703', 'k3s dns not resolving when docker is installed', '```
+       ('note-2', 'user-1', 'https://github.com/rancher/k3s/issues/703',
+        'k3s dns not resolving when docker is installed', '```
 sudo iptables -F
 sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
 sudo reboot
-```');
+```'),
+       ('note-3', 'user-1', 'https://stackoverflow.com/a/54647323/4256929',
+        'inject() must be called from an injection context', 'seems like an issue when using npm link when consuming the library.
+Check out the following issue: https://github.com/angular/angular/issues/25813
+Spoiler: use "projects.$name.architect.build.options.preserveSymlinks: true" in angular.json');
 
 insert into Note_Comment(id, author_id, note_id, content)
 values ('ncomment-1', 'user-1', 'note-1', 'test'),
@@ -198,16 +203,22 @@ values ('ncomment-1', 'user-1', 'note-1', 'test'),
 insert into Note_User_Vote(id, user_id, note_id, is_upvote)
 values ('nuvote-1', 'user-1', 'note-1', true);
 
-insert into Tag(id, user_id, name)
-values ('tag-1', 'user-1', 'kubernetes'),
-       ('tag-2', 'user-1', 'k3s'),
-       ('tag-3', 'user-1', 'docker');
+insert into Tag(id, user_id, name, background_color)
+values ('tag-1', 'user-1', 'kubernetes', '#ff00ff'),
+       ('tag-2', 'user-1', 'k3s', '#45de78'),
+       ('tag-3', 'user-1', 'docker', '#9ff37d'),
+       ('tag-bug', 'user-1', 'bug', '#ff0000'),
+       ('tag-angular', 'user-1', 'angular', null),
+       ('tag-build', 'user-1', 'build', null);
 
 insert into Note_Tag(note_id, tag_id)
 values ('note-1', 'tag-1'),
        ('note-1', 'tag-2'),
        ('note-2', 'tag-1'),
        ('note-2', 'tag-2'),
-       ('note-2', 'tag-3');
+       ('note-2', 'tag-3'),
+       ('note-3', 'tag-bug'),
+       ('note-3', 'tag-angular'),
+       ('note-3', 'tag-build');
 
 
