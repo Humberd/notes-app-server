@@ -198,10 +198,10 @@ values ('ncomment-1', 'user-1', 'note-1', 'test'),
 insert into Note_User_Vote(id, user_id, note_id, is_upvote)
 values ('nuvote-1', 'user-1', 'note-1', true);
 
-insert into Tag(id, user_id, name)
-values ('tag-1', 'user-1', 'kubernetes'),
-       ('tag-2', 'user-1', 'k3s'),
-       ('tag-3', 'user-1', 'docker');
+insert into Tag(id, user_id, name, background_color)
+values ('tag-1', 'user-1', 'kubernetes', '#ff00ff'),
+       ('tag-2', 'user-1', 'k3s', '#45de78'),
+       ('tag-3', 'user-1', 'docker', '#9ff37d');
 
 insert into Note_Tag(note_id, tag_id)
 values ('note-1', 'tag-1'),

@@ -12,6 +12,6 @@ data class NoteView(
     val title: String,
     val content: String?,
     val tags: List<TagMinimalView>,
-    val createAt: Calendar,
+    val createdAt: Calendar,
     val updatedAt: Calendar
 )

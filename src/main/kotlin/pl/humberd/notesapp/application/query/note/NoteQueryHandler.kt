@@ -90,7 +90,7 @@ class NoteQueryHandler(
         title = note.title,
         content = note.content,
         tags = tags,
-        createAt = note.metadata.createdAt,
+        createdAt = note.metadata.createdAt,
         updatedAt = note.metadata.updatedAt
     )
 }
