@@ -45,6 +45,7 @@ create table Note
     id             varchar(32) not null primary key,
     author_id      varchar(32) null references "user" (id) on delete set null,
     url            text,
+    url_lc         text generated always as ( lower(url) ) stored,
     title          text        not null,
     content        text,
     search_vector  tsvector    not null,
@@ -55,6 +56,7 @@ create table Note
 );
 
 create index search_vector_index on Note using gist (search_vector);
+create index url_lc_index on Note(url_lc);
 
 create trigger set_updated_at
     before update

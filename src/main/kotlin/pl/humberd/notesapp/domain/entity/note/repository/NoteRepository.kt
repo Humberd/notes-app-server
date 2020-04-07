@@ -19,6 +19,8 @@ interface NoteRepository : RefreshableJpaRepository<Note, NoteId> {
     ): Page<Note>
 
 
+    fun findAllByAuthorIdAndUrlLc(authorId: String, urlLc: String, pageable: Pageable): Page<Note>
+
     @Suppress("JpaQlInspection")
     @Language("PostgreSQL")
     @Query(

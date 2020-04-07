@@ -30,8 +30,17 @@ class NoteQueryHandler(
 
     fun listView(filter: NoteListFilter): NoteListView {
         val page = when (filter) {
-            is NoteListFilter.Regular -> noteRepository.findAllByAuthorId(filter.authorId, filter.pageable)
-            is NoteListFilter.ByQuery -> noteRepository.findAllByWebSearchQuery(filter.authorId, filter.query.toLowerCase(), filter.pageable)
+            is NoteListFilter.ByAuthor -> noteRepository.findAllByAuthorId(filter.authorId, filter.pageable)
+            is NoteListFilter.ByQuery -> noteRepository.findAllByWebSearchQuery(
+                filter.authorId,
+                filter.query.toLowerCase(),
+                filter.pageable
+            )
+            is NoteListFilter.ByUrl -> noteRepository.findAllByAuthorIdAndUrlLc(
+                filter.authorId,
+                filter.url.toLowerCase(),
+                filter.pageable
+            )
         }
 
 
@@ -69,7 +78,7 @@ class NoteQueryHandler(
             val author = authors.get(it.authorId)
             ASSERT_NOT_NULL(author, it.authorId)
 
-            val noteTags = tags.getOrElse(it.id){ emptyList()}.sortedBy { it.name }
+            val noteTags = tags.getOrElse(it.id) { emptyList() }.sortedBy { it.name }
 
             return@map mapView(
                 note = it,

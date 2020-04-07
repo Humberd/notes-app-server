@@ -25,6 +25,11 @@ class Note(
     @Column(name = "content")
     var content: String?
 ) {
+
+    @Column(name = "url_lc", updatable = false, insertable = false)
+    lateinit var urlLc: String
+        private set
+
     @Column(name = "comments_count", updatable = false, insertable = false)
     var commentsCount: Int = 0
         private set

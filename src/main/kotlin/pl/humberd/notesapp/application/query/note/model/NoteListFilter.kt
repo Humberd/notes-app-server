@@ -4,17 +4,22 @@ import org.springframework.data.domain.Pageable
 import pl.humberd.notesapp.domain.entity.user.model.UserId
 
 sealed class NoteListFilter(
-    val pageable: Pageable,
-    val authorId: UserId
+    val pageable: Pageable
 ) {
-    class Regular(
+    class ByAuthor(
         pageable: Pageable,
-        authorId: UserId
-    ) : NoteListFilter(pageable, authorId)
+        val authorId: UserId
+    ) : NoteListFilter(pageable)
+
+    class ByUrl(
+        pageable: Pageable,
+        val authorId: UserId,
+        val url: String
+    ) : NoteListFilter(pageable)
 
     class ByQuery(
         pageable: Pageable,
-        authorId: UserId,
+        val authorId: UserId,
         val query: String
-    ) : NoteListFilter(pageable, authorId)
+    ) : NoteListFilter(pageable)
 }
