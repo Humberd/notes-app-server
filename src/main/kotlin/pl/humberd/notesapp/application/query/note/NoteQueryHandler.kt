@@ -17,7 +17,6 @@ import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
-import pl.humberd.notesapp.domain.entity.note_tag.repository.NoteTagRepository
 import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
 import kotlin.contracts.ExperimentalContracts
 
@@ -27,8 +26,7 @@ class NoteQueryHandler(
     private val noteRepository: NoteRepository,
     private val userQueryHandler: UserQueryHandler,
     private val tagQueryHandler: TagQueryHandler,
-    private val tagRepository: TagRepository,
-    private val noteTagRepository: NoteTagRepository
+    private val tagRepository: TagRepository
 ) {
 
     fun listView(filter: NoteListFilter): NoteListView {
