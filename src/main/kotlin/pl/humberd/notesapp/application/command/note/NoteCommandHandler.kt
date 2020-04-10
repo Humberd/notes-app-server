@@ -6,6 +6,8 @@ import pl.humberd.notesapp.application.command.note.model.NoteCreateCommand
 import pl.humberd.notesapp.application.command.note.model.NoteDeleteCommand
 import pl.humberd.notesapp.application.command.note.model.NoteIsAuthorCommand
 import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
+import pl.humberd.notesapp.application.command.note_tag.NoteTagCommandHandler
+import pl.humberd.notesapp.application.command.note_tag.model.NoteTagCreateCommand
 import pl.humberd.notesapp.application.common.ASSERT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
@@ -19,7 +21,8 @@ import kotlin.contracts.ExperimentalContracts
 @Transactional
 @ExperimentalContracts
 class NoteCommandHandler(
-    private val noteRepository: NoteRepository
+    private val noteRepository: NoteRepository,
+    private val noteTagCommandHandler: NoteTagCommandHandler
 ) {
 
     fun create(command: NoteCreateCommand): Note {
@@ -32,6 +35,14 @@ class NoteCommandHandler(
                 content = command.content
             )
         )
+
+        command.tags.forEach { tag ->
+            noteTagCommandHandler.create(NoteTagCreateCommand(
+                noteId = entity.id,
+                tagName = tag.name,
+                userId = command.authorId
+            ))
+        }
 
         return entity
     }

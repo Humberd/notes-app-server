@@ -38,7 +38,8 @@ class NoteController(
                 authorId = principal.name,
                 title = body.title,
                 url = body.url,
-                content = body.content
+                content = body.content,
+                tags = body.tags?: emptyList()
             )
         )
 
