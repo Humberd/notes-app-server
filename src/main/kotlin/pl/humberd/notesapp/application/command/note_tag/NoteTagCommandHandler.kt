@@ -14,6 +14,7 @@ import pl.humberd.notesapp.domain.entity.note_tag.model.NoteTagId
 import pl.humberd.notesapp.domain.entity.note_tag.repository.NoteTagRepository
 import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
 import javax.transaction.Transactional
+import javax.validation.ValidationException
 import kotlin.contracts.ExperimentalContracts
 
 @Service
@@ -27,6 +28,10 @@ class NoteTagCommandHandler(
 ) {
 
     fun create(command: NoteTagCreateCommand): NoteTag {
+        if (command.tagName.isBlank()) {
+            throw ValidationException("TagName cannot be blank")
+        }
+
         val potentialTag = tagRepository.findByUserIdAndNameLc(
             userId = command.userId,
             nameLc = command.tagName.toLowerCase()
