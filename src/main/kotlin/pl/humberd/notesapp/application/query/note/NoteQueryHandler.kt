@@ -17,6 +17,7 @@ import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
+import pl.humberd.notesapp.domain.entity.note_tag.repository.NoteTagRepository
 import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
 import kotlin.contracts.ExperimentalContracts
 
@@ -26,7 +27,8 @@ class NoteQueryHandler(
     private val noteRepository: NoteRepository,
     private val userQueryHandler: UserQueryHandler,
     private val tagQueryHandler: TagQueryHandler,
-    private val tagRepository: TagRepository
+    private val tagRepository: TagRepository,
+    private val noteTagRepository: NoteTagRepository
 ) {
 
     fun listView(filter: NoteListFilter): NoteListView {
@@ -64,6 +66,13 @@ class NoteQueryHandler(
 
         if (!command.url.isNullOrBlank()) {
             notes = notes.filter { it.urlLc == command.url.toLowerCase() }
+        }
+
+        if (!command.tagsIds.isNullOrEmpty()) {
+            val noteIds = notes.map { it.id }
+            val tags = tagRepository.PROJECT_findAllByNotes(noteIds).groupBy({ it.noteId }, { it.tagInstance })
+
+            notes = notes.filter { note -> tags[note.id]?.any { tag -> command.tagsIds.contains(tag.id) } ?: false }
         }
 
         if (!command.query.isNullOrBlank()) {
