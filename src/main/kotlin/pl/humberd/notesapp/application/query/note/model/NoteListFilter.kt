@@ -6,20 +6,10 @@ import pl.humberd.notesapp.domain.entity.user.model.UserId
 sealed class NoteListFilter(
     val pageable: Pageable
 ) {
-    class ByAuthor(
+    class Compound(
         pageable: Pageable,
-        val authorId: UserId
-    ) : NoteListFilter(pageable)
-
-    class ByUrl(
-        pageable: Pageable,
-        val authorId: UserId,
-        val url: String
-    ) : NoteListFilter(pageable)
-
-    class ByQuery(
-        pageable: Pageable,
-        val authorId: UserId,
-        val query: String
-    ) : NoteListFilter(pageable)
+        val authorId: UserId?,
+        val url: String?,
+        val query: String?
+    ): NoteListFilter(pageable)
 }

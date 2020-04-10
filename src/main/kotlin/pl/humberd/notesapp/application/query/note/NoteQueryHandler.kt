@@ -1,5 +1,7 @@
 package pl.humberd.notesapp.application.query.note
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -30,19 +32,8 @@ class NoteQueryHandler(
 
     fun listView(filter: NoteListFilter): NoteListView {
         val page = when (filter) {
-            is NoteListFilter.ByAuthor -> noteRepository.findAllByAuthorId(filter.authorId, filter.pageable)
-            is NoteListFilter.ByQuery -> noteRepository.findAllByWebSearchQuery(
-                filter.authorId,
-                filter.query.toLowerCase(),
-                filter.pageable
-            )
-            is NoteListFilter.ByUrl -> noteRepository.findAllByAuthorIdAndUrlLc(
-                filter.authorId,
-                filter.url.toLowerCase(),
-                filter.pageable
-            )
+            is NoteListFilter.Compound -> findBy(filter)
         }
-
 
         return NoteListView(
             data = mapViewList(page.content),
@@ -64,6 +55,24 @@ class NoteQueryHandler(
                 )
             ).data
         )
+    }
+
+    private fun findBy(command: NoteListFilter.Compound): Page<Note> {
+        var notes = when {
+            command.authorId.isNullOrBlank() -> this.noteRepository.findAll(Pageable.unpaged())
+            else -> this.noteRepository.findAllByAuthorId(command.authorId, Pageable.unpaged())
+        }.content
+
+        if (!command.url.isNullOrBlank()) {
+            notes = notes.filter { it.urlLc == command.url.toLowerCase() }
+        }
+
+        if (!command.query.isNullOrBlank()) {
+            val queryLc = command.query.toLowerCase()
+            notes = notes.filter { it.title.contains(queryLc) || it.urlLc?.contains(queryLc)?: false || it.content?.contains(queryLc)?: false }
+        }
+
+        return PageImpl(notes)
     }
 
     private fun mapViewList(notes: List<Note>): List<NoteView> {

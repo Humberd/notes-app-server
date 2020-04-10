@@ -27,7 +27,7 @@ class Note(
 ) {
 
     @Column(name = "url_lc", updatable = false, insertable = false)
-    lateinit var urlLc: String
+    var urlLc: String? = null
         private set
 
     @Column(name = "comments_count", updatable = false, insertable = false)

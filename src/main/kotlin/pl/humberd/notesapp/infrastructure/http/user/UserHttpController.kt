@@ -35,24 +35,12 @@ class UserHttpController(
         @RequestParam(value = "query", required = false, defaultValue = "") query: String,
         @RequestParam(value = "url", required = false, defaultValue = "") url: String
     ): ResponseEntity<NoteListView> {
-        val listQuery: NoteListFilter = when {
-            query.isNotBlank() -> NoteListFilter.ByQuery(
-                pageable = pageable,
-                authorId = userId,
-                query = query
-            )
-            url.isNotBlank() -> NoteListFilter.ByUrl(
-                pageable = pageable,
-                authorId = userId,
-                url = url
-            )
-            else ->  NoteListFilter.ByAuthor(
-                pageable = pageable,
-                authorId = userId
-            )
-
-
-        }
+        val listQuery: NoteListFilter = NoteListFilter.Compound(
+            pageable = pageable,
+            authorId = userId,
+            query = query,
+            url = url
+        )
 
         return ResponseBuilder.ok(noteQueryHandler.listView(listQuery))
     }
