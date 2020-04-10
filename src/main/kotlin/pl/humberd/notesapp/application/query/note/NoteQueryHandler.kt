@@ -1,6 +1,5 @@
 package pl.humberd.notesapp.application.query.note
 
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -31,13 +30,13 @@ class NoteQueryHandler(
 ) {
 
     fun listView(filter: NoteListFilter): NoteListView {
-        val page = when (filter) {
+        val list = when (filter) {
             is NoteListFilter.Compound -> findBy(filter)
         }
 
         return NoteListView(
-            data = mapViewList(page.content),
-            extra = ListViewExtra.from(page)
+            data = mapViewList(list),
+            extra = ListViewExtra.from(PageImpl(list))
         )
     }
 
@@ -57,7 +56,7 @@ class NoteQueryHandler(
         )
     }
 
-    private fun findBy(command: NoteListFilter.Compound): Page<Note> {
+    private fun findBy(command: NoteListFilter.Compound): List<Note> {
         var notes = when {
             command.authorId.isNullOrBlank() -> this.noteRepository.findAll(Pageable.unpaged())
             else -> this.noteRepository.findAllByAuthorId(command.authorId, Pageable.unpaged())
@@ -68,11 +67,21 @@ class NoteQueryHandler(
         }
 
         if (!command.query.isNullOrBlank()) {
-            val queryLc = command.query.toLowerCase()
-            notes = notes.filter { it.title.contains(queryLc) || it.urlLc?.contains(queryLc)?: false || it.content?.contains(queryLc)?: false }
+            val queryLc = command.query.trim().toLowerCase()
+            val noteIds = notes.map { it.id }
+            val tags = tagRepository.PROJECT_findAllByNotes(noteIds).groupBy({ it.noteId }, { it.tagInstance })
+
+
+            notes = notes.filter {
+                it.title.contains(queryLc)
+                        || it.urlLc?.contains(queryLc) ?: false
+                        || it.content?.contains(queryLc) ?: false
+                        || tags[it.id]?.find { tag -> tag.nameLc.contains(queryLc) } !== null
+            }
+
         }
 
-        return PageImpl(notes)
+        return notes
     }
 
     private fun mapViewList(notes: List<Note>): List<NoteView> {
