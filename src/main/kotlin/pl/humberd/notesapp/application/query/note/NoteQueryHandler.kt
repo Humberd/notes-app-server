@@ -72,7 +72,7 @@ class NoteQueryHandler(
             val noteIds = notes.map { it.id }
             val tags = tagRepository.PROJECT_findAllByNotes(noteIds).groupBy({ it.noteId }, { it.tagInstance })
 
-            notes = notes.filter { note -> tags[note.id]?.any { tag -> command.tagsIds.contains(tag.id) } ?: false }
+            notes = notes.filter { note -> command.tagsIds.all { commandTagId -> tags[note.id]?.any { tag -> tag.id == commandTagId }?: false } }
         }
 
         if (!command.query.isNullOrBlank()) {
