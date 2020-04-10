@@ -69,6 +69,7 @@ class NoteController(
         @RequestBody body: NotePatchRequest,
         principal: Principal
     ): ResponseEntity<NoteView> {
+
         noteCommandHandler.ensureIsAuthor(
             NoteIsAuthorCommand(
                 noteId = id,
@@ -79,8 +80,8 @@ class NoteController(
         val note = noteCommandHandler.patchAndRefresh(
             NotePatchCommand(
                 noteId = id,
-                url = body.url,
                 title = body.title,
+                url = body.url,
                 content = body.content
             )
         )

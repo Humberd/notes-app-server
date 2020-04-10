@@ -1,10 +1,11 @@
 package pl.humberd.notesapp.application.command.note.model
 
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
+import java.util.*
 
 data class NotePatchCommand(
     val noteId: NoteId,
-    val url: String?,
     val title: String?,
-    val content: String?
+    val url: Optional<String>?,
+    val content: Optional<String>?
 )

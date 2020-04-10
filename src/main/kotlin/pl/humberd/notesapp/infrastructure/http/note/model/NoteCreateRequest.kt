@@ -4,14 +4,12 @@ import pl.humberd.notesapp.application.common.model.NameModel
 import javax.validation.constraints.NotNull
 
 class NoteCreateRequest {
-    @NotNull
-    lateinit var url: String
+    var url: String? = null
 
     @NotNull
     lateinit var title: String
 
-    @NotNull
-    lateinit var content: String
+    var content: String? = null
 
     var tags: List<NameModel>? = null
 }

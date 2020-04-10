@@ -10,6 +10,7 @@ import pl.humberd.notesapp.application.command.note_tag.NoteTagCommandHandler
 import pl.humberd.notesapp.application.command.note_tag.model.NoteTagCreateCommand
 import pl.humberd.notesapp.application.common.ASSERT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
+import pl.humberd.notesapp.application.common.applyPatch
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.note.model.Note
@@ -58,9 +59,9 @@ class NoteCommandHandler(
         ASSERT_NOT_NULL(note, command.noteId)
 
         note.also {
-            it.url = command.url ?: it.url
-            it.title = command.title ?: it.title
-            it.content = command.content ?: it.content
+            it.url = it.url.applyPatch(command.url)
+            it.title = it.title.applyPatch(command.title)
+            it.content = it.content.applyPatch(command.content)
         }
 
         return noteRepository.save(note)
