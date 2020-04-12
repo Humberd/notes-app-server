@@ -1,7 +1,11 @@
 package pl.humberd.notesapp.infrastructure.http.note.model
 
+import pl.humberd.notesapp.application.common.model.NameModel
+import java.util.*
+
 class NotePatchRequest {
-    var url: String? = null
     var title: String? = null
-    var content: String? = null
+    var url: Optional<String>? = null
+    var content: Optional<String>? = null
+    var tags: Collection<NameModel>? = null
 }

@@ -38,7 +38,8 @@ class NoteController(
                 authorId = principal.name,
                 title = body.title,
                 url = body.url,
-                content = body.content
+                content = body.content,
+                tags = body.tags?: emptyList()
             )
         )
 
@@ -77,10 +78,12 @@ class NoteController(
 
         val note = noteCommandHandler.patchAndRefresh(
             NotePatchCommand(
+                userId = principal.name,
                 noteId = id,
-                url = body.url,
                 title = body.title,
-                content = body.content
+                url = body.url,
+                content = body.content,
+                tags = body.tags
             )
         )
 

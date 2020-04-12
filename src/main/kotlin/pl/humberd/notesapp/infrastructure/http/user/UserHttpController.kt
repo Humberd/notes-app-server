@@ -33,13 +33,15 @@ class UserHttpController(
         pageable: Pageable,
         @PathVariable("userId") userId: String,
         @RequestParam(value = "query", required = false, defaultValue = "") query: String,
-        @RequestParam(value = "url", required = false, defaultValue = "") url: String
+        @RequestParam(value = "url", required = false, defaultValue = "") url: String,
+        @RequestParam(value = "tagIds", required = false) tagIds: Collection<String>?
     ): ResponseEntity<NoteListView> {
         val listQuery: NoteListFilter = NoteListFilter.Compound(
             pageable = pageable,
             authorId = userId,
             query = query,
-            url = url
+            url = url,
+            tagsIds = tagIds
         )
 
         return ResponseBuilder.ok(noteQueryHandler.listView(listQuery))
