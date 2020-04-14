@@ -196,7 +196,12 @@ sudo reboot
        ('note-3', 'user-1', 'https://stackoverflow.com/a/54647323/4256929',
         'inject() must be called from an injection context', 'seems like an issue when using npm link when consuming the library.
 Check out the following issue: https://github.com/angular/angular/issues/25813
-Spoiler: use "projects.$name.architect.build.options.preserveSymlinks: true" in angular.json');
+Spoiler: use "projects.$name.architect.build.options.preserveSymlinks: true" in angular.json'),
+       ('note-4', 'user-1', 'https://news.ycombinator.com/item?id=22749308', 'Hackernews jobs hiring', null),
+       ('note-5', 'user-1', 'https://findwork.dev/?source=hn', 'Findwork', null),
+       ('note-6', 'user-1', 'https://djqyo3vqv2.execute-api.us-west-1.amazonaws.com/latest/', 'Hackernews jobs hiring searcher', null),
+       ('note-7', 'user-1', 'https://hnjobs.emilburzo.com/', 'Hackernews jobs hiring search 2', null),
+       ('note-8', 'user-1', 'https://kennytilton.github.io/whoishiring/', 'Hackernews jobs hiring search 3', null);
 
 insert into Note_Comment(id, author_id, note_id, content)
 values ('ncomment-1', 'user-1', 'note-1', 'test'),
@@ -211,7 +216,8 @@ values ('tag-1', 'user-1', 'kubernetes', '#ff00ff'),
        ('tag-3', 'user-1', 'docker', '#9ff37d'),
        ('tag-bug', 'user-1', 'bug', '#ff0000'),
        ('tag-angular', 'user-1', 'angular', null),
-       ('tag-build', 'user-1', 'build', null);
+       ('tag-build', 'user-1', 'build', null),
+       ('tag-job', 'user-1', 'Job', '#f032F1');
 
 insert into Note_Tag(note_id, tag_id)
 values ('note-1', 'tag-1'),
@@ -221,6 +227,11 @@ values ('note-1', 'tag-1'),
        ('note-2', 'tag-3'),
        ('note-3', 'tag-bug'),
        ('note-3', 'tag-angular'),
-       ('note-3', 'tag-build');
+       ('note-3', 'tag-build'),
+       ('note-4', 'tag-job'),
+       ('note-5', 'tag-job'),
+       ('note-6', 'tag-job'),
+       ('note-7', 'tag-job'),
+       ('note-8', 'tag-job');
 
 
