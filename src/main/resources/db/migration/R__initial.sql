@@ -201,7 +201,8 @@ Spoiler: use "projects.$name.architect.build.options.preserveSymlinks: true" in 
        ('note-5', 'user-1', 'https://findwork.dev/?source=hn', 'Findwork', null),
        ('note-6', 'user-1', 'https://djqyo3vqv2.execute-api.us-west-1.amazonaws.com/latest/', 'Hackernews jobs hiring searcher', null),
        ('note-7', 'user-1', 'https://hnjobs.emilburzo.com/', 'Hackernews jobs hiring search 2', null),
-       ('note-8', 'user-1', 'https://kennytilton.github.io/whoishiring/', 'Hackernews jobs hiring search 3', null);
+       ('note-8', 'user-1', 'https://kennytilton.github.io/whoishiring/', 'Hackernews jobs hiring search 3', null),
+       ('note-9', 'user-1', 'https://blog.soshace.com/the-ultimate-guide-to-drag-and-drop-image-uploading-with-pure-javascript/', 'Drag and drop vanilla js', null)
 
 insert into Note_Comment(id, author_id, note_id, content)
 values ('ncomment-1', 'user-1', 'note-1', 'test'),
@@ -217,7 +218,8 @@ values ('tag-1', 'user-1', 'kubernetes', '#ff00ff'),
        ('tag-bug', 'user-1', 'bug', '#ff0000'),
        ('tag-angular', 'user-1', 'angular', null),
        ('tag-build', 'user-1', 'build', null),
-       ('tag-job', 'user-1', 'Job', '#f032F1');
+       ('tag-job', 'user-1', 'Job', '#f032F1'),
+       ('tag-js', 'user-1', 'js');
 
 insert into Note_Tag(note_id, tag_id)
 values ('note-1', 'tag-1'),
@@ -232,6 +234,7 @@ values ('note-1', 'tag-1'),
        ('note-5', 'tag-job'),
        ('note-6', 'tag-job'),
        ('note-7', 'tag-job'),
-       ('note-8', 'tag-job');
+       ('note-8', 'tag-job'),
+       ('note-9', 'tag-js')
 
 
