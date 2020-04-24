@@ -1,3 +1,4 @@
+drop table if exists Workspace;
 drop table if exists Note_Tag;
 drop table if exists Tag;
 drop table if exists Note;
@@ -40,19 +41,19 @@ execute procedure trigger_set_timestamp();
 ------- Note
 create table Note
 (
-    id             varchar(32) not null primary key,
-    author_id      varchar(32) null references "user" (id) on delete set null,
-    url            text,
-    url_lc         text generated always as ( lower(url) ) stored,
-    title          text        not null,
-    content        text,
-    search_vector  tsvector    not null,
-    created_at     timestamp   not null default now(),
-    updated_at     timestamp   not null default now()
+    id            varchar(32) not null primary key,
+    author_id     varchar(32) null references "user" (id) on delete set null,
+    url           text,
+    url_lc        text generated always as ( lower(url) ) stored,
+    title         text        not null,
+    content       text,
+    search_vector tsvector    not null,
+    created_at    timestamp   not null default now(),
+    updated_at    timestamp   not null default now()
 );
 
 create index search_vector_index on Note using gist (search_vector);
-create index url_lc_index on Note(url_lc);
+create index url_lc_index on Note (url_lc);
 
 create trigger set_updated_at
     before update
@@ -115,6 +116,39 @@ create trigger decrement_notes_count
     for each row
 execute procedure trigger_decrement_notes_count();
 
+--------- Workspace
+create table Workspace
+(
+    id         varchar(32)  not null primary key,
+    user_id    varchar(32)  not null references "user" (id) on delete cascade,
+    name       text         not null,
+    name_lc    varchar(255) not null unique generated always as ( lower(name) ) stored,
+    created_at timestamp    not null default now(),
+    updated_at timestamp    not null default now()
+);
+
+create trigger set_updated_at
+    before update
+    on Workspace
+    for each row
+execute procedure trigger_set_timestamp();
+
+--------- NoteWorkspace
+create table NoteWorkspace
+(
+    note_id      varchar(32) not null references Note (id) on delete cascade,
+    workspace_id varchar(32) not null references Tag (id) on delete cascade,
+    created_at   timestamp   not null default now(),
+    updated_at   timestamp   not null default now(),
+    PRIMARY KEY (note_id, workspace_id)
+);
+
+create trigger set_updated_at
+    before update
+    on NoteWorkspace
+    for each row
+execute procedure trigger_set_timestamp();
+
 --
 insert into "user"(id, name)
 VALUES ('user-1', 'test'),
@@ -138,10 +172,13 @@ Check out the following issue: https://github.com/angular/angular/issues/25813
 Spoiler: use "projects.$name.architect.build.options.preserveSymlinks: true" in angular.json'),
        ('note-4', 'user-1', 'https://news.ycombinator.com/item?id=22749308', 'Hackernews jobs hiring', null),
        ('note-5', 'user-1', 'https://findwork.dev/?source=hn', 'Findwork', null),
-       ('note-6', 'user-1', 'https://djqyo3vqv2.execute-api.us-west-1.amazonaws.com/latest/', 'Hackernews jobs hiring searcher', null),
+       ('note-6', 'user-1', 'https://djqyo3vqv2.execute-api.us-west-1.amazonaws.com/latest/',
+        'Hackernews jobs hiring searcher', null),
        ('note-7', 'user-1', 'https://hnjobs.emilburzo.com/', 'Hackernews jobs hiring search 2', null),
        ('note-8', 'user-1', 'https://kennytilton.github.io/whoishiring/', 'Hackernews jobs hiring search 3', null),
-       ('note-9', 'user-1', 'https://blog.soshace.com/the-ultimate-guide-to-drag-and-drop-image-uploading-with-pure-javascript/', 'Drag and drop vanilla js', null);
+       ('note-9', 'user-1',
+        'https://blog.soshace.com/the-ultimate-guide-to-drag-and-drop-image-uploading-with-pure-javascript/',
+        'Drag and drop vanilla js', null);
 
 insert into Tag(id, user_id, name, background_color)
 values ('tag-1', 'user-1', 'kubernetes', '#ff00ff'),
