@@ -12,6 +12,7 @@ import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.tag.model.Tag
 import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
 import javax.transaction.Transactional
+import javax.validation.ValidationException
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
@@ -21,6 +22,10 @@ class TagCommandHandler(
     private val tagRepository: TagRepository
 ) {
     fun create(command: TagCreateCommand): Tag {
+        if (command.name.isBlank()) {
+            throw ValidationException("Tag Name cannot be blank")
+        }
+
         val tagExists = tagRepository.existsByUserIdAndNameLc(
             userId = command.userId,
             nameLc = command.name.toLowerCase()
