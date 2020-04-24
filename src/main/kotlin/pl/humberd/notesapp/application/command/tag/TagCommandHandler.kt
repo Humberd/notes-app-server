@@ -22,9 +22,7 @@ class TagCommandHandler(
     private val tagRepository: TagRepository
 ) {
     fun create(command: TagCreateCommand): Tag {
-        if (command.name.isBlank()) {
-            throw ValidationException("Tag Name cannot be blank")
-        }
+        VALIDATE_NAME(command.name)
 
         val tagExists = tagRepository.existsByUserIdAndNameLc(
             userId = command.userId,
@@ -46,6 +44,10 @@ class TagCommandHandler(
         val tag = tagRepository.findByIdOrNull(command.id)
         ASSERT_NOT_NULL(tag, command.id)
 
+        if (command.name !== null) {
+            VALIDATE_NAME(command.name)
+        }
+
         tag.also {
             it.name = command.name?: it.name
             it.backgroundColor = command.backgroundColor?: it.backgroundColor
@@ -57,6 +59,12 @@ class TagCommandHandler(
     fun patchAndRefresh(command: TagPatchCommand): Tag {
         return patch(command).also {
             tagRepository.saveFlushRefresh(it)
+        }
+    }
+
+    private fun VALIDATE_NAME(name: String) {
+        if (name.isBlank()) {
+            throw ValidationException("Tag Name cannot be blank")
         }
     }
 

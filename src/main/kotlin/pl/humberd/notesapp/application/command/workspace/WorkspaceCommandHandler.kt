@@ -22,9 +22,7 @@ class WorkspaceCommandHandler(
     private val workspaceRepository: WorkspaceRepository
 ) {
     fun create(command: WorkspaceCreateCommand): Workspace {
-        if (command.name.isBlank()) {
-            throw ValidationException("Workspace Name cannot be blank")
-        }
+        VALIDATE_NAME(command.name)
 
         val workspaceExists = workspaceRepository.existsByUserIdAndNameLc(
             userId = command.userId,
@@ -51,6 +49,10 @@ class WorkspaceCommandHandler(
         val workspace = workspaceRepository.findByIdOrNull(command.id)
         ASSERT_NOT_NULL(workspace, command.id)
 
+        if (command.name !== null) {
+            VALIDATE_NAME(command.name)
+        }
+
         workspace.also {
             it.name = command.name ?: it.name
         }
@@ -61,6 +63,12 @@ class WorkspaceCommandHandler(
     fun patchAndRefresh(command: WorkspacePatchCommand): Workspace {
         return patch(command).also {
             workspaceRepository.saveFlushRefresh(it)
+        }
+    }
+
+    private fun VALIDATE_NAME(name: String) {
+        if (name.isBlank()) {
+            throw ValidationException("Workspace Name cannot be blank")
         }
     }
 
