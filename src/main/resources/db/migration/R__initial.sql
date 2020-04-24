@@ -1,3 +1,4 @@
+drop table if exists Note_Workspace;
 drop table if exists Workspace;
 drop table if exists Note_Tag;
 drop table if exists Tag;
@@ -134,7 +135,7 @@ create trigger set_updated_at
 execute procedure trigger_set_timestamp();
 
 --------- NoteWorkspace
-create table NoteWorkspace
+create table Note_Workspace
 (
     note_id      varchar(32) not null references Note (id) on delete cascade,
     workspace_id varchar(32) not null references Tag (id) on delete cascade,
@@ -145,7 +146,7 @@ create table NoteWorkspace
 
 create trigger set_updated_at
     before update
-    on NoteWorkspace
+    on Note_Workspace
     for each row
 execute procedure trigger_set_timestamp();
 
