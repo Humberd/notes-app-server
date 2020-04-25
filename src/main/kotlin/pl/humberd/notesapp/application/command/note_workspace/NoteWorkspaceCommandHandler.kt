@@ -4,7 +4,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.note_workspace.model.NoteWorkspaceCreateCommand
 import pl.humberd.notesapp.application.command.note_workspace.model.NoteWorkspaceDeleteCommand
-import pl.humberd.notesapp.application.command.workspace.WorkspaceCommandHandler
 import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
@@ -20,7 +19,6 @@ import kotlin.contracts.ExperimentalContracts
 @Service
 class NoteWorkspaceCommandHandler(
     private val noteWorkspaceRepository: NoteWorkspaceRepository,
-    private val workspaceCommandHandler: WorkspaceCommandHandler,
     private val workspaceRepository: WorkspaceRepository,
     private val noteRepository: NoteRepository
 ) {

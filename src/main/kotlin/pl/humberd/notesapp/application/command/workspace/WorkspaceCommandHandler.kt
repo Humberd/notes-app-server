@@ -3,12 +3,14 @@ package pl.humberd.notesapp.application.command.workspace
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.workspace.model.WorkspaceCreateCommand
+import pl.humberd.notesapp.application.command.workspace.model.WorkspaceDeleteCommand
 import pl.humberd.notesapp.application.command.workspace.model.WorkspaceIsUsersCommand
 import pl.humberd.notesapp.application.command.workspace.model.WorkspacePatchCommand
 import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
+import pl.humberd.notesapp.domain.entity.note_workspace.repository.NoteWorkspaceRepository
 import pl.humberd.notesapp.domain.entity.workspace.model.Workspace
 import pl.humberd.notesapp.domain.entity.workspace.repository.WorkspaceRepository
 import javax.transaction.Transactional
@@ -19,7 +21,8 @@ import kotlin.contracts.ExperimentalContracts
 @Transactional
 @Service
 class WorkspaceCommandHandler(
-    private val workspaceRepository: WorkspaceRepository
+    private val workspaceRepository: WorkspaceRepository,
+    private val noteWorkspaceRepository: NoteWorkspaceRepository
 ) {
     fun create(command: WorkspaceCreateCommand): Workspace {
         VALIDATE_NAME(command.name)
@@ -70,6 +73,16 @@ class WorkspaceCommandHandler(
         if (name.isBlank()) {
             throw ValidationException("Workspace Name cannot be blank")
         }
+    }
+
+    fun delete(command: WorkspaceDeleteCommand) {
+        val workspace = workspaceRepository.findByIdOrNull(command.id)
+        ASSERT_NOT_NULL(workspace, command.id)
+
+        val workspaceNotes = noteWorkspaceRepository.findAllByIdWorkspaceId(command.id)
+
+        noteWorkspaceRepository.deleteInBatch(workspaceNotes)
+        workspaceRepository.delete(workspace)
     }
 
     fun ensureIsAuthor(command: WorkspaceIsUsersCommand) {
