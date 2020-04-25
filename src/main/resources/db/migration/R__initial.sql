@@ -138,7 +138,7 @@ execute procedure trigger_set_timestamp();
 create table Note_Workspace
 (
     note_id      varchar(32) not null references Note (id) on delete cascade,
-    workspace_id varchar(32) not null references Tag (id) on delete cascade,
+    workspace_id varchar(32) not null references Workspace (id) on delete cascade,
     created_at   timestamp   not null default now(),
     updated_at   timestamp   not null default now(),
     PRIMARY KEY (note_id, workspace_id)
@@ -205,6 +205,20 @@ values ('note-1', 'tag-1'),
        ('note-6', 'tag-job'),
        ('note-7', 'tag-job'),
        ('note-8', 'tag-job'),
-       ('note-9', 'tag-js')
+       ('note-9', 'tag-js');
+
+insert into Workspace(id, user_id, name)
+values ('workspace-work', 'user-1', 'Work'),
+       ('workspace-job-searching', 'user-1', 'Job Searching'),
+       ('workspace-private', 'user-1', 'Private'),
+       ('workspace-work-2', 'user-2', 'My Work');
+
+insert into Note_Workspace(note_id, workspace_id)
+values ('note-1', 'workspace-work'),
+       ('note-1', 'workspace-private'),
+       ('note-2', 'workspace-private'),
+       ('note-5', 'workspace-work'),
+       ('note-5', 'workspace-job-searching'),
+       ('note-5', 'workspace-private');
 
 

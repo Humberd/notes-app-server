@@ -37,7 +37,7 @@ class WorkspaceCommandHandler(
             Workspace(
                 id = IdGenerator.random(Workspace::class),
                 userId = command.userId,
-                name = command.userId
+                name = command.name
             )
         )
     }

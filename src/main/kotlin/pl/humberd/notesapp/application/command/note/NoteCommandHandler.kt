@@ -10,6 +10,8 @@ import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
 import pl.humberd.notesapp.application.command.note_tag.NoteTagCommandHandler
 import pl.humberd.notesapp.application.command.note_tag.model.NoteTagCreateCommand
 import pl.humberd.notesapp.application.command.note_tag.model.NoteTagDeleteCommand
+import pl.humberd.notesapp.application.command.note_workspace.NoteWorkspaceCommandHandler
+import pl.humberd.notesapp.application.command.note_workspace.model.NoteWorkspaceCreateCommand
 import pl.humberd.notesapp.application.common.ASSERT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.common.applyPatch
@@ -27,6 +29,7 @@ import kotlin.contracts.ExperimentalContracts
 class NoteCommandHandler(
     private val noteRepository: NoteRepository,
     private val noteTagCommandHandler: NoteTagCommandHandler,
+    private val noteWorkspaceCommandHandler: NoteWorkspaceCommandHandler,
     private val tagRepository: TagRepository
 ) {
 
@@ -47,6 +50,15 @@ class NoteCommandHandler(
                     noteId = entity.id,
                     tagName = tag.name,
                     userId = command.authorId
+                )
+            )
+        }
+
+        command.workspaces.forEach { workspace ->
+            noteWorkspaceCommandHandler.create(
+                NoteWorkspaceCreateCommand(
+                    noteId = entity.id,
+                    workspaceId = workspace.id
                 )
             )
         }

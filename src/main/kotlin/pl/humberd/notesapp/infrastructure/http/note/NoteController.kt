@@ -39,7 +39,8 @@ class NoteController(
                 title = body.title,
                 url = body.url,
                 content = body.content,
-                tags = body.tags?: emptyList()
+                tags = body.tags ?: emptyList(),
+                workspaces = body.workspaces ?: emptyList()
             )
         )
 
