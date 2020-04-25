@@ -10,11 +10,8 @@ import pl.humberd.notesapp.application.query.note.model.NoteListFilter
 import pl.humberd.notesapp.application.query.note.model.NoteListView
 import pl.humberd.notesapp.application.query.note.model.NoteView
 import pl.humberd.notesapp.application.query.tag.TagQueryHandler
-import pl.humberd.notesapp.application.query.tag.TagViewMapper
 import pl.humberd.notesapp.application.query.tag.model.TagListFilter
-import pl.humberd.notesapp.application.query.tag.model.TagMinimalView
 import pl.humberd.notesapp.application.query.user.UserQueryHandler
-import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
@@ -27,8 +24,8 @@ class NoteQueryHandler(
     private val noteRepository: NoteRepository,
     private val userQueryHandler: UserQueryHandler,
     private val tagQueryHandler: TagQueryHandler,
-    private val tagViewMapper: TagViewMapper,
-    private val tagRepository: TagRepository
+    private val tagRepository: TagRepository,
+    private val noteViewMapper: NoteViewMapper
 ) {
 
     fun listView(filter: NoteListFilter): NoteListView {
@@ -37,7 +34,7 @@ class NoteQueryHandler(
         }
 
         return NoteListView(
-            data = mapViewList(list),
+            data = noteViewMapper.mapViewList(list),
             extra = ListViewExtra.from(PageImpl(list))
         )
     }
@@ -46,7 +43,7 @@ class NoteQueryHandler(
         val note = noteRepository.findByIdOrNull(id)
         ASSERT_NOT_NULL(note, id)
 
-        return mapView(
+        return noteViewMapper.mapView(
             note = note,
             author = userQueryHandler.minimalView(note.authorId),
             tags = tagQueryHandler.listMinimalView(
@@ -92,41 +89,4 @@ class NoteQueryHandler(
 
         return notes
     }
-
-    private fun mapViewList(notes: List<Note>): List<NoteView> {
-        val authorIds = notes.map { it.authorId }
-        val authors = userQueryHandler.minimalViewDictionary(authorIds)
-
-        val noteIds = notes.map { it.id }
-        val tags =
-            tagRepository.PROJECT_findAllByNotes(noteIds).groupBy({ it.noteId }, { it.tagInstance })
-
-        return notes.map {
-            val author = authors.get(it.authorId)
-            ASSERT_NOT_NULL(author, it.authorId)
-
-            val noteTags = tags.getOrElse(it.id) { emptyList() }.sortedBy { it.name }
-
-            return@map mapView(
-                note = it,
-                author = author,
-                tags = noteTags.map(tagViewMapper::mapMinimalView)
-            )
-        }
-    }
-
-    private fun mapView(
-        note: Note,
-        author: UserMinimalView,
-        tags: List<TagMinimalView>
-    ) = NoteView(
-        id = note.id,
-        author = author,
-        url = note.url,
-        title = note.title,
-        content = note.content,
-        tags = tags,
-        createdAt = note.metadata.createdAt,
-        updatedAt = note.metadata.updatedAt
-    )
 }
