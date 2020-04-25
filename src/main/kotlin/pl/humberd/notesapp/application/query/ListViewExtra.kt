@@ -19,5 +19,14 @@ open class ListViewExtra(
             isFirst = page.isFirst,
             isLast = page.isLast
         )
+
+        fun empty() = ListViewExtra(
+            pageNumber = 0,
+            pageSize = 0,
+            totalPages = 0,
+            totalElements = 0,
+            isFirst = false,
+            isLast = false
+        )
     }
 }

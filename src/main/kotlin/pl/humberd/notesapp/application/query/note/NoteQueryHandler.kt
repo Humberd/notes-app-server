@@ -12,6 +12,8 @@ import pl.humberd.notesapp.application.query.note.model.NoteView
 import pl.humberd.notesapp.application.query.tag.TagQueryHandler
 import pl.humberd.notesapp.application.query.tag.model.TagListFilter
 import pl.humberd.notesapp.application.query.user.UserQueryHandler
+import pl.humberd.notesapp.application.query.workspace.WorkspaceQueryHandler
+import pl.humberd.notesapp.application.query.workspace.model.WorkspaceListFilter
 import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
@@ -24,6 +26,7 @@ class NoteQueryHandler(
     private val noteRepository: NoteRepository,
     private val userQueryHandler: UserQueryHandler,
     private val tagQueryHandler: TagQueryHandler,
+    private val workspaceQueryHandler: WorkspaceQueryHandler,
     private val tagRepository: TagRepository,
     private val noteViewMapper: NoteViewMapper
 ) {
@@ -48,6 +51,12 @@ class NoteQueryHandler(
             author = userQueryHandler.minimalView(note.authorId),
             tags = tagQueryHandler.listMinimalView(
                 TagListFilter.ByNote(
+                    noteId = id,
+                    pageable = Pageable.unpaged()
+                )
+            ).data,
+            workspaces = workspaceQueryHandler.listMinimalView(
+                WorkspaceListFilter.ByNote(
                     noteId = id,
                     pageable = Pageable.unpaged()
                 )

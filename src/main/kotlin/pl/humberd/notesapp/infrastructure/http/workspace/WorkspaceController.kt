@@ -9,9 +9,9 @@ import pl.humberd.notesapp.application.command.workspace.model.WorkspaceDeleteCo
 import pl.humberd.notesapp.application.command.workspace.model.WorkspaceIsUsersCommand
 import pl.humberd.notesapp.application.command.workspace.model.WorkspacePatchCommand
 import pl.humberd.notesapp.application.query.workspace.WorkspaceQueryHandler
+import pl.humberd.notesapp.application.query.workspace.model.WorkspaceListFilter
 import pl.humberd.notesapp.application.query.workspace.model.WorkspaceView
 import pl.humberd.notesapp.application.query.workspace.model.WorkspaceViewList
-import pl.humberd.notesapp.application.query.workspace.model.WorkspaceViewListFilter
 import pl.humberd.notesapp.domain.entity.workspace.model.WorkspaceId
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.workspace.model.WorkspaceCreateRequest
@@ -34,7 +34,7 @@ class WorkspaceController(
         principal: Principal
     ): ResponseEntity<WorkspaceViewList> {
         val viewList = workspaceQueryHandler.listView(
-            WorkspaceViewListFilter.ByUser(
+            WorkspaceListFilter.ByUser(
                 pageable = pageable,
                 userId = principal.name
             )

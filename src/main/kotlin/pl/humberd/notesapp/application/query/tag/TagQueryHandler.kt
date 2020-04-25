@@ -35,8 +35,6 @@ class TagQueryHandler(
         return tagViewMapper.mapView(tag)
     }
 
-
-
     fun listMinimalView(filter: TagListFilter.ByNote): TagMinimalViewList {
         val page = tagRepository.findAllByNote(filter.noteId, filter.pageable)
 

@@ -6,18 +6,19 @@ import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.user.model.UserId
 
 typealias WorkspaceViewList = DefaultViewList<WorkspaceView>
+typealias WorkspaceMinimalViewList = DefaultViewList<WorkspaceMinimalView>
 
-sealed class WorkspaceViewListFilter(
+sealed class WorkspaceListFilter(
     val pageable: Pageable
 ) {
 
     class ByUser(
         pageable: Pageable,
         val userId: UserId
-    ) : WorkspaceViewListFilter(pageable)
+    ) : WorkspaceListFilter(pageable)
 
     class ByNote(
         pageable: Pageable,
         val noteId: NoteId
-    ) : WorkspaceViewListFilter(pageable)
+    ) : WorkspaceListFilter(pageable)
 }
