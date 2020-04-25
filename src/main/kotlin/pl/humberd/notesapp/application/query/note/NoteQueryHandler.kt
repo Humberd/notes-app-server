@@ -10,6 +10,7 @@ import pl.humberd.notesapp.application.query.note.model.NoteListFilter
 import pl.humberd.notesapp.application.query.note.model.NoteListView
 import pl.humberd.notesapp.application.query.note.model.NoteView
 import pl.humberd.notesapp.application.query.tag.TagQueryHandler
+import pl.humberd.notesapp.application.query.tag.TagViewMapper
 import pl.humberd.notesapp.application.query.tag.model.TagListFilter
 import pl.humberd.notesapp.application.query.tag.model.TagMinimalView
 import pl.humberd.notesapp.application.query.user.UserQueryHandler
@@ -26,6 +27,7 @@ class NoteQueryHandler(
     private val noteRepository: NoteRepository,
     private val userQueryHandler: UserQueryHandler,
     private val tagQueryHandler: TagQueryHandler,
+    private val tagViewMapper: TagViewMapper,
     private val tagRepository: TagRepository
 ) {
 
@@ -108,7 +110,7 @@ class NoteQueryHandler(
             return@map mapView(
                 note = it,
                 author = author,
-                tags = tagQueryHandler.mapMinimalViewList(noteTags)
+                tags = noteTags.map(tagViewMapper::mapMinimalView)
             )
         }
     }
