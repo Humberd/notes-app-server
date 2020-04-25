@@ -10,6 +10,9 @@ import pl.humberd.notesapp.application.command.note.model.NotePatchCommand
 import pl.humberd.notesapp.application.command.note_tag.NoteTagCommandHandler
 import pl.humberd.notesapp.application.command.note_tag.model.NoteTagCreateCommand
 import pl.humberd.notesapp.application.command.note_tag.model.NoteTagDeleteCommand
+import pl.humberd.notesapp.application.command.note_workspace.NoteWorkspaceCommandHandler
+import pl.humberd.notesapp.application.command.note_workspace.model.NoteWorkspaceCreateCommand
+import pl.humberd.notesapp.application.command.note_workspace.model.NoteWorkspaceDeleteCommand
 import pl.humberd.notesapp.application.common.ASSERT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.common.applyPatch
@@ -18,6 +21,7 @@ import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
 import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
+import pl.humberd.notesapp.domain.entity.workspace.repository.WorkspaceRepository
 import javax.transaction.Transactional
 import kotlin.contracts.ExperimentalContracts
 
@@ -26,8 +30,10 @@ import kotlin.contracts.ExperimentalContracts
 @ExperimentalContracts
 class NoteCommandHandler(
     private val noteRepository: NoteRepository,
+    private val tagRepository: TagRepository,
+    private val workspaceRepository: WorkspaceRepository,
     private val noteTagCommandHandler: NoteTagCommandHandler,
-    private val tagRepository: TagRepository
+    private val noteWorkspaceCommandHandler: NoteWorkspaceCommandHandler
 ) {
 
     fun create(command: NoteCreateCommand): Note {
@@ -47,6 +53,15 @@ class NoteCommandHandler(
                     noteId = entity.id,
                     tagName = tag.name,
                     userId = command.authorId
+                )
+            )
+        }
+
+        command.workspaces.forEach { workspace ->
+            noteWorkspaceCommandHandler.create(
+                NoteWorkspaceCreateCommand(
+                    noteId = entity.id,
+                    workspaceId = workspace.id
                 )
             )
         }
@@ -82,10 +97,12 @@ class NoteCommandHandler(
             val tagsToAdd = appliedTagNames.subtract(existingTagNames)
 
             tagsToRemove.forEach {
-                noteTagCommandHandler.delete(NoteTagDeleteCommand(
-                    noteId = note.id,
-                    tagId = existingTags[it]!!.id
-                ))
+                noteTagCommandHandler.delete(
+                    NoteTagDeleteCommand(
+                        noteId = note.id,
+                        tagId = existingTags[it]!!.id
+                    )
+                )
             }
 
             tagsToAdd.forEach {
@@ -94,6 +111,34 @@ class NoteCommandHandler(
                         noteId = note.id,
                         userId = command.userId,
                         tagName = appliedTags[it]!!.name
+                    )
+                )
+            }
+        }
+
+        if (command.workspaces !== null) {
+            val appliedWorkspaceIds = command.workspaces.map { it.id }
+
+            val existingWorkspaceIds =
+                workspaceRepository.findAllByNote(note.id, Pageable.unpaged()).content.map { it.id }
+
+            val workspacesToRemove = existingWorkspaceIds.subtract(appliedWorkspaceIds)
+            val workspacesToAdd = appliedWorkspaceIds.subtract(existingWorkspaceIds)
+
+            workspacesToRemove.forEach {
+                noteWorkspaceCommandHandler.delete(
+                    NoteWorkspaceDeleteCommand(
+                        noteId = note.id,
+                        workspaceId = it
+                    )
+                )
+            }
+
+            workspacesToAdd.forEach {
+                noteWorkspaceCommandHandler.create(
+                    NoteWorkspaceCreateCommand(
+                        noteId = note.id,
+                        workspaceId = it
                     )
                 )
             }

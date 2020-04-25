@@ -30,20 +30,12 @@ class Note(
     var urlLc: String? = null
         private set
 
-    @Column(name = "comments_count", updatable = false, insertable = false)
-    var commentsCount: Int = 0
-        private set
-
-    @Column(name = "votes_score", updatable = false, insertable = false)
-    var votesScore: Int = 0
-        private set
-
     @Embedded
     lateinit var metadata: EntityMetadata
         private set
 
     override fun toString(): String {
-        return "Note(id='$id', authorId='$authorId', url='$url', title='$title', content='$content', commentsCount=$commentsCount, votesScore=$votesScore)"
+        return "Note(id='$id', authorId='$authorId', url='$url', title='$title', content='$content')"
     }
 
 }

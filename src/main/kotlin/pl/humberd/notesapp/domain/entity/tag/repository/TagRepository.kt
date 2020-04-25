@@ -14,15 +14,9 @@ import java.util.*
 
 @Repository
 interface TagRepository : RefreshableJpaRepository<Tag, TagId> {
-    fun existsByUserIdAndNameLc(
-        userId: UserId,
-        nameLc: String
-    ): Boolean
+    fun existsByUserIdAndNameLc(userId: UserId, nameLc: String): Boolean
 
-    fun findByUserIdAndNameLc(
-        userId: UserId,
-        nameLc: String
-    ): Optional<Tag>
+    fun findByUserIdAndNameLc(userId: UserId, nameLc: String): Optional<Tag>
 
     @Query("select tag from Tag tag inner join NoteTag nt on tag.id = nt.id.tagId where nt.id.noteId = :noteId")
     fun findAllByNote(
