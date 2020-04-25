@@ -4,6 +4,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.note_workspace.model.NoteWorkspaceCreateCommand
 import pl.humberd.notesapp.application.command.note_workspace.model.NoteWorkspaceDeleteCommand
+import pl.humberd.notesapp.application.common.ASSERT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
@@ -58,7 +59,7 @@ class NoteWorkspaceCommandHandler(
         )
 
         val noteWorkspaceExists = noteWorkspaceRepository.existsById(noteWorkspaceId)
-        ASSERT_NOT_EXIST<NoteWorkspace>(noteWorkspaceExists, noteWorkspaceId.toString())
+        ASSERT_EXIST<NoteWorkspace>(noteWorkspaceExists, noteWorkspaceId.toString())
 
         noteWorkspaceRepository.deleteById(noteWorkspaceId)
     }

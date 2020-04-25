@@ -8,6 +8,7 @@ import pl.humberd.notesapp.application.command.workspace.model.WorkspaceIsUsersC
 import pl.humberd.notesapp.application.command.workspace.model.WorkspacePatchCommand
 import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
+import pl.humberd.notesapp.application.common.applyPatch
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.note_workspace.repository.NoteWorkspaceRepository
@@ -57,7 +58,7 @@ class WorkspaceCommandHandler(
         }
 
         workspace.also {
-            it.name = command.name ?: it.name
+            it.name = it.name.applyPatch(command.name)
         }
 
         return workspaceRepository.save(workspace)
