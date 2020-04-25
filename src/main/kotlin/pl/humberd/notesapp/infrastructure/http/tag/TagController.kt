@@ -62,7 +62,7 @@ class TagController(
 
         val tagView = tagQueryHandler.view(id)
 
-        return ResponseBuilder.ok(tagView)
+        return ResponseBuilder.updated(tagView)
     }
 
 }
