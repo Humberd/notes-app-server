@@ -18,16 +18,18 @@ import pl.humberd.notesapp.domain.entity.note.model.Note
 import pl.humberd.notesapp.domain.entity.note.model.NoteId
 import pl.humberd.notesapp.domain.entity.note.repository.NoteRepository
 import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
+import pl.humberd.notesapp.domain.entity.workspace.repository.WorkspaceRepository
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
 @Service
 class NoteQueryHandler(
     private val noteRepository: NoteRepository,
+    private val tagRepository: TagRepository,
+    private val workspaceRepository: WorkspaceRepository,
     private val userQueryHandler: UserQueryHandler,
     private val tagQueryHandler: TagQueryHandler,
     private val workspaceQueryHandler: WorkspaceQueryHandler,
-    private val tagRepository: TagRepository,
     private val noteViewMapper: NoteViewMapper
 ) {
 
@@ -74,11 +76,30 @@ class NoteQueryHandler(
             notes = notes.filter { it.urlLc == command.url.toLowerCase() }
         }
 
+        if (!command.workspaceId.isNullOrBlank()) {
+            val noteIds = notes.map { it.id }
+            val workspaces =
+                workspaceRepository.PROJECT_findAllByNotes(noteIds).groupBy({ it.noteId }, { it.workspaceInstance })
+
+            notes = notes.filter { note ->
+                val noteWorkspaces = workspaces[note.id]
+                if (noteWorkspaces == null) {
+                    return@filter false
+                }
+
+                noteWorkspaces.any { workspace -> workspace.id == command.workspaceId }
+            }
+        }
+
         if (!command.tagsIds.isNullOrEmpty()) {
             val noteIds = notes.map { it.id }
             val tags = tagRepository.PROJECT_findAllByNotes(noteIds).groupBy({ it.noteId }, { it.tagInstance })
 
-            notes = notes.filter { note -> command.tagsIds.all { commandTagId -> tags[note.id]?.any { tag -> tag.id == commandTagId }?: false } }
+            notes = notes.filter { note ->
+                command.tagsIds.all { commandTagId ->
+                    tags[note.id]?.any { tag -> tag.id == commandTagId } ?: false
+                }
+            }
         }
 
         if (!command.query.isNullOrBlank()) {
@@ -93,7 +114,6 @@ class NoteQueryHandler(
                         || it.content?.contains(queryLc) ?: false
                         || tags[it.id]?.find { tag -> tag.nameLc.contains(queryLc) } !== null
             }
-
         }
 
         return notes
