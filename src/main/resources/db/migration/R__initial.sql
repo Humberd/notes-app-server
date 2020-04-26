@@ -2,6 +2,8 @@ drop table if exists Note_Workspace;
 drop table if exists Workspace;
 drop table if exists Note_Tag;
 drop table if exists Tag;
+drop table if exists Note_User_Vote;
+drop table if exists Note_Comment;
 drop table if exists Note;
 drop table if exists User_Password_Credentials;
 drop table if exists "user";
