@@ -68,8 +68,8 @@ class NoteQueryHandler(
 
     private fun findBy(command: NoteListFilter.Compound): List<Note> {
         var notes = when {
-            command.authorId.isNullOrBlank() -> this.noteRepository.findAll(Pageable.unpaged())
-            else -> this.noteRepository.findAllByAuthorId(command.authorId, Pageable.unpaged())
+            command.authorId.isNullOrBlank() -> this.noteRepository.findAll(command.pageable)
+            else -> this.noteRepository.findAllByAuthorId(command.authorId, command.pageable)
         }.content
 
         if (!command.url.isNullOrBlank()) {
