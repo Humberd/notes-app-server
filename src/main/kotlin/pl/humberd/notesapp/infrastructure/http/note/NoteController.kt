@@ -1,5 +1,6 @@
 package pl.humberd.notesapp.infrastructure.http.note
 
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.humberd.notesapp.application.command.note.NoteCommandHandler
@@ -11,6 +12,8 @@ import pl.humberd.notesapp.application.command.note_tag.NoteTagCommandHandler
 import pl.humberd.notesapp.application.command.note_tag.model.NoteTagCreateCommand
 import pl.humberd.notesapp.application.command.note_tag.model.NoteTagDeleteCommand
 import pl.humberd.notesapp.application.query.note.NoteQueryHandler
+import pl.humberd.notesapp.application.query.note.model.NoteListFilter
+import pl.humberd.notesapp.application.query.note.model.NoteListView
 import pl.humberd.notesapp.application.query.note.model.NoteView
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.note.model.NoteCreateRequest
@@ -62,6 +65,27 @@ class NoteController(
         )
 
         return ResponseBuilder.ok(noteQueryHandler.view(id))
+    }
+
+    @GetMapping
+    fun readNotesList(
+        pageable: Pageable,
+        @RequestParam(value = "query", required = false, defaultValue = "") query: String,
+        @RequestParam(value = "url", required = false, defaultValue = "") url: String,
+        @RequestParam(value = "tagIds", required = false) tagIds: Collection<String>?,
+        @RequestParam(value = "workspaceId", required = false, defaultValue = "") workspaceId: String,
+        principal: Principal
+    ): ResponseEntity<NoteListView> {
+        val listQuery: NoteListFilter = NoteListFilter.Compound(
+            pageable = pageable,
+            authorId = principal.name,
+            query = query,
+            url = url,
+            tagsIds = tagIds,
+            workspaceId = workspaceId
+        )
+
+        return ResponseBuilder.ok(noteQueryHandler.listView(listQuery))
     }
 
     @PatchMapping("/{id}")

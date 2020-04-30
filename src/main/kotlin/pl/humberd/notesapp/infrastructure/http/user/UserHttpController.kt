@@ -1,11 +1,10 @@
 package pl.humberd.notesapp.infrastructure.http.user
 
-import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
-import pl.humberd.notesapp.application.query.note.NoteQueryHandler
-import pl.humberd.notesapp.application.query.note.model.NoteListFilter
-import pl.humberd.notesapp.application.query.note.model.NoteListView
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import pl.humberd.notesapp.application.query.user.UserQueryHandler
 import pl.humberd.notesapp.application.query.user.model.UserView
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
@@ -15,8 +14,7 @@ import kotlin.contracts.ExperimentalContracts
 @RequestMapping("/users")
 @RestController
 class UserHttpController(
-    private val userQueryHandler: UserQueryHandler,
-    private val noteQueryHandler: NoteQueryHandler
+    private val userQueryHandler: UserQueryHandler
 ) {
 
     @GetMapping("/{userId}")
@@ -26,27 +24,6 @@ class UserHttpController(
         val view = userQueryHandler.view(userId)
 
         return ResponseBuilder.ok(view)
-    }
-
-    @GetMapping("/{userId}/notes")
-    fun readNotesList(
-        pageable: Pageable,
-        @PathVariable("userId") userId: String,
-        @RequestParam(value = "query", required = false, defaultValue = "") query: String,
-        @RequestParam(value = "url", required = false, defaultValue = "") url: String,
-        @RequestParam(value = "tagIds", required = false) tagIds: Collection<String>?,
-        @RequestParam(value = "workspaceId", required = false, defaultValue = "") workspaceId: String
-    ): ResponseEntity<NoteListView> {
-        val listQuery: NoteListFilter = NoteListFilter.Compound(
-            pageable = pageable,
-            authorId = userId,
-            query = query,
-            url = url,
-            tagsIds = tagIds,
-            workspaceId = workspaceId
-        )
-
-        return ResponseBuilder.ok(noteQueryHandler.listView(listQuery))
     }
 
 }
