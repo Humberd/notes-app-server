@@ -3,8 +3,10 @@ package pl.humberd.notesapp.application.command.tag
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.tag.model.TagCreateCommand
+import pl.humberd.notesapp.application.command.tag.model.TagDeleteCommand
 import pl.humberd.notesapp.application.command.tag.model.TagIsUsersCommand
 import pl.humberd.notesapp.application.command.tag.model.TagPatchCommand
+import pl.humberd.notesapp.application.common.ASSERT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
@@ -40,6 +42,12 @@ class TagCommandHandler(
         )
     }
 
+    fun createAndRefresh(command: TagCreateCommand): Tag {
+        return this.create(command).also {
+            tagRepository.saveFlushRefresh(it)
+        }
+    }
+
     fun patch(command: TagPatchCommand): Tag {
         val tag = tagRepository.findByIdOrNull(command.id)
         ASSERT_NOT_NULL(tag, command.id)
@@ -60,6 +68,13 @@ class TagCommandHandler(
         return patch(command).also {
             tagRepository.saveFlushRefresh(it)
         }
+    }
+
+    fun delete(command: TagDeleteCommand) {
+        val tagExists = tagRepository.existsById(command.tagId)
+        ASSERT_EXIST<Tag>(tagExists, command.tagId)
+
+        tagRepository.deleteById(command.tagId)
     }
 
     private fun VALIDATE_NAME(name: String) {
