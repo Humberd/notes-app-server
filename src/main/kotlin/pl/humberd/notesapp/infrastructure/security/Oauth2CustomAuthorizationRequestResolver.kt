@@ -52,7 +52,7 @@ class Oauth2CustomAuthorizationRequestResolver(
             .additionalParameters(extraParams)
             .also {
                 val newState = if (redirectUri !== null) "$nonce;$redirectUri" else nonce
-                Base64.getUrlEncoder().encodeToString(newState.toByteArray())
+                it.state(Base64.getUrlEncoder().encodeToString(newState.toByteArray()))
             }
             .build()
     }

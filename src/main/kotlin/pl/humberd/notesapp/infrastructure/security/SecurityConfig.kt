@@ -83,14 +83,14 @@ class SecurityConfig(
                     return@successHandler
                 }
 
-                val decodedState = Base64.getUrlDecoder().decode(encodedState).toString().split(";")
+                val decodedState = String(Base64.getUrlDecoder().decode(encodedState)).split(";")
                 if (decodedState.size == 1) {
                     return@successHandler
                 }
 
                 val frontendUrl = decodedState[1]
 
-                if (!frontendUrl.startsWith("http://") || !frontendUrl.startsWith("https://")) {
+                if (!frontendUrl.startsWith("http://") && !frontendUrl.startsWith("https://")) {
                     return@successHandler
                 }
 
