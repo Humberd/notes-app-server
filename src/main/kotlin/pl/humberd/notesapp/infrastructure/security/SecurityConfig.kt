@@ -10,12 +10,10 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest
+import pl.humberd.notesapp.application.command.auth.AuthenticationProvider
 import pl.humberd.notesapp.application.command.auth.JwtUtils
-import java.util.*
-import javax.servlet.http.HttpServletRequest
+import pl.humberd.notesapp.application.command.auth.google_provider.GoogleProviderCommandHandler
+import pl.humberd.notesapp.application.command.auth.google_provider.model.GoogleProviderAuthorizationCommand
 import kotlin.contracts.ExperimentalContracts
 
 
@@ -25,7 +23,8 @@ import kotlin.contracts.ExperimentalContracts
 class SecurityConfig(
     private val jwtUtils: JwtUtils,
     private val clientRegistrationRepository: ClientRegistrationRepository,
-    private val oAuth2AuthorizedClientService: OAuth2AuthorizedClientService
+    private val oAuth2AuthorizedClientService: OAuth2AuthorizedClientService,
+    private val googleProviderCommandHandler: GoogleProviderCommandHandler
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
@@ -52,52 +51,35 @@ class SecurityConfig(
 
         http.oauth2Login()
             .authorizationEndpoint {
-                it.authorizationRequestResolver(CustomAuthorizationRequestResolver(this.clientRegistrationRepository, "/oauth2/authorization"))
+                it.authorizationRequestResolver(
+                    Oauth2CustomAuthorizationRequestResolver(
+                        repo = clientRegistrationRepository,
+                        authorizationRequestBaseUri = "/oauth2/authorization"
+                    )
+                )
             }
             .successHandler { request, response, authentication ->
                 val oauth2Authentication = authentication as OAuth2AuthenticationToken
-                val clientConfig = oAuth2AuthorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(oauth2Authentication.authorizedClientRegistrationId, oauth2Authentication.principal.name)
-                println("success")
+                val authenticationProvider =
+                    AuthenticationProvider.fromOathProvider(oauth2Authentication.authorizedClientRegistrationId)
+
+                val clientConfig = oAuth2AuthorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(
+                    oauth2Authentication.authorizedClientRegistrationId,
+                    oauth2Authentication.principal.name
+                )
+
+                when (authenticationProvider) {
+                    AuthenticationProvider.GOOGLE -> this.googleProviderCommandHandler.authorize(
+                        GoogleProviderAuthorizationCommand(
+                            accountId = oauth2Authentication.principal.attributes["sub"] as String,
+                            name = oauth2Authentication.principal.attributes["name"] as String,
+                            email = oauth2Authentication.principal.attributes["email"] as String,
+                            refreshToken = clientConfig.refreshToken!!.tokenValue
+                        )
+                    )
+                    else -> throw Error("Provider not supported")
+                }
             }
     }
 }
 
-class CustomAuthorizationRequestResolver(
-    repo: ClientRegistrationRepository,
-    authorizationRequestBaseUri: String
-) : OAuth2AuthorizationRequestResolver {
-
-    private var defaultResolver: DefaultOAuth2AuthorizationRequestResolver
-
-    init {
-        defaultResolver = DefaultOAuth2AuthorizationRequestResolver(repo, authorizationRequestBaseUri)
-    }
-
-    override fun resolve(request: HttpServletRequest?): OAuth2AuthorizationRequest? {
-        var req = defaultResolver.resolve(request)
-        if (req !== null) {
-            req = customizeAuthorizationRequest(req)
-        }
-        return req
-    }
-
-    override fun resolve(request: HttpServletRequest?, clientRegistrationId: String?): OAuth2AuthorizationRequest? {
-        var req = defaultResolver.resolve(request)
-        if (req !== null) {
-            req = customizeAuthorizationRequest(req)
-        }
-        return req
-    }
-
-    private fun customizeAuthorizationRequest(req: OAuth2AuthorizationRequest): OAuth2AuthorizationRequest {
-        val extraParams: MutableMap<String, Any> = HashMap()
-        extraParams.putAll(req.additionalParameters)
-        extraParams["access_type"] = "offline"
-
-        return OAuth2AuthorizationRequest
-            .from(req)
-            .additionalParameters(extraParams)
-            .state("foobar-bar")
-            .build()
-    }
-}

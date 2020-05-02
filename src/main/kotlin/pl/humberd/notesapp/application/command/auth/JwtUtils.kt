@@ -23,6 +23,7 @@ class JwtUtils(
                 it.issuedAt = Date()
                 it.issuer = "notes-app"
                 it.audience = "notes-app"
+                it["provider"] = userJwt.authenticationProvider
                 it.expiration = Date.from(Calendar.getInstance().toInstant().plus(365, ChronoUnit.DAYS))
             })
             .signWith(SignatureAlgorithm.HS256, jwtSecret)
@@ -36,7 +37,8 @@ class JwtUtils(
             .body
 
         return UserJwt(
-            userId = claims.subject
+            userId = claims.subject,
+            authenticationProvider = AuthenticationProvider.valueOf(claims["provider"] as String)
         )
     }
 }

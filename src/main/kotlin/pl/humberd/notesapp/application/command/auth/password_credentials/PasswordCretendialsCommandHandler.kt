@@ -2,6 +2,7 @@ package pl.humberd.notesapp.application.command.auth.password_credentials
 
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import pl.humberd.notesapp.application.command.auth.AuthenticationProvider
 import pl.humberd.notesapp.application.command.auth.JwtUtils
 import pl.humberd.notesapp.application.command.auth.UserJwt
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginCommand
@@ -67,7 +68,12 @@ class PasswordCretendialsCommandHandler(
             throw UnauthorizedException()
         }
 
-        return jwtUtils.generateJwt(UserJwt(userId = userPasswordCredentials.get().userId))
+        return jwtUtils.generateJwt(
+            UserJwt(
+                userId = userPasswordCredentials.get().userId,
+                authenticationProvider = AuthenticationProvider.GOOGLE
+            )
+        )
     }
 
     private fun isAuthorized(
