@@ -71,7 +71,7 @@ class PasswordCretendialsCommandHandler(
         return jwtUtils.generateJwt(
             UserJwt(
                 userId = userPasswordCredentials.get().userId,
-                authenticationProvider = AuthenticationProvider.GOOGLE
+                authenticationProvider = AuthenticationProvider.PASSWORD_CREDENTIALS
             )
         )
     }

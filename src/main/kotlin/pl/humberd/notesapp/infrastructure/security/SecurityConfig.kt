@@ -10,10 +10,10 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
-import pl.humberd.notesapp.application.command.auth.AuthenticationProvider
 import pl.humberd.notesapp.application.command.auth.JwtUtils
 import pl.humberd.notesapp.application.command.auth.google_provider.GoogleProviderCommandHandler
 import pl.humberd.notesapp.application.command.auth.google_provider.model.GoogleProviderAuthorizationCommand
+import java.util.*
 import kotlin.contracts.ExperimentalContracts
 
 
@@ -60,25 +60,41 @@ class SecurityConfig(
             }
             .successHandler { request, response, authentication ->
                 val oauth2Authentication = authentication as OAuth2AuthenticationToken
-                val authenticationProvider =
-                    AuthenticationProvider.fromOathProvider(oauth2Authentication.authorizedClientRegistrationId)
 
                 val clientConfig = oAuth2AuthorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(
                     oauth2Authentication.authorizedClientRegistrationId,
                     oauth2Authentication.principal.name
                 )
 
-                when (authenticationProvider) {
-                    AuthenticationProvider.GOOGLE -> this.googleProviderCommandHandler.authorize(
+                val jwt = when (oauth2Authentication.authorizedClientRegistrationId) {
+                    "google" -> this.googleProviderCommandHandler.authorize(
                         GoogleProviderAuthorizationCommand(
                             accountId = oauth2Authentication.principal.attributes["sub"] as String,
-                            name = oauth2Authentication.principal.attributes["name"] as String,
+                            accountName = oauth2Authentication.principal.attributes["name"] as String,
                             email = oauth2Authentication.principal.attributes["email"] as String,
                             refreshToken = clientConfig.refreshToken!!.tokenValue
                         )
                     )
                     else -> throw Error("Provider not supported")
                 }
+
+                val encodedState = request.getParameter("state")
+                if (encodedState === null) {
+                    return@successHandler
+                }
+
+                val decodedState = Base64.getUrlDecoder().decode(encodedState).toString().split(";")
+                if (decodedState.size == 1) {
+                    return@successHandler
+                }
+
+                val frontendUrl = decodedState[1]
+
+                if (!frontendUrl.startsWith("http://") || !frontendUrl.startsWith("https://")) {
+                    return@successHandler
+                }
+
+                response.sendRedirect("$frontendUrl/?jwt=$jwt")
             }
     }
 }
