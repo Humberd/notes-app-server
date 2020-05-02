@@ -3,7 +3,7 @@ package pl.humberd.notesapp.infrastructure.security
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
-import pl.humberd.notesapp.application.command.user.UserCommandHandler
+import pl.humberd.notesapp.application.command.auth.JwtUtils
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -12,7 +12,7 @@ import kotlin.contracts.ExperimentalContracts
 @ExperimentalContracts
 class JwtAuthorizationFilter(
     authenticationManager: AuthenticationManager,
-    private val userCommandHandler: UserCommandHandler
+    val jwtUtils: JwtUtils
 ) : BasicAuthenticationFilter(authenticationManager) {
 
     override fun doFilterInternal(
@@ -30,7 +30,7 @@ class JwtAuthorizationFilter(
         val jwt = header.replaceFirst("Bearer ", "")
 
         val userJwt = try {
-            userCommandHandler.validateJwt(jwt)
+            jwtUtils.validateJwt(jwt)
         } catch (e: Exception) {
             chain.doFilter(request, response)
             return

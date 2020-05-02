@@ -1,13 +1,10 @@
-package pl.humberd.notesapp.application.command.user
+package pl.humberd.notesapp.application.command.auth.password_credentials
 
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Service
-import pl.humberd.notesapp.application.command.user.model.PasswordCredentialsAuthorizationCommand
-import pl.humberd.notesapp.application.command.user.model.UserWithPasswordCredentialsCreateCommand
+import pl.humberd.notesapp.application.command.auth.JwtUtils
+import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginCommand
+import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsRegisterCommand
 import pl.humberd.notesapp.application.common.UserJwt
 import pl.humberd.notesapp.application.exceptions.AlreadyExistsException
 import pl.humberd.notesapp.application.exceptions.UnauthorizedException
@@ -16,23 +13,21 @@ import pl.humberd.notesapp.domain.entity.user.model.User
 import pl.humberd.notesapp.domain.entity.user.model.UserPasswordCredentials
 import pl.humberd.notesapp.domain.entity.user.repository.UserPasswordCredentialsRepository
 import pl.humberd.notesapp.domain.entity.user.repository.UserRepository
-import java.time.temporal.ChronoUnit
 import java.util.*
 import javax.transaction.Transactional
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
-@Service
 @Transactional
-class UserCommandHandler(
+@Service
+class PasswordCretendialsCommandHandler(
+    private val jwtUtils: JwtUtils,
     private val userRepository: UserRepository,
     private val userPasswordCredentialsRepository: UserPasswordCredentialsRepository,
-    private val passwordEncoder: PasswordEncoder,
-    @Value("\${auth.jwt.secret}")
-    private val jwtSecret: String
+    private val passwordEncoder: PasswordEncoder
 ) {
 
-    fun create(command: UserWithPasswordCredentialsCreateCommand): User {
+    fun register(command: PasswordCredentialsRegisterCommand): User {
         val userExists = userRepository.existsByNameLc(command.name.toLowerCase())
         if (userExists) {
             throw AlreadyExistsException(User::class, command.name)
@@ -63,50 +58,28 @@ class UserCommandHandler(
         return user
     }
 
-    fun validateJwt(jwt: String): UserJwt {
-        val claims = Jwts.parser()
-            .setSigningKey(jwtSecret)
-            .parseClaimsJws(jwt)
-            .body
 
-        return UserJwt(
-            userId = claims.subject
-        )
-    }
-
-    fun authorize(command: PasswordCredentialsAuthorizationCommand): String {
+    fun login(command: PasswordCredentialsLoginCommand): String {
         val userPasswordCredentials = userPasswordCredentialsRepository.findByEmailLc(command.email.toLowerCase())
 
-        val isAuthorized = isAuthorized(userPasswordCredentials, command)
+        val isAuthorized = isAuthorized(userPasswordCredentials, command.password)
         if (!isAuthorized) {
             throw UnauthorizedException()
         }
 
-        return generateJwt(UserJwt(userId = userPasswordCredentials.get().userId))
-    }
-
-    private fun generateJwt(userJwt: UserJwt): String {
-        return Jwts.builder()
-            .setClaims(Jwts.claims().also {
-                it.id = IdGenerator.random(Jwt::class)
-                it.subject = userJwt.userId
-                it.issuedAt = Date()
-                it.issuer = "notes-app"
-                it.audience = "notes-app"
-                it.expiration = Date.from(Calendar.getInstance().toInstant().plus(365, ChronoUnit.DAYS))
-            })
-            .signWith(SignatureAlgorithm.HS256, jwtSecret)
-            .compact()
+        return jwtUtils.generateJwt(UserJwt(userId = userPasswordCredentials.get().userId))
     }
 
     private fun isAuthorized(
         userPasswordCredentials: Optional<UserPasswordCredentials>,
-        command: PasswordCredentialsAuthorizationCommand
+        password: String
     ): Boolean {
         if (userPasswordCredentials.isEmpty) {
             return false
         }
 
-        return passwordEncoder.matches(command.password, userPasswordCredentials.get().passwordHash)
+        return passwordEncoder.matches(password, userPasswordCredentials.get().passwordHash)
     }
+
+
 }

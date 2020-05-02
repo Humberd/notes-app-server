@@ -1,4 +1,4 @@
-package pl.humberd.notesapp.infrastructure.http.credentials.model
+package pl.humberd.notesapp.infrastructure.http.auth.model
 
 import javax.validation.constraints.NotBlank
 

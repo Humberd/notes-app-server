@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
-import pl.humberd.notesapp.application.command.user.UserCommandHandler
+import pl.humberd.notesapp.application.command.auth.JwtUtils
 import kotlin.contracts.ExperimentalContracts
 
 
@@ -14,7 +14,7 @@ import kotlin.contracts.ExperimentalContracts
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val userCommandHandler: UserCommandHandler
+    private val jwtUtils: JwtUtils
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
@@ -37,7 +37,7 @@ class SecurityConfig(
             .headers().frameOptions().disable()
 
         http
-            .addFilter(JwtAuthorizationFilter(authenticationManagerBean(), userCommandHandler))
+            .addFilter(JwtAuthorizationFilter(authenticationManagerBean(), jwtUtils))
     }
 
 }
