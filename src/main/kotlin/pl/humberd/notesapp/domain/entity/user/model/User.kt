@@ -13,11 +13,18 @@ class User(
     val id: UserId,
 
     @Column(name = "name")
-    var name: String
+    var name: String,
+
+    @Column(name = "email")
+    var email: String
 ) {
 
     @Column(name = "name_lc", updatable = false, insertable = false)
     lateinit var nameLc: String
+        private set
+
+    @Column(name= "email_lc", updatable = false, insertable = false)
+    lateinit var emailLc: String
         private set
 
     @Embedded
@@ -25,7 +32,7 @@ class User(
         private set
 
     override fun toString(): String {
-        return "User(id='$id', name='$name', nameLc='$nameLc')"
+        return "User(id='$id', name='$name', email='$email')"
     }
 
 }

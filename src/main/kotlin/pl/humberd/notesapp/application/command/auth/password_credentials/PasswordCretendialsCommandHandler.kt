@@ -7,12 +7,13 @@ import pl.humberd.notesapp.application.command.auth.JwtUtils
 import pl.humberd.notesapp.application.command.auth.UserJwt
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginCommand
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsRegisterCommand
-import pl.humberd.notesapp.application.exceptions.AlreadyExistsException
+import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
+import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.UnauthorizedException
 import pl.humberd.notesapp.domain.common.IdGenerator
+import pl.humberd.notesapp.domain.entity.auth_password_credentials.model.PasswordCredentials
+import pl.humberd.notesapp.domain.entity.auth_password_credentials.repository.PasswordCredentialsRepository
 import pl.humberd.notesapp.domain.entity.user.model.User
-import pl.humberd.notesapp.domain.entity.user.model.UserPasswordCredentials
-import pl.humberd.notesapp.domain.entity.user.repository.UserPasswordCredentialsRepository
 import pl.humberd.notesapp.domain.entity.user.repository.UserRepository
 import java.util.*
 import javax.transaction.Transactional
@@ -24,32 +25,28 @@ import kotlin.contracts.ExperimentalContracts
 class PasswordCretendialsCommandHandler(
     private val jwtUtils: JwtUtils,
     private val userRepository: UserRepository,
-    private val userPasswordCredentialsRepository: UserPasswordCredentialsRepository,
+    private val passwordCredentialsRepository: PasswordCredentialsRepository,
     private val passwordEncoder: PasswordEncoder
 ) {
 
     fun register(command: PasswordCredentialsRegisterCommand): User {
         val userExists = userRepository.existsByNameLc(command.name.toLowerCase())
-        if (userExists) {
-            throw AlreadyExistsException(User::class, command.name)
-        }
+        ASSERT_NOT_EXIST<User>(userExists, command.name.toLowerCase())
 
-        val emailExists = userPasswordCredentialsRepository.existsByEmailLc(command.email.toLowerCase())
-        if (emailExists) {
-            throw AlreadyExistsException(UserPasswordCredentials::class, command.email)
-        }
+        val emailExists = userRepository.existsByEmailLc(command.email.toLowerCase())
+        ASSERT_NOT_EXIST<User>(emailExists, command.email.toLowerCase())
 
         val user = userRepository.save(
             User(
                 id = IdGenerator.random(User::class),
-                name = command.name
+                name = command.name,
+                email = command.email
             )
         )
 
-        userPasswordCredentialsRepository.save(
-            UserPasswordCredentials(
+        passwordCredentialsRepository.save(
+            PasswordCredentials(
                 userId = user.id,
-                email = command.email,
                 passwordHash = passwordEncoder.encode(command.password)
             )
         )
@@ -61,7 +58,10 @@ class PasswordCretendialsCommandHandler(
 
 
     fun login(command: PasswordCredentialsLoginCommand): String {
-        val userPasswordCredentials = userPasswordCredentialsRepository.findByEmailLc(command.email.toLowerCase())
+        val user = userRepository.findByEmailLc(command.email.toLowerCase())
+        ASSERT_NOT_NULL(user.orElseGet(null), command.email.toLowerCase())
+
+        val userPasswordCredentials = passwordCredentialsRepository.findById(user.get().id)
 
         val isAuthorized = isAuthorized(userPasswordCredentials, command.password)
         if (!isAuthorized) {
@@ -77,14 +77,14 @@ class PasswordCretendialsCommandHandler(
     }
 
     private fun isAuthorized(
-        userPasswordCredentials: Optional<UserPasswordCredentials>,
+        passwordCredentials: Optional<PasswordCredentials>,
         password: String
     ): Boolean {
-        if (userPasswordCredentials.isEmpty) {
+        if (passwordCredentials.isEmpty) {
             return false
         }
 
-        return passwordEncoder.matches(password, userPasswordCredentials.get().passwordHash)
+        return passwordEncoder.matches(password, passwordCredentials.get().passwordHash)
     }
 
 
