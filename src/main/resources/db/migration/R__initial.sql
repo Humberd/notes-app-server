@@ -8,6 +8,7 @@ drop table if exists Note;
 drop table if exists User_Password_Credentials;
 drop table if exists Auth_Password_Credentials;
 drop table if exists Auth_Google_Provider;
+drop table if exists Auth_Github_Provider;
 drop table if exists "user";
 
 create table "user"
@@ -46,8 +47,10 @@ execute procedure trigger_set_timestamp();
 create table Auth_Google_Provider
 (
     user_id       varchar(32)  not null primary key references "user" (id) on delete cascade,
-    account_id    varchar(32)  not null,
-    account_name  varchar(255) not null,
+    id            varchar(32)  not null unique,
+    name          varchar(255) not null,
+    email         varchar(255) not null,
+    picture       varchar(255) not null,
     refresh_token varchar(255) not null,
     created_at    timestamp    not null default now(),
     updated_at    timestamp    not null default now()
@@ -56,6 +59,26 @@ create table Auth_Google_Provider
 create trigger set_updated_at
     before update
     on Auth_Google_Provider
+    for each row
+execute procedure trigger_set_timestamp();
+
+------- Auth Github Provider
+create table Auth_Github_Provider
+(
+    user_id      varchar(32)  not null primary key references "user" (id) on delete cascade,
+    id           varchar(32)  not null unique,
+    login        varchar(255) not null,
+    name         varchar(255) not null,
+    email        varchar(255) not null,
+    avatar_url   varchar(255) not null,
+    access_token varchar(255) not null,
+    created_at   timestamp    not null default now(),
+    updated_at   timestamp    not null default now()
+);
+
+create trigger set_updated_at
+    before update
+    on Auth_Github_Provider
     for each row
 execute procedure trigger_set_timestamp();
 

@@ -27,7 +27,7 @@ class GoogleProviderCommandHandler(
             userRepository.save(
                 User(
                     id = IdGenerator.random(User::class),
-                    name = command.accountName,
+                    name = command.name,
                     email = command.email
                 )
             )
@@ -40,8 +40,10 @@ class GoogleProviderCommandHandler(
             googleProviderRepository.save(
                 GoogleProvider(
                     userId = user.id,
-                    accountId = command.accountId,
-                    accountName = command.accountName,
+                    id = command.id,
+                    name = command.name,
+                    email = command.email,
+                    picture = command.picture,
                     refreshToken = command.refreshToken
                 )
             )

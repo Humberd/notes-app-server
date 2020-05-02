@@ -35,14 +35,22 @@ class Oauth2SuccessHandler(
         )
 
         val jwt = when (oauth2Authentication.authorizedClientRegistrationId) {
-            "google" -> this.googleProviderCommandHandler.authorize(
-                GoogleProviderAuthorizationCommand(
-                    accountId = oauth2Authentication.principal.attributes["sub"] as String,
-                    accountName = oauth2Authentication.principal.attributes["name"] as String,
-                    email = oauth2Authentication.principal.attributes["email"] as String,
-                    refreshToken = clientConfig.refreshToken!!.tokenValue
+            "google" -> {
+                val emailVerified = oauth2Authentication.principal.attributes["email_verified"] as Boolean
+                if (!emailVerified) {
+                    throw Error("email not verified")
+                }
+
+                this.googleProviderCommandHandler.authorize(
+                    GoogleProviderAuthorizationCommand(
+                        id = oauth2Authentication.principal.attributes["sub"] as String,
+                        name = oauth2Authentication.principal.attributes["name"] as String,
+                        email = oauth2Authentication.principal.attributes["email"] as String,
+                        picture = oauth2Authentication.principal.attributes["picture"] as String,
+                        refreshToken = clientConfig.refreshToken!!.tokenValue
+                    )
                 )
-            )
+            }
             else -> throw Error("Provider not supported")
         }
 
