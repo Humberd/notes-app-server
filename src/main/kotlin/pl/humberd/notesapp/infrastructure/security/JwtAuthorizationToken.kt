@@ -1,7 +1,7 @@
 package pl.humberd.notesapp.infrastructure.security
 
 import org.springframework.security.authentication.AbstractAuthenticationToken
-import pl.humberd.notesapp.application.common.UserJwt
+import pl.humberd.notesapp.application.command.auth.UserJwt
 
 class JwtAuthorizationToken(
     val jwt: String,

@@ -5,7 +5,6 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Service
-import pl.humberd.notesapp.application.common.UserJwt
 import pl.humberd.notesapp.domain.common.IdGenerator
 import java.time.temporal.ChronoUnit
 import java.util.*

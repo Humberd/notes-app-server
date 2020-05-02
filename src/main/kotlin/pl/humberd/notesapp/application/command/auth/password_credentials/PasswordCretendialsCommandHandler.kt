@@ -3,9 +3,9 @@ package pl.humberd.notesapp.application.command.auth.password_credentials
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.command.auth.JwtUtils
+import pl.humberd.notesapp.application.command.auth.UserJwt
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginCommand
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsRegisterCommand
-import pl.humberd.notesapp.application.common.UserJwt
 import pl.humberd.notesapp.application.exceptions.AlreadyExistsException
 import pl.humberd.notesapp.application.exceptions.UnauthorizedException
 import pl.humberd.notesapp.domain.common.IdGenerator
