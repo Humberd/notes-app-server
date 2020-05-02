@@ -4,7 +4,8 @@ import pl.humberd.notesapp.domain.entity.user.model.UserId
 
 enum class AuthenticationProvider {
     PASSWORD_CREDENTIALS,
-    GOOGLE;
+    GOOGLE,
+    GITHUB
 }
 
 

@@ -6,6 +6,8 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
+import pl.humberd.notesapp.application.command.auth.github_provider.GithubProviderCommandHandler
+import pl.humberd.notesapp.application.command.auth.github_provider.model.GithubProviderAuthorizationCommand
 import pl.humberd.notesapp.application.command.auth.google_provider.GoogleProviderCommandHandler
 import pl.humberd.notesapp.application.command.auth.google_provider.model.GoogleProviderAuthorizationCommand
 import java.util.*
@@ -20,7 +22,8 @@ import kotlin.contracts.ExperimentalContracts
 @Configuration
 class Oauth2SuccessHandler(
     private val oAuth2AuthorizedClientService: OAuth2AuthorizedClientService,
-    private val googleProviderCommandHandler: GoogleProviderCommandHandler
+    private val googleProviderCommandHandler: GoogleProviderCommandHandler,
+    private val githubProviderCommandHandler: GithubProviderCommandHandler
 ) : AuthenticationSuccessHandler {
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
@@ -51,6 +54,16 @@ class Oauth2SuccessHandler(
                     )
                 )
             }
+            "github" -> this.githubProviderCommandHandler.authorize(
+                GithubProviderAuthorizationCommand(
+                    id = (oauth2Authentication.principal.attributes["id"] as Int).toString(),
+                    login = oauth2Authentication.principal.attributes["login"] as String,
+                    name = oauth2Authentication.principal.attributes["name"] as String,
+                    email = oauth2Authentication.principal.attributes["email"] as String,
+                    avatarUrl = oauth2Authentication.principal.attributes["avatar_url"] as String,
+                    accessToken = clientConfig.accessToken.tokenValue
+                )
+            )
             else -> throw Error("Provider not supported")
         }
 
