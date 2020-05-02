@@ -6,6 +6,8 @@ drop table if exists Note_User_Vote;
 drop table if exists Note_Comment;
 drop table if exists Note;
 drop table if exists User_Password_Credentials;
+drop table if exists Auth_Password_Credentials;
+drop table if exists Auth_Google_Provider;
 drop table if exists "user";
 
 create table "user"
@@ -13,6 +15,8 @@ create table "user"
     id         varchar(32)  not null primary key,
     name       varchar(255) not null,
     name_lc    varchar(255) not null unique generated always as ( lower(name) ) stored,
+    email      varchar(255) not null,
+    email_lc   varchar(255) not null unique generated always as ( lower(email) ) stored,
     created_at timestamp    not null default now(),
     updated_at timestamp    not null default now()
 );
@@ -23,12 +27,10 @@ create trigger set_updated_at
     for each row
 execute procedure trigger_set_timestamp();
 
-------- Credentials_Auth
-create table User_Password_Credentials
+------- Auth Password Credentials
+create table Auth_Password_Credentials
 (
     user_id       varchar(32)  not null primary key references "user" (id) on delete cascade,
-    email         varchar(255) not null,
-    email_lc      varchar(255) not null unique generated always as ( lower(email) ) STORED,
     password_hash varchar(255) not null,
     created_at    timestamp    not null default now(),
     updated_at    timestamp    not null default now()
@@ -36,10 +38,26 @@ create table User_Password_Credentials
 
 create trigger set_updated_at
     before update
-    on User_Password_Credentials
+    on Auth_Password_Credentials
     for each row
 execute procedure trigger_set_timestamp();
 
+------- Auth Google Provider
+create table Auth_Google_Provider
+(
+    user_id       varchar(32)  not null primary key references "user" (id) on delete cascade,
+    account_id    varchar(32)  not null,
+    account_name  varchar(255) not null,
+    refresh_token varchar(255) not null,
+    created_at    timestamp    not null default now(),
+    updated_at    timestamp    not null default now()
+);
+
+create trigger set_updated_at
+    before update
+    on Auth_Google_Provider
+    for each row
+execute procedure trigger_set_timestamp();
 
 ------- Note
 create table Note
@@ -153,13 +171,13 @@ create trigger set_updated_at
 execute procedure trigger_set_timestamp();
 
 --
-insert into "user"(id, name)
-VALUES ('user-1', 'test'),
-       ('user-2', 'foo');
+insert into "user"(id, name, email)
+VALUES ('user-1', 'test', 'Admin@admin.com'),
+       ('user-2', 'foo', 'aa@aa.com');
 
 --
-insert into User_Password_Credentials(user_id, email, password_hash)
-values ('user-1', 'Admin@admin.com', '$2a$10$0T765q/oG9wvUDiYZ8EqGuIsA1wi4WrYWqRQ73Oj6tpeizyJdY0Pq');
+insert into Auth_Password_Credentials(user_id, password_hash)
+values ('user-1', '$2a$10$0T765q/oG9wvUDiYZ8EqGuIsA1wi4WrYWqRQ73Oj6tpeizyJdY0Pq');
 
 insert into Note(id, author_id, url, title, content)
 VALUES ('note-1', 'user-1', null, 'k3s config export', '```kubectl config view --raw >~/.kube/config```'),
