@@ -6,14 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import pl.humberd.notesapp.application.command.auth.JwtUtils
-import pl.humberd.notesapp.application.command.auth.google_provider.GoogleProviderCommandHandler
-import pl.humberd.notesapp.application.command.auth.google_provider.model.GoogleProviderAuthorizationCommand
-import java.util.*
 import kotlin.contracts.ExperimentalContracts
 
 
@@ -22,9 +15,8 @@ import kotlin.contracts.ExperimentalContracts
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtUtils: JwtUtils,
-    private val clientRegistrationRepository: ClientRegistrationRepository,
-    private val oAuth2AuthorizedClientService: OAuth2AuthorizedClientService,
-    private val googleProviderCommandHandler: GoogleProviderCommandHandler
+    private val oauth2AuthorizationRequestResolver: Oauth2AuthorizationRequestResolver,
+    private val oauth2SuccessHandler: Oauth2SuccessHandler
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
@@ -50,52 +42,10 @@ class SecurityConfig(
             .addFilter(JwtAuthorizationFilter(authenticationManagerBean(), jwtUtils))
 
         http.oauth2Login()
-            .authorizationEndpoint {
-                it.authorizationRequestResolver(
-                    Oauth2CustomAuthorizationRequestResolver(
-                        repo = clientRegistrationRepository,
-                        authorizationRequestBaseUri = "/oauth2/authorization"
-                    )
-                )
-            }
-            .successHandler { request, response, authentication ->
-                val oauth2Authentication = authentication as OAuth2AuthenticationToken
-
-                val clientConfig = oAuth2AuthorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>(
-                    oauth2Authentication.authorizedClientRegistrationId,
-                    oauth2Authentication.principal.name
-                )
-
-                val jwt = when (oauth2Authentication.authorizedClientRegistrationId) {
-                    "google" -> this.googleProviderCommandHandler.authorize(
-                        GoogleProviderAuthorizationCommand(
-                            accountId = oauth2Authentication.principal.attributes["sub"] as String,
-                            accountName = oauth2Authentication.principal.attributes["name"] as String,
-                            email = oauth2Authentication.principal.attributes["email"] as String,
-                            refreshToken = clientConfig.refreshToken!!.tokenValue
-                        )
-                    )
-                    else -> throw Error("Provider not supported")
-                }
-
-                val encodedState = request.getParameter("state")
-                if (encodedState === null) {
-                    return@successHandler
-                }
-
-                val decodedState = String(Base64.getUrlDecoder().decode(encodedState)).split(";")
-                if (decodedState.size == 1) {
-                    return@successHandler
-                }
-
-                val frontendUrl = decodedState[1]
-
-                if (!frontendUrl.startsWith("http://") && !frontendUrl.startsWith("https://")) {
-                    return@successHandler
-                }
-
-                response.sendRedirect("$frontendUrl/?jwt=$jwt")
-            }
+            .authorizationEndpoint()
+            .authorizationRequestResolver(oauth2AuthorizationRequestResolver)
+            .and()
+            .successHandler(oauth2SuccessHandler)
     }
 }
 

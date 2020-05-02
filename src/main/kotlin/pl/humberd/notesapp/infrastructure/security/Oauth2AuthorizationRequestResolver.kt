@@ -1,5 +1,6 @@
 package pl.humberd.notesapp.infrastructure.security
 
+import org.springframework.context.annotation.Configuration
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator
 import org.springframework.security.crypto.keygen.StringKeyGenerator
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
@@ -13,11 +14,14 @@ import kotlin.collections.HashMap
 /**
  * This makes sure there is a `redirect_url` in the state, so that we can redirect user to the frontend page
  */
-class Oauth2CustomAuthorizationRequestResolver(
-    repo: ClientRegistrationRepository,
-    authorizationRequestBaseUri: String
+@Configuration
+class Oauth2AuthorizationRequestResolver(
+    clientRegistrationRepository: ClientRegistrationRepository
 ) : OAuth2AuthorizationRequestResolver {
-    private var defaultResolver = DefaultOAuth2AuthorizationRequestResolver(repo, authorizationRequestBaseUri)
+    private var defaultResolver = DefaultOAuth2AuthorizationRequestResolver(
+        clientRegistrationRepository,
+        "/oauth2/authorization"
+    )
     private val stateGenerator: StringKeyGenerator = Base64StringKeyGenerator(Base64.getUrlEncoder())
 
     override fun resolve(request: HttpServletRequest?): OAuth2AuthorizationRequest? {
