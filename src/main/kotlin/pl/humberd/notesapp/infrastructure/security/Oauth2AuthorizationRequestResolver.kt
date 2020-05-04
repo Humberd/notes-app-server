@@ -47,6 +47,7 @@ class Oauth2AuthorizationRequestResolver(
         val extraParams: MutableMap<String, Any> = HashMap()
         extraParams.putAll(req.additionalParameters)
         extraParams["access_type"] = "offline"
+        extraParams["prompt"] = "consent"
 
         val redirectUri = request?.getParameter("redirect_uri")
         val nonce = stateGenerator.generateKey()
