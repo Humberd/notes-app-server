@@ -39,9 +39,6 @@ class Oauth2SuccessHandler(
             oauth2Authentication.authorizedClientRegistrationId,
             oauth2Authentication.principal.name
         )
-        logger.info("provider: ${oauth2Authentication.authorizedClientRegistrationId}")
-        logger.info("clientConfig.refreshToken: ${clientConfig?.refreshToken?.tokenValue}")
-        logger.info("clientConfig.accessTokne: ${clientConfig.accessToken?.tokenValue}")
 
         val jwt = try {
              when (oauth2Authentication.authorizedClientRegistrationId) {
@@ -79,8 +76,6 @@ class Oauth2SuccessHandler(
 
             throw e;
         }
-
-        logger.info("jwt: $jwt")
 
         val encodedState = request.getParameter("state")
         if (encodedState === null) {
