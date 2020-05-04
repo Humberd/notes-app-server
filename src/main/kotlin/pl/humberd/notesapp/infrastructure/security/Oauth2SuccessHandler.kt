@@ -40,34 +40,39 @@ class Oauth2SuccessHandler(
             oauth2Authentication.principal.name
         )
 
-        val jwt = when (oauth2Authentication.authorizedClientRegistrationId) {
-            "google" -> {
-                val emailVerified = oauth2Authentication.principal.attributes["email_verified"] as Boolean
-                if (!emailVerified) {
-                    throw Error("email not verified")
-                }
+        val jwt = try {
+             when (oauth2Authentication.authorizedClientRegistrationId) {
+                "google" -> {
+                    val emailVerified = oauth2Authentication.principal.attributes["email_verified"] as Boolean
+                    if (!emailVerified) {
+                        throw Error("email not verified")
+                    }
 
-                this.googleProviderCommandHandler.authorize(
-                    GoogleProviderAuthorizationCommand(
-                        id = oauth2Authentication.principal.attributes["sub"] as String,
+                    this.googleProviderCommandHandler.authorize(
+                        GoogleProviderAuthorizationCommand(
+                            id = oauth2Authentication.principal.attributes["sub"] as String,
+                            name = oauth2Authentication.principal.attributes["name"] as String,
+                            email = oauth2Authentication.principal.attributes["email"] as String,
+                            picture = oauth2Authentication.principal.attributes["picture"] as String,
+                            refreshToken = clientConfig.refreshToken!!.tokenValue
+                        )
+                    )
+                }
+                "github" -> this.githubProviderCommandHandler.authorize(
+                    GithubProviderAuthorizationCommand(
+                        id = (oauth2Authentication.principal.attributes["id"] as Int).toString(),
+                        login = oauth2Authentication.principal.attributes["login"] as String,
                         name = oauth2Authentication.principal.attributes["name"] as String,
                         email = oauth2Authentication.principal.attributes["email"] as String,
-                        picture = oauth2Authentication.principal.attributes["picture"] as String,
-                        refreshToken = clientConfig.refreshToken!!.tokenValue
+                        avatarUrl = oauth2Authentication.principal.attributes["avatar_url"] as String,
+                        accessToken = clientConfig.accessToken.tokenValue
                     )
                 )
+                else -> throw Error("Provider not supported")
             }
-            "github" -> this.githubProviderCommandHandler.authorize(
-                GithubProviderAuthorizationCommand(
-                    id = (oauth2Authentication.principal.attributes["id"] as Int).toString(),
-                    login = oauth2Authentication.principal.attributes["login"] as String,
-                    name = oauth2Authentication.principal.attributes["name"] as String,
-                    email = oauth2Authentication.principal.attributes["email"] as String,
-                    avatarUrl = oauth2Authentication.principal.attributes["avatar_url"] as String,
-                    accessToken = clientConfig.accessToken.tokenValue
-                )
-            )
-            else -> throw Error("Provider not supported")
+        } catch (e: Exception) {
+            logger.error("---- FAILED TO AUTHENTICATE USING PROVIDERS -----")
+            logger.error(oauth2Authentication.principal.attributes.toString())
         }
 
         logger.info("jwt: $jwt")
