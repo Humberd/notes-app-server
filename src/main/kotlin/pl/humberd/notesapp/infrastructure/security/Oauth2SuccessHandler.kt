@@ -1,5 +1,6 @@
 package pl.humberd.notesapp.infrastructure.security
 
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
@@ -25,6 +26,8 @@ class Oauth2SuccessHandler(
     private val googleProviderCommandHandler: GoogleProviderCommandHandler,
     private val githubProviderCommandHandler: GithubProviderCommandHandler
 ) : AuthenticationSuccessHandler {
+    val logger = LoggerFactory.getLogger(Oauth2SuccessHandler::class.java)
+
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -67,19 +70,26 @@ class Oauth2SuccessHandler(
             else -> throw Error("Provider not supported")
         }
 
+        logger.info("jwt: $jwt")
+
         val encodedState = request.getParameter("state")
         if (encodedState === null) {
+            logger.info("no encoded state")
             return
         }
 
         val decodedState = String(Base64.getUrlDecoder().decode(encodedState)).split(";")
         if (decodedState.size == 1) {
+            logger.info("decoded state: no redirect info $decodedState")
             return
         }
 
         val frontendUrl = decodedState[1]
 
+        logger.info("frontendUrl: $frontendUrl")
+
         if (!frontendUrl.startsWith("http://") && !frontendUrl.startsWith("https://")) {
+            logger.info("frontendUrl doesnt start with https or http")
             return
         }
 
