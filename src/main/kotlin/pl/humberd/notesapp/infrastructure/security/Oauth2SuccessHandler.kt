@@ -73,6 +73,8 @@ class Oauth2SuccessHandler(
         } catch (e: Exception) {
             logger.error("---- FAILED TO AUTHENTICATE USING PROVIDERS -----")
             logger.error(oauth2Authentication.principal.attributes.toString())
+
+            throw e;
         }
 
         logger.info("jwt: $jwt")
