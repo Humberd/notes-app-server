@@ -39,7 +39,9 @@ class Oauth2SuccessHandler(
             oauth2Authentication.authorizedClientRegistrationId,
             oauth2Authentication.principal.name
         )
-        logger.debug("provider: ${oauth2Authentication.authorizedClientRegistrationId}")
+        logger.info("provider: ${oauth2Authentication.authorizedClientRegistrationId}")
+        logger.info("clientConfig.refreshToken: ${clientConfig?.refreshToken?.tokenValue}")
+        logger.info("clientConfig.accessTokne: ${clientConfig.accessToken?.tokenValue}")
 
         val jwt = try {
              when (oauth2Authentication.authorizedClientRegistrationId) {
