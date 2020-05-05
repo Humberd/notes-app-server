@@ -166,9 +166,10 @@ create table Workspace
     id         varchar(32)  not null primary key,
     user_id    varchar(32)  not null references "user" (id) on delete cascade,
     name       text         not null,
-    name_lc    varchar(255) not null unique generated always as ( lower(name) ) stored,
+    name_lc    varchar(255) not null generated always as ( lower(name) ) stored,
     created_at timestamp    not null default now(),
-    updated_at timestamp    not null default now()
+    updated_at timestamp    not null default now(),
+    unique (user_id, name_lc)
 );
 
 create trigger set_updated_at
