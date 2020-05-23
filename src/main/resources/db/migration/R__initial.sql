@@ -4,7 +4,8 @@ drop table if exists group_post_user_state;
 drop table if exists group_post;
 drop table if exists "group";
 drop table if exists resource_upvote;
-alter table if exists resource drop column latest_revision_id;
+alter table if exists resource
+    drop column latest_revision_id;
 drop table if exists resource_revision;
 drop table if exists resource;
 drop type if exists resource_type;
