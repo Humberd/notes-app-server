@@ -3,6 +3,7 @@ drop table if exists user_group_membership;
 drop table if exists group_post_user_state;
 drop table if exists group_post;
 drop table if exists "group";
+drop table if exists resource_tag;
 drop table if exists resource_upvote;
 alter table if exists resource
     drop column latest_revision_id;
@@ -110,13 +111,6 @@ create table Tag
     unique (user_id, name_lc)
 );
 
-create trigger set_updated_at
-    before update
-    on Tag
-    for each row
-execute procedure trigger_set_timestamp();
-
-
 ---- resource-related tables
 create type resource_type as enum ('link', 'note');
 create type resource_change_kind as enum ('insert', 'update', 'delete');
@@ -149,6 +143,13 @@ create table resource_upvote
     primary key (resource_id, user_id)
 );
 
+create table resource_tag
+(
+    resource_id varchar(32) not null references resource (id) on delete cascade,
+    tag_id      varchar(32) not null references tag (id) on delete cascade,
+    primary key (resource_id, tag_id)
+);
+
 create table "group"
 (
     id       varchar(32) not null primary key,
@@ -166,8 +167,9 @@ create table group_post
 
 create table group_post_user_state
 (
-    group_post_id varchar(32) not null references group_post (id) on delete cascade,
-    user_id       varchar(32) not null references "user" (id) on delete cascade,
+    group_post_id        varchar(32) not null references group_post (id) on delete cascade,
+    user_id              varchar(32) not null references "user" (id) on delete cascade,
+    resource_revision_id varchar(32) not null references resource_revision on delete cascade,
     primary key (group_post_id, user_id)
 );
 
@@ -186,3 +188,45 @@ create table user_group_membership_tag_trigger
     primary key (user_id, group_id, tag_id)
 );
 
+insert into "user"(id, name, email)
+values ('user-alice', 'alice', 'alice@gmail.com'),
+       ('user-bob', 'bob', 'bob@gmail.com');
+
+insert into Auth_Password_Credentials(user_id, password_hash)
+values ('user-alice', '$2a$10$0T765q/oG9wvUDiYZ8EqGuIsA1wi4WrYWqRQ73Oj6tpeizyJdY0Pq'),
+       ('user-bob', '$2a$10$0T765q/oG9wvUDiYZ8EqGuIsA1wi4WrYWqRQ73Oj6tpeizyJdY0Pq');
+
+insert into "group"(id, name, icon_url)
+values ('group-cool-bros', 'Cool bros', '');
+
+insert into user_group_membership(user_id, group_id)
+values ('user-alice', 'group-cool-bros'),
+       ('user-bob', 'group-cool-bros');
+
+insert into tag(id, user_id, name, background_color)
+values ('tag-nice-designs', 'user-bob', 'nice designs', null);
+
+insert into user_group_membership_tag_trigger(user_id, group_id, tag_id)
+values ('user-bob', 'group-cool-bros', 'tag-nice-designs');
+
+insert into resource(id, author_id)
+values ('resource-google_com', 'user-bob');
+
+insert into resource_revision(id, resource_id, change_kind, type, payload)
+values ('resource-rev1-google_com', 'resource-google_com', 'insert', 'link', '{
+  "url": "https://google.com"
+}');
+
+update resource
+set latest_revision_id = 'resource-rev1-google_com'
+where id = 'resource-google_com';
+
+insert into resource_tag(resource_id, tag_id)
+values ('resource-google_com', 'tag-nice-designs');
+
+insert into group_post(id, group_id, resource_id)
+values ('group-post-1', 'group-cool-bros', 'resource-google_com');
+
+insert into group_post_user_state(group_post_id, user_id, resource_revision_id)
+values ('group-post-1', 'user-alice', 'resource-rev1-google_com'),
+       ('group-post-1', 'user-bob', 'resource-rev1-google_com');
