@@ -25,7 +25,8 @@ create table resource_revision
     created_at  timestamp            not null default now()
 );
 
-alter table resource add column latest_revision varchar(32) references resource_revision(id);
+alter table resource
+    add column latest_revision_id varchar(32) references resource_revision (id);
 
 create table resource_upvote
 (
@@ -43,9 +44,17 @@ create table "group"
 
 create table group_post
 (
+    id          varchar(32) not null primary key,
     group_id    varchar(32) not null references "group" (id) on delete cascade,
     resource_id varchar(32) not null references resource (id) on delete cascade,
-    primary key (group_id, resource_id)
+    unique (group_id, resource_id)
+);
+
+create table group_post_user_state
+(
+    group_post_id varchar(32) not null references group_post (id) on delete cascade,
+    user_id       varchar(32) not null references "user" (id) on delete cascade,
+    primary key (group_post_id, user_id)
 );
 
 create table user_group_membership
