@@ -5,7 +5,12 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+
+typealias ResourceRevisionId = String
 
 @Entity
 @Table(name = "resource_revision", schema = "public", catalog = "admin")
@@ -13,41 +18,27 @@ import javax.persistence.*
     TypeDef(name = "json", typeClass = JsonStringType::class),
     TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
 )
-open class ResourceRevisionEntity {
-    @get:Id
-    @get:Column(name = "id", nullable = false, insertable = false, updatable = false)
-    var id: String? = null
+class ResourceRevisionEntity(
+    @Id
+    @Column(name = "id")
+    var id: ResourceRevisionId,
 
-    @get:Basic
-    @get:Column(name = "resource_id", nullable = false, insertable = false, updatable = false)
-    var resourceId: String? = null
+    @Column(name = "resource_id")
+    var resourceId: ResourceId,
 
-    @get:Basic
-    @get:Column(name = "change_kind", nullable = false)
-    var changeKind: String? = null
+    @Column(name = "change_kind")
+    var changeKind: String,
 
-    @get:Basic
-    @get:Column(name = "type", nullable = false)
-    var type: String? = null
+    @Column(name = "type")
+    var type: String,
 
-    @get:Basic
-    @get:Type(type = "jsonb")
-    @get:Column(name = "payload", columnDefinition = "jsonb", nullable = false)
-    var payload: Any? = null
+    @Type(type = "jsonb")
+    @Column(name = "payload", columnDefinition = "jsonb")
+    var payload: Any
+) {
 
-    @get:Basic
-    @get:Column(name = "created_at", nullable = false)
-    var createdAt: java.sql.Timestamp? = null
-
-    @get:OneToMany(mappedBy = "refResourceRevisionEntity")
-    var refGroupPostUserStateEntities: List<GroupPostUserStateEntity>? = null
-
-    @get:OneToMany(mappedBy = "refResourceRevisionEntity")
-    var refResourceEntities: List<ResourceEntity>? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "resource_id", referencedColumnName = "id")
-    var refResourceEntity: ResourceEntity? = null
+    @Column(name = "created_at")
+    lateinit var createdAt: java.sql.Timestamp
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +

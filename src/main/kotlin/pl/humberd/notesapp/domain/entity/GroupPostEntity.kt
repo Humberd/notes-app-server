@@ -1,46 +1,34 @@
 package pl.humberd.notesapp.domain.entity
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+
+typealias GroupPostId = String
 
 @Entity
 @Table(name = "group_post", schema = "public", catalog = "admin")
-open class GroupPostEntity {
-    @get:Id
-    @get:Column(name = "id", nullable = false, insertable = false, updatable = false)
-    var id: String? = null
+class GroupPostEntity(
+    @Id
+    @Column(name = "id")
+    var id: GroupPostId,
 
-    @get:Basic
-    @get:Column(name = "group_id", nullable = false, insertable = false, updatable = false)
-    var groupId: String? = null
+    @Column(name = "group_id")
+    var groupId: GroupId,
 
-    @get:Basic
-    @get:Column(name = "resource_id", nullable = false, insertable = false, updatable = false)
-    var resourceId: String? = null
+    @Column(name = "resource_id")
+    var resourceId: ResourceId
+) {
 
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "group_id", referencedColumnName = "id")
-    var refGroupEntity: GroupEntity? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "resource_id", referencedColumnName = "id")
-    var refResourceEntity: ResourceEntity? = null
-
-    @get:OneToMany(mappedBy = "refGroupPostEntity")
-    var refGroupPostUserStateEntities: List<GroupPostUserStateEntity>? = null
-
-    override fun toString(): String =
-        "Entity of type: ${javaClass.name} ( " +
-                "id = $id " +
-                "groupId = $groupId " +
-                "resourceId = $resourceId " +
-                ")"
-
-    // constant value returned to avoid entity inequality to itself before and after it's update/merge
-    override fun hashCode(): Int = 42
+    override fun toString(): String {
+        return "GroupPostEntity(id='$id', groupId='$groupId', resourceId='$resourceId')"
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
+
         other as GroupPostEntity
 
         if (id != other.id) return false
@@ -49,6 +37,9 @@ open class GroupPostEntity {
 
         return true
     }
+
+    override fun hashCode(): Int = 42
+
 
 }
 

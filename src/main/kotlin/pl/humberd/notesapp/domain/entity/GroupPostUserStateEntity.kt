@@ -5,30 +5,18 @@ import javax.persistence.*
 @Entity
 @Table(name = "group_post_user_state", schema = "public", catalog = "admin")
 @IdClass(GroupPostUserStateEntityPK::class)
-open class GroupPostUserStateEntity {
-    @get:Id
-    @get:Column(name = "group_post_id", nullable = false, insertable = false, updatable = false)
-    var groupPostId: String? = null
+class GroupPostUserStateEntity(
+    @Id
+    @Column(name = "group_post_id")
+    var groupPostId: GroupPostId,
 
-    @get:Id
-    @get:Column(name = "user_id", nullable = false, insertable = false, updatable = false)
-    var userId: String? = null
+    @Id
+    @Column(name = "user_id")
+    var userId: UserId,
 
-    @get:Basic
-    @get:Column(name = "resource_revision_id", nullable = false, insertable = false, updatable = false)
-    var resourceRevisionId: String? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "group_post_id", referencedColumnName = "id")
-    var refGroupPostEntity: GroupPostEntity? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "user_id", referencedColumnName = "id")
-    var refUserEntity: UserEntity? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "resource_revision_id", referencedColumnName = "id")
-    var refResourceRevisionEntity: ResourceRevisionEntity? = null
+    @Column(name = "resource_revision_id")
+    var resourceRevisionId: ResourceRevisionId
+) {
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +
@@ -54,14 +42,15 @@ open class GroupPostUserStateEntity {
 
 }
 
-class GroupPostUserStateEntityPK : java.io.Serializable {
-    @get:Id
-    @get:Column(name = "group_post_id", nullable = false, insertable = false, updatable = false)
-    var groupPostId: String? = null
+class GroupPostUserStateEntityPK(
+    @Id
+    @Column(name = "group_post_id")
+    var groupPostId: GroupPostId,
 
-    @get:Id
-    @get:Column(name = "user_id", nullable = false, insertable = false, updatable = false)
-    var userId: String? = null
+    @Id
+    @Column(name = "user_id")
+    var userId: UserId
+) : java.io.Serializable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

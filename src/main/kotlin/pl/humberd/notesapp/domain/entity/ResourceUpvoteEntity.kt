@@ -5,22 +5,15 @@ import javax.persistence.*
 @Entity
 @Table(name = "resource_upvote", schema = "public", catalog = "admin")
 @IdClass(ResourceUpvoteEntityPK::class)
-open class ResourceUpvoteEntity {
-    @get:Id
-    @get:Column(name = "resource_id", nullable = false, insertable = false, updatable = false)
-    var resourceId: String? = null
+open class ResourceUpvoteEntity(
+    @Id
+    @Column(name = "resource_id")
+    var resourceId: ResourceId,
 
-    @get:Id
-    @get:Column(name = "user_id", nullable = false, insertable = false, updatable = false)
-    var userId: String? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "resource_id", referencedColumnName = "id")
-    var refResourceEntity: ResourceEntity? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "user_id", referencedColumnName = "id")
-    var refUserEntity: UserEntity? = null
+    @Id
+    @Column(name = "user_id")
+    var userId: UserId
+) {
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +
@@ -45,12 +38,12 @@ open class ResourceUpvoteEntity {
 }
 
 class ResourceUpvoteEntityPK : java.io.Serializable {
-    @get:Id
-    @get:Column(name = "resource_id", nullable = false, insertable = false, updatable = false)
+    @Id
+    @Column(name = "resource_id", nullable = false, insertable = false, updatable = false)
     var resourceId: String? = null
 
-    @get:Id
-    @get:Column(name = "user_id", nullable = false, insertable = false, updatable = false)
+    @Id
+    @Column(name = "user_id", nullable = false, insertable = false, updatable = false)
     var userId: String? = null
 
     override fun equals(other: Any?): Boolean {

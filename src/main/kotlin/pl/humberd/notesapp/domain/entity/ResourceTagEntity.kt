@@ -5,22 +5,16 @@ import javax.persistence.*
 @Entity
 @Table(name = "resource_tag", schema = "public", catalog = "admin")
 @IdClass(ResourceTagEntityPK::class)
-open class ResourceTagEntity {
-    @get:Id
-    @get:Column(name = "resource_id", nullable = false, insertable = false, updatable = false)
-    var resourceId: String? = null
+open class ResourceTagEntity(
+    @Id
+    @Column(name = "resource_id")
+    var resourceId: ResourceId,
 
-    @get:Id
-    @get:Column(name = "tag_id", nullable = false, insertable = false, updatable = false)
-    var tagId: String? = null
+    @Id
+    @Column(name = "tag_id")
+    var tagId: TagId
+) {
 
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "resource_id", referencedColumnName = "id")
-    var refResourceEntity: ResourceEntity? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "tag_id", referencedColumnName = "id")
-    var refTagEntity: TagEntity? = null
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +
@@ -45,13 +39,13 @@ open class ResourceTagEntity {
 }
 
 class ResourceTagEntityPK : java.io.Serializable {
-    @get:Id
-    @get:Column(name = "resource_id", nullable = false, insertable = false, updatable = false)
-    var resourceId: String? = null
+    @Id
+    @Column(name = "resource_id")
+    var resourceId: ResourceId? = null
 
-    @get:Id
-    @get:Column(name = "tag_id", nullable = false, insertable = false, updatable = false)
-    var tagId: String? = null
+    @Id
+    @Column(name = "tag_id")
+    var tagId: TagId? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

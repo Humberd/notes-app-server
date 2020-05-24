@@ -1,30 +1,25 @@
 package pl.humberd.notesapp.domain.entity
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+
+typealias GroupId = String
 
 @Entity
 @Table(name = "group", schema = "public", catalog = "admin")
-open class GroupEntity {
-    @get:Id
-    @get:Column(name = "id", nullable = false, insertable = false, updatable = false)
-    var id: String? = null
+class GroupEntity(
+    @Id
+    @Column(name = "id")
+    var id: GroupId,
 
-    @get:Basic
-    @get:Column(name = "name", nullable = false)
-    var name: String? = null
+    @Column(name = "name")
+    var name: String,
 
-    @get:Basic
-    @get:Column(name = "icon_url", nullable = false)
-    var iconUrl: String? = null
-
-    @get:OneToMany(mappedBy = "refGroupEntity")
-    var refGroupPostEntities: List<GroupPostEntity>? = null
-
-    @get:OneToMany(mappedBy = "refGroupEntity")
-    var refUserGroupMembershipEntities: List<UserGroupMembershipEntity>? = null
-
-    @get:OneToMany(mappedBy = "refGroupEntity")
-    var refUserGroupMembershipTagTriggerEntities: List<UserGroupMembershipTagTriggerEntity>? = null
+    @Column(name = "icon_url")
+    var iconUrl: String
+) {
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +

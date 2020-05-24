@@ -5,30 +5,19 @@ import javax.persistence.*
 @Entity
 @Table(name = "user_group_membership_tag_trigger", schema = "public", catalog = "admin")
 @IdClass(UserGroupMembershipTagTriggerEntityPK::class)
-open class UserGroupMembershipTagTriggerEntity {
-    @get:Id
-    @get:Column(name = "user_id", nullable = false, insertable = false, updatable = false)
-    var userId: String? = null
+open class UserGroupMembershipTagTriggerEntity(
+    @Id
+    @Column(name = "user_id")
+    var userId: UserId,
 
-    @get:Id
-    @get:Column(name = "group_id", nullable = false, insertable = false, updatable = false)
-    var groupId: String? = null
+    @Id
+    @Column(name = "group_id")
+    var groupId: GroupId,
 
-    @get:Id
-    @get:Column(name = "tag_id", nullable = false, insertable = false, updatable = false)
-    var tagId: String? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "user_id", referencedColumnName = "id")
-    var refUserEntity: UserEntity? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "group_id", referencedColumnName = "id")
-    var refGroupEntity: GroupEntity? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "tag_id", referencedColumnName = "id")
-    var refTagEntity: TagEntity? = null
+    @Id
+    @Column(name = "tag_id")
+    var tagId: TagId
+) {
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +
@@ -55,16 +44,16 @@ open class UserGroupMembershipTagTriggerEntity {
 }
 
 class UserGroupMembershipTagTriggerEntityPK : java.io.Serializable {
-    @get:Id
-    @get:Column(name = "user_id", nullable = false, insertable = false, updatable = false)
+    @Id
+    @Column(name = "user_id", nullable = false, insertable = false, updatable = false)
     var userId: String? = null
 
-    @get:Id
-    @get:Column(name = "group_id", nullable = false, insertable = false, updatable = false)
+    @Id
+    @Column(name = "group_id", nullable = false, insertable = false, updatable = false)
     var groupId: String? = null
 
-    @get:Id
-    @get:Column(name = "tag_id", nullable = false, insertable = false, updatable = false)
+    @Id
+    @Column(name = "tag_id", nullable = false, insertable = false, updatable = false)
     var tagId: String? = null
 
     override fun equals(other: Any?): Boolean {

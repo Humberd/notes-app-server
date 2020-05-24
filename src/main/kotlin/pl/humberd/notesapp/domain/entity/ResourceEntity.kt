@@ -1,49 +1,31 @@
 package pl.humberd.notesapp.domain.entity
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.Table
+
+typealias ResourceId = String
 
 @Entity
 @Table(name = "resource", schema = "public", catalog = "admin")
-open class ResourceEntity {
-    @get:Id
-    @get:Column(name = "id", nullable = false, insertable = false, updatable = false)
-    var id: String? = null
+class ResourceEntity(
+    @Id
+    @Column(name = "id")
+    var id: ResourceId,
 
-    @get:Basic
-    @get:Column(name = "author_id", nullable = true, insertable = false, updatable = false)
-    var authorId: String? = null
+    @Column(name = "author_id")
+    var authorId: UserId,
 
-    @get:Basic
-    @get:Column(name = "revisions_count", nullable = false)
-    var revisionsCount: Int? = null
+    @Column(name = "created_at")
+    var createdAt: java.sql.Timestamp,
 
-    @get:Basic
-    @get:Column(name = "created_at", nullable = false)
-    var createdAt: java.sql.Timestamp? = null
+    @Column(name = "latest_revision_id")
+    var latestRevisionId: ResourceRevisionId
+) {
 
-    @get:Basic
-    @get:Column(name = "latest_revision_id", nullable = true, insertable = false, updatable = false)
-    var latestRevisionId: String? = null
-
-    @get:OneToMany(mappedBy = "refResourceEntity")
-    var refGroupPostEntities: List<GroupPostEntity>? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "author_id", referencedColumnName = "id")
-    var refUserEntity: UserEntity? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "latest_revision_id", referencedColumnName = "id")
-    var refResourceRevisionEntity: ResourceRevisionEntity? = null
-
-    @get:OneToMany(mappedBy = "refResourceEntity")
-    var refResourceRevisionEntities: List<ResourceRevisionEntity>? = null
-
-    @get:OneToMany(mappedBy = "refResourceEntity")
-    var refResourceTagEntities: List<ResourceTagEntity>? = null
-
-    @get:OneToMany(mappedBy = "refResourceEntity")
-    var refResourceUpvoteEntities: List<ResourceUpvoteEntity>? = null
+    @Column(name = "revisions_count")
+    var revisionsCount: Int = 0
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +

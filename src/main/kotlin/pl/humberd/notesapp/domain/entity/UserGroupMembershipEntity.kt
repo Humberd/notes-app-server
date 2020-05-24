@@ -5,22 +5,16 @@ import javax.persistence.*
 @Entity
 @Table(name = "user_group_membership", schema = "public", catalog = "admin")
 @IdClass(UserGroupMembershipEntityPK::class)
-open class UserGroupMembershipEntity {
-    @get:Id
-    @get:Column(name = "user_id", nullable = false, insertable = false, updatable = false)
-    var userId: String? = null
+open class UserGroupMembershipEntity(
+    @Id
+    @Column(name = "user_id")
+    var userId: UserId,
 
-    @get:Id
-    @get:Column(name = "group_id", nullable = false, insertable = false, updatable = false)
-    var groupId: String? = null
+    @Id
+    @Column(name = "group_id")
+    var groupId: GroupId
+) {
 
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "user_id", referencedColumnName = "id")
-    var refUserEntity: UserEntity? = null
-
-    @get:ManyToOne(fetch = FetchType.LAZY)
-    @get:JoinColumn(name = "group_id", referencedColumnName = "id")
-    var refGroupEntity: GroupEntity? = null
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +
@@ -45,12 +39,12 @@ open class UserGroupMembershipEntity {
 }
 
 class UserGroupMembershipEntityPK : java.io.Serializable {
-    @get:Id
-    @get:Column(name = "user_id", nullable = false, insertable = false, updatable = false)
+    @Id
+    @Column(name = "user_id", nullable = false, insertable = false, updatable = false)
     var userId: String? = null
 
-    @get:Id
-    @get:Column(name = "group_id", nullable = false, insertable = false, updatable = false)
+    @Id
+    @Column(name = "group_id", nullable = false, insertable = false, updatable = false)
     var groupId: String? = null
 
     override fun equals(other: Any?): Boolean {
