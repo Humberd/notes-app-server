@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.application.query.user.model.UserView
-import pl.humberd.notesapp.domain.entity.user.model.UserId
-import pl.humberd.notesapp.domain.entity.user.repository.UserRepository
+import pl.humberd.notesapp.domain.entity.UserId
+import pl.humberd.notesapp.domain.repository.UserRepository
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts

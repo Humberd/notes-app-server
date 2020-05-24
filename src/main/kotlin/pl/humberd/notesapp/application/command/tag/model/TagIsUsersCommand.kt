@@ -1,7 +1,7 @@
 package pl.humberd.notesapp.application.command.tag.model
 
-import pl.humberd.notesapp.domain.entity.tag.model.TagId
-import pl.humberd.notesapp.domain.entity.user.model.UserId
+import pl.humberd.notesapp.domain.entity.TagId
+import pl.humberd.notesapp.domain.entity.UserId
 
 data class TagIsUsersCommand(
     val tagId: TagId,

@@ -3,11 +3,11 @@ package pl.humberd.notesapp.application.query.tag
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.query.tag.model.TagMinimalView
 import pl.humberd.notesapp.application.query.tag.model.TagView
-import pl.humberd.notesapp.domain.entity.tag.model.Tag
+import pl.humberd.notesapp.domain.entity.TagEntity
 
 @Service
 class TagViewMapper {
-    fun mapView(tag: Tag) = TagView(
+    fun mapView(tag: TagEntity) = TagView(
         id = tag.id,
         name = tag.name,
         backgroundColor = tag.backgroundColor,
@@ -16,7 +16,7 @@ class TagViewMapper {
         updatedAt = tag.metadata.updatedAt
     )
 
-    fun mapMinimalView(tag: Tag) = TagMinimalView(
+    fun mapMinimalView(tag: TagEntity) = TagMinimalView(
         id = tag.id,
         name = tag.name,
         backgroundColor = tag.backgroundColor

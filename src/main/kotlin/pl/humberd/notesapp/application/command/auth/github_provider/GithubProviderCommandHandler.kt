@@ -6,14 +6,14 @@ import pl.humberd.notesapp.application.command.auth.JwtUtils
 import pl.humberd.notesapp.application.command.auth.UserJwt
 import pl.humberd.notesapp.application.command.auth.github_provider.model.GithubProviderAuthorizationCommand
 import pl.humberd.notesapp.domain.common.IdGenerator
-import pl.humberd.notesapp.domain.entity.auth_github_provider.model.GithubProvider
-import pl.humberd.notesapp.domain.entity.auth_github_provider.repository.GithubProviderRepository
-import pl.humberd.notesapp.domain.entity.user.model.User
-import pl.humberd.notesapp.domain.entity.user.repository.UserRepository
+import pl.humberd.notesapp.domain.entity.AuthGithubProviderEntity
+import pl.humberd.notesapp.domain.entity.UserEntity
+import pl.humberd.notesapp.domain.repository.AuthGithubProviderRepository
+import pl.humberd.notesapp.domain.repository.UserRepository
 
 @Service
 class GithubProviderCommandHandler(
-    private val githubProviderRepository: GithubProviderRepository,
+    private val authGithubProviderRepository: AuthGithubProviderRepository,
     private val userRepository: UserRepository,
     private val jwtUtils: JwtUtils
 ) {
@@ -22,8 +22,8 @@ class GithubProviderCommandHandler(
         val existingUser = userRepository.findByEmailLc(command.email)
         val user = if (existingUser.isEmpty) {
             userRepository.save(
-                User(
-                    id = IdGenerator.random(User::class),
+                UserEntity(
+                    id = IdGenerator.random(UserEntity::class),
                     name = command.login,
                     email = command.email
                 )
@@ -32,10 +32,10 @@ class GithubProviderCommandHandler(
             existingUser.get()
         }
 
-        val githubProviderExists = githubProviderRepository.existsById(user.id)
+        val githubProviderExists = authGithubProviderRepository.existsById(user.id)
         if (!githubProviderExists) {
-            githubProviderRepository.save(
-                GithubProvider(
+            authGithubProviderRepository.save(
+                AuthGithubProviderEntity(
                     userId = user.id,
                     id = command.id,
                     login = command.login,

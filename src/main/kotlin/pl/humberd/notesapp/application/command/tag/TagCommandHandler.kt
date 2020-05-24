@@ -11,8 +11,8 @@ import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
-import pl.humberd.notesapp.domain.entity.tag.model.Tag
-import pl.humberd.notesapp.domain.entity.tag.repository.TagRepository
+import pl.humberd.notesapp.domain.entity.TagEntity
+import pl.humberd.notesapp.domain.repository.TagRepository
 import javax.transaction.Transactional
 import javax.validation.ValidationException
 import kotlin.contracts.ExperimentalContracts
@@ -23,18 +23,18 @@ import kotlin.contracts.ExperimentalContracts
 class TagCommandHandler(
     private val tagRepository: TagRepository
 ) {
-    fun create(command: TagCreateCommand): Tag {
+    fun create(command: TagCreateCommand): TagEntity {
         VALIDATE_NAME(command.name)
 
         val tagExists = tagRepository.existsByUserIdAndNameLc(
             userId = command.userId,
             nameLc = command.name.toLowerCase()
         )
-        ASSERT_NOT_EXIST<Tag>(tagExists, command.name)
+        ASSERT_NOT_EXIST<TagEntity>(tagExists, command.name)
 
         return tagRepository.save(
-            Tag(
-                id = IdGenerator.random(Tag::class),
+            TagEntity(
+                id = IdGenerator.random(TagEntity::class),
                 name = command.name,
                 backgroundColor = command.backgoundColor,
                 userId = command.userId
@@ -42,13 +42,13 @@ class TagCommandHandler(
         )
     }
 
-    fun createAndRefresh(command: TagCreateCommand): Tag {
+    fun createAndRefresh(command: TagCreateCommand): TagEntity {
         return this.create(command).also {
             tagRepository.saveFlushRefresh(it)
         }
     }
 
-    fun patch(command: TagPatchCommand): Tag {
+    fun patch(command: TagPatchCommand): TagEntity {
         val tag = tagRepository.findByIdOrNull(command.id)
         ASSERT_NOT_NULL(tag, command.id)
 
@@ -64,7 +64,7 @@ class TagCommandHandler(
         return tagRepository.save(tag)
     }
 
-    fun patchAndRefresh(command: TagPatchCommand): Tag {
+    fun patchAndRefresh(command: TagPatchCommand): TagEntity {
         return patch(command).also {
             tagRepository.saveFlushRefresh(it)
         }
@@ -72,7 +72,7 @@ class TagCommandHandler(
 
     fun delete(command: TagDeleteCommand) {
         val tagExists = tagRepository.existsById(command.tagId)
-        ASSERT_EXIST<Tag>(tagExists, command.tagId)
+        ASSERT_EXIST<TagEntity>(tagExists, command.tagId)
 
         tagRepository.deleteById(command.tagId)
     }
@@ -87,7 +87,7 @@ class TagCommandHandler(
         val tag = tagRepository.findByIdOrNull(command.tagId)
         ASSERT_NOT_NULL(tag, command.tagId)
         if (tag.userId != command.userId) {
-            throw ForbiddenException(Tag::class, command.tagId)
+            throw ForbiddenException(TagEntity::class, command.tagId)
         }
     }
 

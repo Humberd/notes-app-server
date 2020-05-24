@@ -6,10 +6,10 @@ import pl.humberd.notesapp.application.command.auth.JwtUtils
 import pl.humberd.notesapp.application.command.auth.UserJwt
 import pl.humberd.notesapp.application.command.auth.google_provider.model.GoogleProviderAuthorizationCommand
 import pl.humberd.notesapp.domain.common.IdGenerator
-import pl.humberd.notesapp.domain.entity.auth_google_provider.model.GoogleProvider
-import pl.humberd.notesapp.domain.entity.auth_google_provider.repository.GoogleProviderRepository
-import pl.humberd.notesapp.domain.entity.user.model.User
-import pl.humberd.notesapp.domain.entity.user.repository.UserRepository
+import pl.humberd.notesapp.domain.entity.AuthGoogleProviderEntity
+import pl.humberd.notesapp.domain.entity.UserEntity
+import pl.humberd.notesapp.domain.repository.AuthGoogleProviderRepository
+import pl.humberd.notesapp.domain.repository.UserRepository
 import javax.transaction.Transactional
 import kotlin.contracts.ExperimentalContracts
 
@@ -17,7 +17,7 @@ import kotlin.contracts.ExperimentalContracts
 @Transactional
 @Service
 class GoogleProviderCommandHandler(
-    private val googleProviderRepository: GoogleProviderRepository,
+    private val authGoogleProviderRepository: AuthGoogleProviderRepository,
     private val userRepository: UserRepository,
     private val jwtUtils: JwtUtils
 ) {
@@ -25,8 +25,8 @@ class GoogleProviderCommandHandler(
         val existingUser = userRepository.findByEmailLc(command.email)
         val user = if (existingUser.isEmpty) {
             userRepository.save(
-                User(
-                    id = IdGenerator.random(User::class),
+                UserEntity(
+                    id = IdGenerator.random(UserEntity::class),
                     name = command.name,
                     email = command.email
                 )
@@ -35,10 +35,10 @@ class GoogleProviderCommandHandler(
             existingUser.get()
         }
 
-        val googleProviderExists = googleProviderRepository.existsById(user.id)
+        val googleProviderExists = authGoogleProviderRepository.existsById(user.id)
         if (!googleProviderExists) {
-            googleProviderRepository.save(
-                GoogleProvider(
+            authGoogleProviderRepository.save(
+                AuthGoogleProviderEntity(
                     userId = user.id,
                     id = command.id,
                     name = command.name,

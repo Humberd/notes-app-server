@@ -1,6 +1,6 @@
 package pl.humberd.notesapp.application.query.tag.model
 
-import pl.humberd.notesapp.domain.entity.tag.model.TagId
+import pl.humberd.notesapp.domain.entity.TagId
 
 data class TagMinimalView(
     val id: TagId,

@@ -12,7 +12,7 @@ import pl.humberd.notesapp.application.query.tag.TagQueryHandler
 import pl.humberd.notesapp.application.query.tag.model.TagListFilter
 import pl.humberd.notesapp.application.query.tag.model.TagView
 import pl.humberd.notesapp.application.query.tag.model.TagViewList
-import pl.humberd.notesapp.domain.entity.tag.model.TagId
+import pl.humberd.notesapp.domain.entity.TagId
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.tag.model.TagCreateRequest
 import pl.humberd.notesapp.infrastructure.http.tag.model.TagPatchRequest

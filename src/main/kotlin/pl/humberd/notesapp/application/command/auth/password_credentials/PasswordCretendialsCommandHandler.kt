@@ -11,10 +11,10 @@ import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
 import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.UnauthorizedException
 import pl.humberd.notesapp.domain.common.IdGenerator
-import pl.humberd.notesapp.domain.entity.auth_password_credentials.model.PasswordCredentials
-import pl.humberd.notesapp.domain.entity.auth_password_credentials.repository.PasswordCredentialsRepository
-import pl.humberd.notesapp.domain.entity.user.model.User
-import pl.humberd.notesapp.domain.entity.user.repository.UserRepository
+import pl.humberd.notesapp.domain.entity.AuthPasswordCredentialsEntity
+import pl.humberd.notesapp.domain.entity.UserEntity
+import pl.humberd.notesapp.domain.repository.AuthPasswordCredentialsRepository
+import pl.humberd.notesapp.domain.repository.UserRepository
 import java.util.*
 import javax.transaction.Transactional
 import kotlin.contracts.ExperimentalContracts
@@ -25,27 +25,27 @@ import kotlin.contracts.ExperimentalContracts
 class PasswordCretendialsCommandHandler(
     private val jwtUtils: JwtUtils,
     private val userRepository: UserRepository,
-    private val passwordCredentialsRepository: PasswordCredentialsRepository,
+    private val authPasswordCredentialsRepository: AuthPasswordCredentialsRepository,
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    fun register(command: PasswordCredentialsRegisterCommand): User {
+    fun register(command: PasswordCredentialsRegisterCommand): UserEntity {
         val userExists = userRepository.existsByNameLc(command.name.toLowerCase())
-        ASSERT_NOT_EXIST<User>(userExists, command.name.toLowerCase())
+        ASSERT_NOT_EXIST<UserEntity>(userExists, command.name.toLowerCase())
 
         val emailExists = userRepository.existsByEmailLc(command.email.toLowerCase())
-        ASSERT_NOT_EXIST<User>(emailExists, command.email.toLowerCase())
+        ASSERT_NOT_EXIST<UserEntity>(emailExists, command.email.toLowerCase())
 
         val user = userRepository.save(
-            User(
-                id = IdGenerator.random(User::class),
+            UserEntity(
+                id = IdGenerator.random(UserEntity::class),
                 name = command.name,
                 email = command.email
             )
         )
 
-        passwordCredentialsRepository.save(
-            PasswordCredentials(
+        authPasswordCredentialsRepository.save(
+            AuthPasswordCredentialsEntity(
                 userId = user.id,
                 passwordHash = passwordEncoder.encode(command.password)
             )
@@ -61,7 +61,7 @@ class PasswordCretendialsCommandHandler(
         val user = userRepository.findByEmailLc(command.email.toLowerCase())
         ASSERT_NOT_NULL(user.orElseGet(null), command.email.toLowerCase())
 
-        val userPasswordCredentials = passwordCredentialsRepository.findById(user.get().id)
+        val userPasswordCredentials = authPasswordCredentialsRepository.findById(user.get().id)
 
         val isAuthorized = isAuthorized(userPasswordCredentials, command.password)
         if (!isAuthorized) {
@@ -77,7 +77,7 @@ class PasswordCretendialsCommandHandler(
     }
 
     private fun isAuthorized(
-        passwordCredentials: Optional<PasswordCredentials>,
+        passwordCredentials: Optional<AuthPasswordCredentialsEntity>,
         password: String
     ): Boolean {
         if (passwordCredentials.isEmpty) {

@@ -1,6 +1,6 @@
 package pl.humberd.notesapp.application.command.auth
 
-import pl.humberd.notesapp.domain.entity.user.model.UserId
+import pl.humberd.notesapp.domain.entity.UserId
 
 enum class AuthenticationProvider {
     PASSWORD_CREDENTIALS,
