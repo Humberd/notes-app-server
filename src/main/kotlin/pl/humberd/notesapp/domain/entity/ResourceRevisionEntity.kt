@@ -1,9 +1,18 @@
 package pl.humberd.notesapp.domain.entity
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType
+import com.vladmihalcea.hibernate.type.json.JsonStringType
+import org.hibernate.annotations.Type
+import org.hibernate.annotations.TypeDef
+import org.hibernate.annotations.TypeDefs
 import javax.persistence.*
 
 @Entity
 @Table(name = "resource_revision", schema = "public", catalog = "admin")
+@TypeDefs(
+    TypeDef(name = "json", typeClass = JsonStringType::class),
+    TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
+)
 open class ResourceRevisionEntity {
     @get:Id
     @get:Column(name = "id", nullable = false, insertable = false, updatable = false)
@@ -15,14 +24,15 @@ open class ResourceRevisionEntity {
 
     @get:Basic
     @get:Column(name = "change_kind", nullable = false)
-    var changeKind: Any? = null
+    var changeKind: String? = null
 
     @get:Basic
     @get:Column(name = "type", nullable = false)
-    var type: Any? = null
+    var type: String? = null
 
     @get:Basic
-    @get:Column(name = "payload", nullable = false)
+    @get:Type(type = "jsonb")
+    @get:Column(name = "payload", columnDefinition = "jsonb", nullable = false)
     var payload: Any? = null
 
     @get:Basic

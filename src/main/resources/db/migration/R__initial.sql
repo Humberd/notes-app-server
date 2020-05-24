@@ -125,12 +125,12 @@ create table resource
 
 create table resource_revision
 (
-    id          varchar(32)          not null primary key,
-    resource_id varchar(32)          not null references resource (id) on delete cascade,
-    change_kind resource_change_kind not null,
-    type        resource_type        not null,
-    payload     jsonb                not null,
-    created_at  timestamp            not null default now()
+    id          varchar(32) not null primary key,
+    resource_id varchar(32) not null references resource (id) on delete cascade,
+    change_kind text        not null,
+    type        text        not null,
+    payload     jsonb       not null,
+    created_at  timestamp   not null default now()
 );
 
 alter table resource
