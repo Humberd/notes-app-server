@@ -36,6 +36,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("javax.validation", "validation-api", "2.0.1.Final")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
 }
 
 tasks.withType<KotlinCompile> {

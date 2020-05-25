@@ -2,6 +2,7 @@ package pl.humberd.notesapp.application.command.user_group_membership_invitation
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import pl.humberd.notesapp.application.command.notification.NotificationCommandHandler
 import pl.humberd.notesapp.application.command.user_group_membership_invitation.model.UserGroupMembershipInvitationCreateCommand
 import pl.humberd.notesapp.application.common.transaction.TransactionsHelper
 import pl.humberd.notesapp.application.exceptions.AlreadyExistsException
@@ -16,7 +17,8 @@ import pl.humberd.notesapp.domain.repository.UserGroupMembershopInvitationReposi
 @Transactional
 class UserGroupMembershipInvitationCommandHandler(
     private val invitationRepository: UserGroupMembershopInvitationRepository,
-    private val userGroupMembershipRepository: UserGroupMembershipRepository
+    private val userGroupMembershipRepository: UserGroupMembershipRepository,
+    private val notificationCommandHandler: NotificationCommandHandler
 ) {
 
     fun create(command: UserGroupMembershipInvitationCreateCommand): UserGroupMembershipInvitationEntity {
@@ -51,7 +53,7 @@ class UserGroupMembershipInvitationCommandHandler(
         )
 
         TransactionsHelper.afterCommit {
-            println("I have commited this invitation: $invitation")
+            notificationCommandHandler.notify(invitation)
         }
 
         return invitation
