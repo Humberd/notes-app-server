@@ -11,7 +11,7 @@ typealias UserGroupMembershipInvitationId = String
 
 @Entity
 @Table(name = "user_group_membership_invitation", schema = "public", catalog = "admin")
-class UserGroupMembershipInvitation(
+class UserGroupMembershipInvitationEntity(
     @Id
     @Column(name = "id")
     val id: UserGroupMembershipInvitationId,
@@ -39,7 +39,7 @@ class UserGroupMembershipInvitation(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as UserGroupMembershipInvitation
+        other as UserGroupMembershipInvitationEntity
 
         if (id != other.id) return false
         if (groupId != other.groupId) return false

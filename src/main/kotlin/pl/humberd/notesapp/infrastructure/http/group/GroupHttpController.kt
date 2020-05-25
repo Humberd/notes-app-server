@@ -51,7 +51,7 @@ class GroupHttpController(
             )
         )
 
-        val invitations = body.invitedUsers.map { invitedUser ->
+        body.invitedUsers.forEach { invitedUser ->
             userGroupMembershipInvitationCommandHandler.create(
                 UserGroupMembershipInvitationCreateCommand(
                     groupId = group.id,

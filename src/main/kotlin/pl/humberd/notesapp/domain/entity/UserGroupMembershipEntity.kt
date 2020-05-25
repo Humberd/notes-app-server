@@ -5,7 +5,7 @@ import javax.persistence.*
 @Entity
 @Table(name = "user_group_membership", schema = "public", catalog = "admin")
 @IdClass(UserGroupMembershipEntityPK::class)
-open class UserGroupMembershipEntity(
+class UserGroupMembershipEntity(
     @Id
     @Column(name = "user_id")
     var userId: UserId,
@@ -40,12 +40,12 @@ open class UserGroupMembershipEntity(
 
 class UserGroupMembershipEntityPK : java.io.Serializable {
     @Id
-    @Column(name = "user_id", nullable = false, insertable = false, updatable = false)
-    var userId: String? = null
+    @Column(name = "user_id")
+    lateinit var userId: String
 
     @Id
-    @Column(name = "group_id", nullable = false, insertable = false, updatable = false)
-    var groupId: String? = null
+    @Column(name = "group_id")
+    lateinit var groupId: String
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
