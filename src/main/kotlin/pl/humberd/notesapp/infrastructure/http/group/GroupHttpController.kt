@@ -14,6 +14,7 @@ import pl.humberd.notesapp.application.query.group.model.GroupViewListFilter
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.group.model.GroupCreateRequest
 import java.security.Principal
+import javax.transaction.Transactional
 
 @RestController
 @RequestMapping("/groups")
@@ -37,6 +38,7 @@ class GroupHttpController(
 
 
     @PostMapping
+    @Transactional
     fun create(
         @RequestBody body: GroupCreateRequest,
         principal: Principal
@@ -58,8 +60,6 @@ class GroupHttpController(
                 )
             )
         }
-
-        println(invitations)
 
         return ResponseBuilder.created(groupViewMapper.mapView(group))
     }

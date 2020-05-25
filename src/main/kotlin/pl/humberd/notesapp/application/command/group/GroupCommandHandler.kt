@@ -7,8 +7,10 @@ import pl.humberd.notesapp.domain.entity.GroupEntity
 import pl.humberd.notesapp.domain.entity.UserGroupMembershipEntity
 import pl.humberd.notesapp.domain.repository.GroupRepository
 import pl.humberd.notesapp.domain.repository.UserGroupMembershipRepository
+import javax.transaction.Transactional
 
 @Service
+@Transactional
 class GroupCommandHandler(
     private val groupRepository: GroupRepository,
     private val userGroupMembershipRepository: UserGroupMembershipRepository
