@@ -1,3 +1,4 @@
+drop table if exists user_group_membership_invitation;
 drop table if exists user_group_membership_tag_trigger;
 drop table if exists user_group_membership;
 drop table if exists group_post_user_state;
@@ -186,6 +187,16 @@ create table user_group_membership_tag_trigger
     group_id varchar(32) not null references "group" (id) on delete cascade,
     tag_id   varchar(32) not null references tag (id) on delete cascade,
     primary key (user_id, group_id, tag_id)
+);
+
+create table user_group_membership_invitation
+(
+    id                 varchar(32) not null primary key,
+    group_id           varchar(32) not null references "group" (id) on delete cascade,
+    invited_by_user_id varchar(32) not null references "user" (id) on delete cascade,
+    invited_user_id    varchar(32) not null references "user" (id) on delete cascade,
+    created_at         timestamp   not null default now(),
+    unique (group_id, invited_user_id)
 );
 
 insert into "user"(id, name, email)

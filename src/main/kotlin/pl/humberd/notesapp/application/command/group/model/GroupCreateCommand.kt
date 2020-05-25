@@ -5,6 +5,5 @@ import pl.humberd.notesapp.domain.entity.UserId
 data class GroupCreateCommand(
     val name: String,
     val iconUrl: String,
-    val ownerId: UserId,
-    val invitedIds: Iterable<UserId>
+    val ownerId: UserId
 )

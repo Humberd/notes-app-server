@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import pl.humberd.notesapp.application.command.group.GroupCommandHandler
 import pl.humberd.notesapp.application.command.group.model.GroupCreateCommand
+import pl.humberd.notesapp.application.command.user_group_membership_invitation.UserGroupMembershipInvitationCommandHandler
+import pl.humberd.notesapp.application.command.user_group_membership_invitation.model.UserGroupMembershipInvitationCreateCommand
 import pl.humberd.notesapp.application.query.group.GroupQueryHandler
 import pl.humberd.notesapp.application.query.group.GroupViewMapper
 import pl.humberd.notesapp.application.query.group.model.GroupView
@@ -18,7 +20,8 @@ import java.security.Principal
 class GroupHttpController(
     private val groupCommandHandler: GroupCommandHandler,
     private val groupQueryHandler: GroupQueryHandler,
-    private val groupViewMapper: GroupViewMapper
+    private val groupViewMapper: GroupViewMapper,
+    private val userGroupMembershipInvitationCommandHandler: UserGroupMembershipInvitationCommandHandler
 ) {
 
     @GetMapping
@@ -42,10 +45,21 @@ class GroupHttpController(
             GroupCreateCommand(
                 name = body.name,
                 iconUrl = body.iconUrl,
-                ownerId = principal.name,
-                invitedIds = emptyList()
+                ownerId = principal.name
             )
         )
+
+        val invitations = body.invitedUsers.map { invitedUser ->
+            userGroupMembershipInvitationCommandHandler.create(
+                UserGroupMembershipInvitationCreateCommand(
+                    groupId = group.id,
+                    invitedUserId = invitedUser.id,
+                    invitedByUserId = principal.name
+                )
+            )
+        }
+
+        println(invitations)
 
         return ResponseBuilder.created(groupViewMapper.mapView(group))
     }
