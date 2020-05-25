@@ -1,5 +1,6 @@
 package pl.humberd.notesapp.application.query.group
 
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.query.ListViewExtra
 import pl.humberd.notesapp.application.query.group.model.GroupViewList
@@ -12,13 +13,14 @@ class GroupQueryHandler (
     private val groupViewMapper: GroupViewMapper
 ) {
     fun listView(filter: GroupViewListFilter): GroupViewList {
-//        val page = groupRepository.findAllByGroupMembership(
-//            userId = filter.userId
-//        )
+        val page = groupRepository.findAllByGroupMembership(
+            userId = filter.userId,
+            pageable = Pageable.unpaged()
+        )
 
         return GroupViewList(
-            data = emptyList(),
-            extra = ListViewExtra.empty()
+            data = page.content.map(groupViewMapper::mapView),
+            extra = ListViewExtra.from(page)
         )
     }
 }

@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.*
 import pl.humberd.notesapp.application.command.group.GroupCommandHandler
 import pl.humberd.notesapp.application.command.group.model.GroupCreateCommand
 import pl.humberd.notesapp.application.query.group.GroupQueryHandler
+import pl.humberd.notesapp.application.query.group.GroupViewMapper
+import pl.humberd.notesapp.application.query.group.model.GroupView
 import pl.humberd.notesapp.application.query.group.model.GroupViewList
 import pl.humberd.notesapp.application.query.group.model.GroupViewListFilter
-import pl.humberd.notesapp.domain.entity.GroupEntity
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.group.model.GroupCreateRequest
 import java.security.Principal
@@ -16,7 +17,8 @@ import java.security.Principal
 @RequestMapping("/groups")
 class GroupHttpController(
     private val groupCommandHandler: GroupCommandHandler,
-    private val groupQueryHandler: GroupQueryHandler
+    private val groupQueryHandler: GroupQueryHandler,
+    private val groupViewMapper: GroupViewMapper
 ) {
 
     @GetMapping
@@ -35,7 +37,7 @@ class GroupHttpController(
     fun create(
         @RequestBody body: GroupCreateRequest,
         principal: Principal
-    ): ResponseEntity<GroupEntity> {
+    ): ResponseEntity<GroupView> {
         val group = groupCommandHandler.create(
             GroupCreateCommand(
                 name = body.name,
@@ -45,6 +47,6 @@ class GroupHttpController(
             )
         )
 
-        return ResponseBuilder.created(group)
+        return ResponseBuilder.created(groupViewMapper.mapView(group))
     }
 }
