@@ -35,6 +35,7 @@ dependencies {
     implementation("com.vladmihalcea", "hibernate-types-52", "2.9.10")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("javax.validation", "validation-api", "2.0.1.Final")
 }
 
 tasks.withType<KotlinCompile> {
