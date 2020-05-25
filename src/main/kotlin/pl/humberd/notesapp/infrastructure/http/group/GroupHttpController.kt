@@ -1,6 +1,7 @@
 package pl.humberd.notesapp.infrastructure.http.group
 
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import pl.humberd.notesapp.application.command.group.GroupCommandHandler
 import pl.humberd.notesapp.application.command.group.model.GroupCreateCommand
@@ -14,7 +15,6 @@ import pl.humberd.notesapp.application.query.group.model.GroupViewListFilter
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.group.model.GroupCreateRequest
 import java.security.Principal
-import javax.transaction.Transactional
 
 @RestController
 @RequestMapping("/groups")

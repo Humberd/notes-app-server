@@ -6,9 +6,9 @@ import pl.humberd.notesapp.application.command.tag.model.TagCreateCommand
 import pl.humberd.notesapp.application.command.tag.model.TagDeleteCommand
 import pl.humberd.notesapp.application.command.tag.model.TagIsUsersCommand
 import pl.humberd.notesapp.application.command.tag.model.TagPatchCommand
-import pl.humberd.notesapp.application.common.ASSERT_EXIST
-import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
-import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
+import pl.humberd.notesapp.application.common.asserts.ASSERT_EXIST
+import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_EXIST
+import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.TagEntity
@@ -30,7 +30,10 @@ class TagCommandHandler(
             userId = command.userId,
             nameLc = command.name.toLowerCase()
         )
-        ASSERT_NOT_EXIST<TagEntity>(tagExists, command.name)
+        ASSERT_NOT_EXIST<TagEntity>(
+            tagExists,
+            command.name
+        )
 
         return tagRepository.save(
             TagEntity(
@@ -72,7 +75,10 @@ class TagCommandHandler(
 
     fun delete(command: TagDeleteCommand) {
         val tagExists = tagRepository.existsById(command.tagId)
-        ASSERT_EXIST<TagEntity>(tagExists, command.tagId)
+        ASSERT_EXIST<TagEntity>(
+            tagExists,
+            command.tagId
+        )
 
         tagRepository.deleteById(command.tagId)
     }

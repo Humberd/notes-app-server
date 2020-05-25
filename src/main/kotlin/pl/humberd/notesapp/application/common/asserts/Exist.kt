@@ -1,4 +1,4 @@
-package pl.humberd.notesapp.application.common
+package pl.humberd.notesapp.application.common.asserts
 
 import pl.humberd.notesapp.application.exceptions.NotFoundException
 import kotlin.contracts.ExperimentalContracts

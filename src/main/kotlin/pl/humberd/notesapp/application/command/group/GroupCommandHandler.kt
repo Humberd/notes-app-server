@@ -1,13 +1,13 @@
 package pl.humberd.notesapp.application.command.group
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import pl.humberd.notesapp.application.command.group.model.GroupCreateCommand
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.GroupEntity
 import pl.humberd.notesapp.domain.entity.UserGroupMembershipEntity
 import pl.humberd.notesapp.domain.repository.GroupRepository
 import pl.humberd.notesapp.domain.repository.UserGroupMembershipRepository
-import javax.transaction.Transactional
 
 @Service
 @Transactional

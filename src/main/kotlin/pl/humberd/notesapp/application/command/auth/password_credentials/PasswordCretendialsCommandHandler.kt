@@ -7,8 +7,8 @@ import pl.humberd.notesapp.application.command.auth.JwtUtils
 import pl.humberd.notesapp.application.command.auth.UserJwt
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginCommand
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsRegisterCommand
-import pl.humberd.notesapp.application.common.ASSERT_NOT_EXIST
-import pl.humberd.notesapp.application.common.ASSERT_NOT_NULL
+import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_EXIST
+import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.UnauthorizedException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.AuthPasswordCredentialsEntity
@@ -31,10 +31,16 @@ class PasswordCretendialsCommandHandler(
 
     fun register(command: PasswordCredentialsRegisterCommand): UserEntity {
         val userExists = userRepository.existsByNameLc(command.name.toLowerCase())
-        ASSERT_NOT_EXIST<UserEntity>(userExists, command.name.toLowerCase())
+        ASSERT_NOT_EXIST<UserEntity>(
+            userExists,
+            command.name.toLowerCase()
+        )
 
         val emailExists = userRepository.existsByEmailLc(command.email.toLowerCase())
-        ASSERT_NOT_EXIST<UserEntity>(emailExists, command.email.toLowerCase())
+        ASSERT_NOT_EXIST<UserEntity>(
+            emailExists,
+            command.email.toLowerCase()
+        )
 
         val user = userRepository.save(
             UserEntity(
@@ -59,7 +65,10 @@ class PasswordCretendialsCommandHandler(
 
     fun login(command: PasswordCredentialsLoginCommand): String {
         val user = userRepository.findByEmailLc(command.email.toLowerCase())
-        ASSERT_NOT_NULL(user.orElseGet(null), command.email.toLowerCase())
+        ASSERT_NOT_NULL(
+            user.orElseGet(null),
+            command.email.toLowerCase()
+        )
 
         val userPasswordCredentials = authPasswordCredentialsRepository.findById(user.get().id)
 
