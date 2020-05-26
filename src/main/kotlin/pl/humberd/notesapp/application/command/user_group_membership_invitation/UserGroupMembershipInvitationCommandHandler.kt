@@ -12,7 +12,6 @@ import pl.humberd.notesapp.domain.entity.UserGroupMembershipInvitationEntity
 import pl.humberd.notesapp.domain.repository.UserGroupMembershipRepository
 import pl.humberd.notesapp.domain.repository.UserGroupMembershopInvitationRepository
 
-
 @Service
 @Transactional
 class UserGroupMembershipInvitationCommandHandler(

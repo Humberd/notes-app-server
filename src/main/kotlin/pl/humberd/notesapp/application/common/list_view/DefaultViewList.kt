@@ -1,4 +1,4 @@
-package pl.humberd.notesapp.application.query
+package pl.humberd.notesapp.application.common.list_view
 
 class DefaultViewList<DataType>(
     data: List<DataType>,

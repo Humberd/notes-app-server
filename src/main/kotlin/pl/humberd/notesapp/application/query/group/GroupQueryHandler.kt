@@ -2,7 +2,7 @@ package pl.humberd.notesapp.application.query.group
 
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import pl.humberd.notesapp.application.query.ListViewExtra
+import pl.humberd.notesapp.application.common.list_view.ListViewExtra
 import pl.humberd.notesapp.application.query.group.model.GroupViewList
 import pl.humberd.notesapp.application.query.group.model.GroupViewListFilter
 import pl.humberd.notesapp.domain.repository.GroupRepository

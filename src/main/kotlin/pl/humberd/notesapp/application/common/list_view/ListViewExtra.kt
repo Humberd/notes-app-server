@@ -1,4 +1,4 @@
-package pl.humberd.notesapp.application.query
+package pl.humberd.notesapp.application.common.list_view
 
 import org.springframework.data.domain.Page
 
@@ -11,14 +11,15 @@ open class ListViewExtra(
     val isLast: Boolean
 ) {
     companion object {
-        fun from(page: Page<*>): ListViewExtra = ListViewExtra(
-            pageNumber = page.number,
-            pageSize = page.size,
-            totalPages = page.totalPages,
-            totalElements = page.totalElements,
-            isFirst = page.isFirst,
-            isLast = page.isLast
-        )
+        fun from(page: Page<*>): ListViewExtra =
+            ListViewExtra(
+                pageNumber = page.number,
+                pageSize = page.size,
+                totalPages = page.totalPages,
+                totalElements = page.totalElements,
+                isFirst = page.isFirst,
+                isLast = page.isLast
+            )
 
         fun empty() = ListViewExtra(
             pageNumber = 0,

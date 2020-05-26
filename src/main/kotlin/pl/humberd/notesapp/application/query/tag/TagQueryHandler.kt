@@ -3,7 +3,7 @@ package pl.humberd.notesapp.application.query.tag
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
-import pl.humberd.notesapp.application.query.ListViewExtra
+import pl.humberd.notesapp.application.common.list_view.ListViewExtra
 import pl.humberd.notesapp.application.query.tag.model.TagListFilter
 import pl.humberd.notesapp.application.query.tag.model.TagView
 import pl.humberd.notesapp.application.query.tag.model.TagViewList
