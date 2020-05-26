@@ -7,7 +7,7 @@ import pl.humberd.notesapp.application.command.tag.model.TagDeleteCommand
 import pl.humberd.notesapp.application.command.tag.model.TagIsUsersCommand
 import pl.humberd.notesapp.application.command.tag.model.TagPatchCommand
 import pl.humberd.notesapp.application.common.asserts.ASSERT_EXIST_GENERIC
-import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_EXIST
+import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_EXIST_GENERIC
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.ForbiddenException
 import pl.humberd.notesapp.domain.common.IdGenerator
@@ -30,7 +30,7 @@ class TagCommandHandler(
             userId = command.userId,
             nameLc = command.name.toLowerCase()
         )
-        ASSERT_NOT_EXIST<TagEntity>(
+        ASSERT_NOT_EXIST_GENERIC<TagEntity>(
             tagExists,
             command.name
         )

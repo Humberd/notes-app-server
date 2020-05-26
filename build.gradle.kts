@@ -37,6 +37,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("javax.validation", "validation-api", "2.0.1.Final")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+    implementation("io.github.microutils:kotlin-logging:1.7.9")
 }
 
 tasks.withType<KotlinCompile> {

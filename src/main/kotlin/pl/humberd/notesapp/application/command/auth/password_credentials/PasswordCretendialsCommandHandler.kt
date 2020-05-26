@@ -7,7 +7,7 @@ import pl.humberd.notesapp.application.command.auth.JwtUtils
 import pl.humberd.notesapp.application.command.auth.UserJwt
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginCommand
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsRegisterCommand
-import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_EXIST
+import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_EXIST_GENERIC
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.UnauthorizedException
 import pl.humberd.notesapp.domain.common.IdGenerator
@@ -31,13 +31,13 @@ class PasswordCretendialsCommandHandler(
 
     fun register(command: PasswordCredentialsRegisterCommand): UserEntity {
         val userExists = userRepository.existsByNameLc(command.name.toLowerCase())
-        ASSERT_NOT_EXIST<UserEntity>(
+        ASSERT_NOT_EXIST_GENERIC<UserEntity>(
             userExists,
             command.name.toLowerCase()
         )
 
         val emailExists = userRepository.existsByEmailLc(command.email.toLowerCase())
-        ASSERT_NOT_EXIST<UserEntity>(
+        ASSERT_NOT_EXIST_GENERIC<UserEntity>(
             emailExists,
             command.email.toLowerCase()
         )
