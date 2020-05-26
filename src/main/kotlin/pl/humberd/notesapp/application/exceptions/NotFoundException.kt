@@ -5,7 +5,11 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import kotlin.reflect.KClass
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-class NotFoundException(
-    type: KClass<*>,
-    id: String
-) : RuntimeException("${type.simpleName}($id) does not exist.")
+class NotFoundException : RuntimeException {
+    constructor(message: String) : super(message)
+
+    constructor(
+        type: KClass<*>,
+        id: String
+    ) : super("${type.simpleName}($id) does not exist.")
+}

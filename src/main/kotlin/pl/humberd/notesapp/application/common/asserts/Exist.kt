@@ -5,7 +5,7 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 @ExperimentalContracts
-inline fun <reified T> ASSERT_EXIST(
+inline fun <reified T> ASSERT_EXIST_GENERIC(
     exists: Boolean,
     id: String
 ) {
@@ -17,3 +17,18 @@ inline fun <reified T> ASSERT_EXIST(
         throw NotFoundException(T::class, id)
     }
 }
+
+@ExperimentalContracts
+fun ASSERT_EXIST(
+    exists: Boolean,
+    message: String
+) {
+    contract {
+        returns() implies (exists)
+    }
+
+    if (!exists) {
+        throw NotFoundException(message)
+    }
+}
+
