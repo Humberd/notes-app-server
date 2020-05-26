@@ -4,9 +4,13 @@ import org.springframework.stereotype.Service
 import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.application.query.user.model.UserView
 import pl.humberd.notesapp.domain.entity.UserEntity
+import pl.humberd.notesapp.domain.entity.UserId
+import pl.humberd.notesapp.domain.repository.UserRepository
 
 @Service
-class UserViewMapper {
+class UserViewMapper(
+    private val userRepository: UserRepository
+) {
     fun mapView(user: UserEntity): UserView = UserView(
         id = user.id,
         name = user.name,
@@ -18,4 +22,8 @@ class UserViewMapper {
         id = user.id,
         name = user.name
     )
+
+    fun mapMinimalView(userId: UserId): UserMinimalView {
+        return mapMinimalView(userRepository.findById(userId).get())
+    }
 }

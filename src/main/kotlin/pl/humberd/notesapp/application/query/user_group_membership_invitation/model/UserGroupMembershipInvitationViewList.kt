@@ -1,0 +1,5 @@
+package pl.humberd.notesapp.application.query.user_group_membership_invitation.model
+
+import pl.humberd.notesapp.application.common.list_view.DefaultViewList
+
+typealias UserGroupMembershipInvitationViewList = DefaultViewList<UserGroupMembershipInvitationView>
