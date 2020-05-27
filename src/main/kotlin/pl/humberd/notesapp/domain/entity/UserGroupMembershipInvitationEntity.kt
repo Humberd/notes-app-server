@@ -1,7 +1,7 @@
 package pl.humberd.notesapp.domain.entity
 
+import pl.humberd.notesapp.domain.common.now
 import java.sql.Timestamp
-import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -27,7 +27,7 @@ class UserGroupMembershipInvitationEntity(
 ) {
 
     @Column(name = "created_at", updatable = false, insertable = false)
-    var createdAt: Timestamp = Timestamp.from(Calendar.getInstance().toInstant())
+    var createdAt: Timestamp = now()
         private set
 
 

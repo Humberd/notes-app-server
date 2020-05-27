@@ -1,14 +1,13 @@
 package pl.humberd.notesapp.domain.entity
 
+import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType
 import com.vladmihalcea.hibernate.type.json.JsonStringType
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import pl.humberd.notesapp.domain.common.now
+import javax.persistence.*
 
 typealias ResourceRevisionId = String
 
@@ -16,7 +15,8 @@ typealias ResourceRevisionId = String
 @Table(name = "resource_revision", schema = "public", catalog = "admin")
 @TypeDefs(
     TypeDef(name = "json", typeClass = JsonStringType::class),
-    TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
+    TypeDef(name = "jsonb", typeClass = JsonBinaryType::class),
+    TypeDef(name = "enum", typeClass = PostgreSQLEnumType::class)
 )
 class ResourceRevisionEntity(
     @Id
@@ -26,19 +26,39 @@ class ResourceRevisionEntity(
     @Column(name = "resource_id")
     var resourceId: ResourceId,
 
+    @Type(type = "enum")
     @Column(name = "change_kind")
-    var changeKind: String,
+    @Enumerated(EnumType.STRING)
+    var changeKind: ResourceChangeKind,
 
+    @Type(type = "enum")
     @Column(name = "type")
-    var type: String,
+    @Enumerated(EnumType.STRING)
+    var type: ResourceType,
 
     @Type(type = "jsonb")
-    @Column(name = "payload", columnDefinition = "jsonb")
-    var payload: Any
+    @Column(name = "payload")
+    var payload: LinkPayload
 ) {
 
-    @Column(name = "created_at")
-    lateinit var createdAt: java.sql.Timestamp
+    @Column(name = "created_at", updatable = false, insertable = false)
+    var createdAt = now()
+        private set
+
+    enum class ResourceChangeKind {
+        INSERT,
+        UPDATE,
+        DELETE
+    }
+
+    enum class ResourceType {
+        LINK,
+        NOTE
+    }
+
+    data class LinkPayload(
+        val url: String
+    )
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +

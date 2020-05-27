@@ -113,8 +113,8 @@ create table Tag
 );
 
 ---- resource-related tables
-create type resource_type as enum ('link', 'note');
-create type resource_change_kind as enum ('insert', 'update', 'delete');
+create type resource_type as enum ('LINK', 'NOTE');
+create type resource_change_kind as enum ('INSERT', 'UPDATE', 'DELETE');
 
 create table resource
 (
@@ -126,12 +126,12 @@ create table resource
 
 create table resource_revision
 (
-    id          varchar(32) not null primary key,
-    resource_id varchar(32) not null references resource (id) on delete cascade,
-    change_kind text        not null,
-    type        text        not null,
-    payload     jsonb       not null,
-    created_at  timestamp   not null default now()
+    id          varchar(32)          not null primary key,
+    resource_id varchar(32)          not null references resource (id) on delete cascade,
+    change_kind resource_change_kind not null,
+    type        resource_type        not null,
+    payload     jsonb                not null,
+    created_at  timestamp            not null default now()
 );
 
 alter table resource
@@ -224,7 +224,7 @@ insert into resource(id, author_id)
 values ('resource-google_com', 'user-bob');
 
 insert into resource_revision(id, resource_id, change_kind, type, payload)
-values ('resource-rev1-google_com', 'resource-google_com', 'insert', 'link', '{
+values ('resource-rev1-google_com', 'resource-google_com', 'INSERT', 'LINK', '{
   "url": "https://google.com"
 }');
 
