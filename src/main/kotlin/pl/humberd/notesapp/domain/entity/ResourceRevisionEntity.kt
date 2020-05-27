@@ -38,7 +38,7 @@ class ResourceRevisionEntity(
 
     @Type(type = "jsonb")
     @Column(name = "payload")
-    var payload: LinkPayload
+    var payload: Payload.Link
 ) {
 
     @Column(name = "created_at", updatable = false, insertable = false)
@@ -56,9 +56,20 @@ class ResourceRevisionEntity(
         NOTE
     }
 
-    data class LinkPayload(
-        val url: String
-    )
+    sealed class Payload {
+        data class Link(
+            val url: String,
+            val title: String,
+            val description: String,
+            val iconUrl: String
+        ): Payload()
+
+        data class Note(
+            val title: String,
+            val content: String
+        ): Payload()
+    }
+
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +

@@ -225,7 +225,10 @@ values ('resource-google_com', 'user-bob');
 
 insert into resource_revision(id, resource_id, change_kind, type, payload)
 values ('resource-rev1-google_com', 'resource-google_com', 'INSERT', 'LINK', '{
-  "url": "https://google.com"
+  "url": "https://google.com",
+  "title": "Google - search engine",
+  "description": "The Internet, literally",
+  "iconUrl": "http://google.com/favicon.ico"
 }');
 
 update resource
