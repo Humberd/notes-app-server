@@ -38,6 +38,7 @@ dependencies {
     implementation("javax.validation", "validation-api", "2.0.1.Final")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
     implementation("io.github.microutils:kotlin-logging:1.7.9")
+    implementation("it.skrape:skrapeit-core:1.0.0-alpha6")
 }
 
 tasks.withType<KotlinCompile> {
