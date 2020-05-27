@@ -1,5 +1,6 @@
 package pl.humberd.notesapp.domain.entity
 
+import pl.humberd.notesapp.domain.common.now
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -15,17 +16,19 @@ class ResourceEntity(
     var id: ResourceId,
 
     @Column(name = "author_id")
-    var authorId: UserId,
-
-    @Column(name = "created_at")
-    var createdAt: java.sql.Timestamp,
-
-    @Column(name = "latest_revision_id")
-    var latestRevisionId: ResourceRevisionId
+    var authorId: UserId
 ) {
 
-    @Column(name = "revisions_count")
+    @Column(name = "latest_revision_id")
+    lateinit var latestRevisionId: ResourceRevisionId
+
+    @Column(name = "revisions_count", updatable = false, insertable = false)
     var revisionsCount: Int = 0
+        private set
+
+    @Column(name = "created_at", updatable = false, insertable = false)
+    var createdAt = now()
+        private set
 
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +
