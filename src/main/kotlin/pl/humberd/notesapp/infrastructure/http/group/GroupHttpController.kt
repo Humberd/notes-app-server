@@ -12,6 +12,9 @@ import pl.humberd.notesapp.application.query.group.GroupViewMapper
 import pl.humberd.notesapp.application.query.group.model.GroupView
 import pl.humberd.notesapp.application.query.group.model.GroupViewList
 import pl.humberd.notesapp.application.query.group.model.GroupViewListFilter
+import pl.humberd.notesapp.application.query.group_post.GroupPostQueryHandler
+import pl.humberd.notesapp.application.query.group_post.model.GroupPostViewList
+import pl.humberd.notesapp.application.query.group_post.model.GroupPostViewListFilter
 import pl.humberd.notesapp.application.query.user_group_membership.UserGroupMembershipQueryHandler
 import pl.humberd.notesapp.application.query.user_group_membership_invitation.UserGroupMembershipInvitationQueryHandler
 import pl.humberd.notesapp.application.query.user_group_membership_invitation.model.UserGroupMembershipInvitationViewList
@@ -21,13 +24,14 @@ import pl.humberd.notesapp.infrastructure.http.group.model.GroupCreateRequest
 import java.security.Principal
 import kotlin.contracts.ExperimentalContracts
 
-@ExperimentalContracts
 @RestController
 @RequestMapping("/groups")
+@ExperimentalContracts
 class GroupHttpController(
     private val groupCommandHandler: GroupCommandHandler,
     private val groupQueryHandler: GroupQueryHandler,
     private val groupViewMapper: GroupViewMapper,
+    private val groupPostQueryHandler: GroupPostQueryHandler,
     private val userGroupMembershipInvitationCommandHandler: UserGroupMembershipInvitationCommandHandler,
     private val userGroupMembershipQueryHandler: UserGroupMembershipQueryHandler,
     private val userGroupMembershipInvitationQueryHandler: UserGroupMembershipInvitationQueryHandler
@@ -84,6 +88,25 @@ class GroupHttpController(
 
         val viewList = userGroupMembershipInvitationQueryHandler.viewList(
             UserGroupMembershipInvitationViewListFilter.ByGroup(groupId)
+        )
+
+        return ResponseBuilder.ok(viewList)
+    }
+
+    @GetMapping("/{groupId}/posts")
+    fun listPosts(
+        @PathVariable("groupId") groupId: String,
+        principal: Principal
+    ): ResponseEntity<GroupPostViewList> {
+        userGroupMembershipQueryHandler.ASSERT_GROUP_MEMBERSHIP(
+            userId = principal.name,
+            groupId = groupId
+        )
+
+        val viewList = groupPostQueryHandler.viewList(
+            GroupPostViewListFilter(
+                groupId = groupId
+            )
         )
 
         return ResponseBuilder.ok(viewList)
