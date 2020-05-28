@@ -45,16 +45,16 @@ open class UserGroupMembershipTagTriggerEntity(
 
 class UserGroupMembershipTagTriggerEntityPK : java.io.Serializable {
     @Id
-    @Column(name = "user_id", nullable = false, insertable = false, updatable = false)
-    var userId: String? = null
+    @Column(name = "user_id")
+    lateinit var userId: String
 
     @Id
-    @Column(name = "group_id", nullable = false, insertable = false, updatable = false)
-    var groupId: String? = null
+    @Column(name = "group_id")
+    lateinit var groupId: String
 
     @Id
-    @Column(name = "tag_id", nullable = false, insertable = false, updatable = false)
-    var tagId: String? = null
+    @Column(name = "tag_id")
+    lateinit var tagId: String
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

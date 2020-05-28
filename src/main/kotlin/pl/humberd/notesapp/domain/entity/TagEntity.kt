@@ -23,7 +23,7 @@ class TagEntity(
 ) {
 
     @Column(name = "name_lc", updatable = false, insertable = false)
-    lateinit var nameLc: String
+    var nameLc: String = ""
         private set
 
     @Column(name = "notes_count", updatable = false, insertable = false)
@@ -31,7 +31,7 @@ class TagEntity(
         private set
 
     @Embedded
-    lateinit var metadata: EntityMetadata
+    var metadata = EntityMetadata()
         private set
 
     override fun toString(): String {

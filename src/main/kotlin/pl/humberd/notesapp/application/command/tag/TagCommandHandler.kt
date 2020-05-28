@@ -6,6 +6,8 @@ import pl.humberd.notesapp.application.command.tag.model.TagCreateCommand
 import pl.humberd.notesapp.application.command.tag.model.TagDeleteCommand
 import pl.humberd.notesapp.application.command.tag.model.TagIsUsersCommand
 import pl.humberd.notesapp.application.command.tag.model.TagPatchCommand
+import pl.humberd.notesapp.application.command.user_group_membership_tag_trigger.UserGroupMembershipTagTriggerCommandHandler
+import pl.humberd.notesapp.application.command.user_group_membership_tag_trigger.model.UserGroupMembershipTagTriggerCreateCommand
 import pl.humberd.notesapp.application.common.asserts.ASSERT_EXIST_GENERIC
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_EXIST_GENERIC
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
@@ -17,11 +19,12 @@ import javax.transaction.Transactional
 import javax.validation.ValidationException
 import kotlin.contracts.ExperimentalContracts
 
-@ExperimentalContracts
-@Transactional
 @Service
+@Transactional
+@ExperimentalContracts
 class TagCommandHandler(
-    private val tagRepository: TagRepository
+    private val tagRepository: TagRepository,
+    private val tagTriggerCommandHandler: UserGroupMembershipTagTriggerCommandHandler
 ) {
     fun create(command: TagCreateCommand): TagEntity {
         VALIDATE_NAME(command.name)
@@ -30,12 +33,9 @@ class TagCommandHandler(
             userId = command.userId,
             nameLc = command.name.toLowerCase()
         )
-        ASSERT_NOT_EXIST_GENERIC<TagEntity>(
-            tagExists,
-            command.name
-        )
+        ASSERT_NOT_EXIST_GENERIC<TagEntity>(tagExists, command.name)
 
-        return tagRepository.save(
+        val newTagEntity = tagRepository.save(
             TagEntity(
                 id = IdGenerator.random(TagEntity::class),
                 name = command.name,
@@ -43,12 +43,16 @@ class TagCommandHandler(
                 userId = command.userId
             )
         )
-    }
 
-    fun createAndRefresh(command: TagCreateCommand): TagEntity {
-        return this.create(command).also {
-            tagRepository.saveFlushRefresh(it)
+        command.publishToGroupIds.forEach { groupId ->
+            tagTriggerCommandHandler.create(UserGroupMembershipTagTriggerCreateCommand(
+                userId = command.userId,
+                tagId = newTagEntity.id,
+                groupId = groupId
+            ))
         }
+
+        return newTagEntity
     }
 
     fun patch(command: TagPatchCommand): TagEntity {
@@ -60,8 +64,8 @@ class TagCommandHandler(
         }
 
         tag.also {
-            it.name = command.name?: it.name
-            it.backgroundColor = command.backgroundColor?: it.backgroundColor
+            it.name = command.name ?: it.name
+            it.backgroundColor = command.backgroundColor ?: it.backgroundColor
         }
 
         return tagRepository.save(tag)

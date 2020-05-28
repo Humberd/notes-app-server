@@ -2,11 +2,13 @@ package pl.humberd.notesapp.application.query.tag
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import pl.humberd.notesapp.application.common.asserts.ASSERT_EXIST_GENERIC
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.common.list_view.ListViewExtra
 import pl.humberd.notesapp.application.query.tag.model.TagListFilter
 import pl.humberd.notesapp.application.query.tag.model.TagView
 import pl.humberd.notesapp.application.query.tag.model.TagViewList
+import pl.humberd.notesapp.domain.entity.TagEntity
 import pl.humberd.notesapp.domain.entity.TagId
 import pl.humberd.notesapp.domain.repository.TagRepository
 import kotlin.contracts.ExperimentalContracts
@@ -32,5 +34,11 @@ class TagQueryHandler(
         ASSERT_NOT_NULL(tag, id)
 
         return tagViewMapper.mapView(tag)
+    }
+
+    fun ASSERT_EXISTS(id: TagId) {
+        val tagExists = tagRepository.existsById(id)
+
+        ASSERT_EXIST_GENERIC<TagEntity>(tagExists, id)
     }
 }

@@ -48,11 +48,12 @@ class TagController(
         @Valid @RequestBody body: TagCreateRequest,
         principal: Principal
     ): ResponseEntity<TagView> {
-        val tag = tagCommandHandler.createAndRefresh(
+        val tag = tagCommandHandler.create(
             TagCreateCommand(
                 userId = principal.name,
                 name = body.name,
-                backgoundColor = body.backgroundColor
+                backgoundColor = body.backgroundColor,
+                publishToGroupIds = body.publishSettings.groups.map { it.id }
             )
         )
 

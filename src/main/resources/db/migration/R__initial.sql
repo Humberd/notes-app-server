@@ -215,7 +215,8 @@ values ('user-alice', 'group-cool-bros'),
        ('user-bob', 'group-cool-bros');
 
 insert into tag(id, user_id, name, background_color)
-values ('tag-nice-designs', 'user-bob', 'nice designs', null);
+values ('tag-nice-designs', 'user-bob', 'nice designs', null),
+       ('tag-cool-articles', 'user-alice', 'articles', null);
 
 insert into user_group_membership_tag_trigger(user_id, group_id, tag_id)
 values ('user-bob', 'group-cool-bros', 'tag-nice-designs');
