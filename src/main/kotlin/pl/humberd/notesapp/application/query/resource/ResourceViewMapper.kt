@@ -18,9 +18,8 @@ class ResourceViewMapper(
     fun mapView(entity: ResourceEntity, userId: UserId) = ResourceView(
         id = entity.id,
         author = userViewMapper.mapMinimalView(entity.authorId),
-        userSpecificRevision = revisionViewMapper.mapView(entity.latestRevisionId),
+        latestRevision = revisionViewMapper.mapView(entity.latestRevisionId),
         revisionsCount = entity.revisionsCount,
-        latestRevisionId = entity.latestRevisionId,
         createdAt = entity.createdAt
     )
 
