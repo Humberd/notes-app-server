@@ -15,7 +15,6 @@ open class ResourceTagEntity(
     var tagId: TagId
 ) {
 
-
     override fun toString(): String =
         "Entity of type: ${javaClass.name} ( " +
                 "resourceId = $resourceId " +
@@ -41,11 +40,11 @@ open class ResourceTagEntity(
 class ResourceTagEntityPK : java.io.Serializable {
     @Id
     @Column(name = "resource_id")
-    var resourceId: ResourceId? = null
+    lateinit var resourceId: ResourceId
 
     @Id
     @Column(name = "tag_id")
-    var tagId: TagId? = null
+    lateinit var tagId: TagId
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

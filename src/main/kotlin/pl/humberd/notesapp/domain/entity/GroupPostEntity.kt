@@ -12,13 +12,13 @@ typealias GroupPostId = String
 class GroupPostEntity(
     @Id
     @Column(name = "id")
-    var id: GroupPostId,
+    val id: GroupPostId,
 
     @Column(name = "group_id")
-    var groupId: GroupId,
+    val groupId: GroupId,
 
     @Column(name = "resource_id")
-    var resourceId: ResourceId
+    val resourceId: ResourceId
 ) {
 
     override fun toString(): String {

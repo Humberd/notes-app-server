@@ -73,7 +73,7 @@ class TagController(
             )
         )
 
-        tagCommandHandler.patchAndRefresh(
+        tagCommandHandler.patch(
             TagPatchCommand(
                 id = id,
                 name = body.name,

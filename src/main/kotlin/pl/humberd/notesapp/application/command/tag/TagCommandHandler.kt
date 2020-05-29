@@ -71,12 +71,6 @@ class TagCommandHandler(
         return tagRepository.save(tag)
     }
 
-    fun patchAndRefresh(command: TagPatchCommand): TagEntity {
-        return patch(command).also {
-            tagRepository.saveFlushRefresh(it)
-        }
-    }
-
     fun delete(command: TagDeleteCommand) {
         val tagExists = tagRepository.existsById(command.tagId)
         ASSERT_EXIST_GENERIC<TagEntity>(
