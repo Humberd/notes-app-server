@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import pl.humberd.notesapp.application.command.auth.password_credentials.PasswordCretendialsCommandHandler
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginCommand
+import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginMobileCommand
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsRegisterCommand
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
+import pl.humberd.notesapp.infrastructure.http.auth.model.PasswordCredentialsLoginMobileRequest
 import pl.humberd.notesapp.infrastructure.http.auth.model.PasswordCredentialsLoginRequest
 import pl.humberd.notesapp.infrastructure.http.auth.model.PasswordCredentialsRegisterRequest
 import javax.validation.Valid
@@ -40,6 +42,21 @@ class PasswordCredentialsController(
             PasswordCredentialsLoginCommand(
                 email = body.email,
                 password = body.password
+            )
+        )
+
+        return ResponseEntity.noContent()
+            .header("Authorization", "Bearer $jwt")
+            .build()
+    }
+
+    @PostMapping("/login/mobile")
+    fun loginMobile(@RequestBody @Valid body: PasswordCredentialsLoginMobileRequest): ResponseEntity<Unit> {
+        val jwt = passwordCredentialsCommandHandler.loginMobile(
+            PasswordCredentialsLoginMobileCommand(
+                email = body.email,
+                password = body.password,
+                pushToken = body.pushToken
             )
         )
 

@@ -30,6 +30,7 @@ class SecurityConfig(
         http
             .authorizeRequests()
             .antMatchers("/auth/password-credentials/register", "/auth/password-credentials/login").permitAll()
+            .antMatchers("/auth/password-credentials/register/mobile", "/auth/password-credentials/login/mobile").permitAll()
             .antMatchers("/healthcheck").permitAll()
             .antMatchers("/actuator/**").permitAll()
             .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**").permitAll()

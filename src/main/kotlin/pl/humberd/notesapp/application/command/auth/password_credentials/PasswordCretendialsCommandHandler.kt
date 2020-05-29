@@ -6,6 +6,7 @@ import pl.humberd.notesapp.application.command.auth.AuthenticationProvider
 import pl.humberd.notesapp.application.command.auth.JwtUtils
 import pl.humberd.notesapp.application.command.auth.UserJwt
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginCommand
+import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginMobileCommand
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsRegisterCommand
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_EXIST_GENERIC
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
@@ -19,9 +20,9 @@ import java.util.*
 import javax.transaction.Transactional
 import kotlin.contracts.ExperimentalContracts
 
-@ExperimentalContracts
-@Transactional
 @Service
+@Transactional
+@ExperimentalContracts
 class PasswordCretendialsCommandHandler(
     private val jwtUtils: JwtUtils,
     private val userRepository: UserRepository,
@@ -83,6 +84,17 @@ class PasswordCretendialsCommandHandler(
                 authenticationProvider = AuthenticationProvider.PASSWORD_CREDENTIALS
             )
         )
+    }
+
+    fun loginMobile(command: PasswordCredentialsLoginMobileCommand): String {
+        val jwt = login(
+            PasswordCredentialsLoginCommand(
+                email = command.email,
+                password = command.password
+            )
+        )
+
+        return jwt;
     }
 
     private fun isAuthorized(
