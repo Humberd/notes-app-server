@@ -25,6 +25,7 @@ drop table if exists User_Password_Credentials;
 drop table if exists Auth_Password_Credentials;
 drop table if exists Auth_Google_Provider;
 drop table if exists Auth_Github_Provider;
+drop table if exists user_push_notification_token;
 drop table if exists "user";
 
 create table "user"
@@ -43,6 +44,13 @@ create trigger set_updated_at
     on "user"
     for each row
 execute procedure trigger_set_timestamp();
+
+create table user_push_notification_token
+(
+    token      varchar(255) not null primary key,
+    user_id    varchar(32)  not null references "user" (id),
+    created_at timestamp    not null default now()
+);
 
 ------- Auth Password Credentials
 create table Auth_Password_Credentials

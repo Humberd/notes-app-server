@@ -2,9 +2,11 @@ package pl.humberd.notesapp.application.query.user
 
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import pl.humberd.notesapp.application.common.asserts.ASSERT_EXIST_GENERIC
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.query.user.model.UserMinimalView
 import pl.humberd.notesapp.application.query.user.model.UserView
+import pl.humberd.notesapp.domain.entity.UserEntity
 import pl.humberd.notesapp.domain.entity.UserId
 import pl.humberd.notesapp.domain.repository.UserRepository
 import kotlin.contracts.ExperimentalContracts
@@ -33,6 +35,11 @@ class UserQueryHandler(
         val users = userRepository.findAllById(ids)
 
         return users.associate { it.id to userViewMapper.mapMinimalView(it) }
+    }
+
+    fun ASSERT_EXISTS(id: UserId) {
+        val userExists = userRepository.existsById(id)
+        ASSERT_EXIST_GENERIC<UserEntity>(userExists, id)
     }
 
 

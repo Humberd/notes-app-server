@@ -8,6 +8,8 @@ import pl.humberd.notesapp.application.command.auth.UserJwt
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginCommand
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsLoginMobileCommand
 import pl.humberd.notesapp.application.command.auth.password_credentials.model.PasswordCredentialsRegisterCommand
+import pl.humberd.notesapp.application.command.user_push_notification_token.UserNotificationCommandHandler
+import pl.humberd.notesapp.application.command.user_push_notification_token.model.UserPushNotificationTokenCreateCommand
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_EXIST_GENERIC
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
 import pl.humberd.notesapp.application.exceptions.UnauthorizedException
@@ -27,7 +29,8 @@ class PasswordCretendialsCommandHandler(
     private val jwtUtils: JwtUtils,
     private val userRepository: UserRepository,
     private val authPasswordCredentialsRepository: AuthPasswordCredentialsRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val userNotificationCommandHandler: UserNotificationCommandHandler
 ) {
 
     fun register(command: PasswordCredentialsRegisterCommand): UserEntity {
@@ -94,7 +97,20 @@ class PasswordCretendialsCommandHandler(
             )
         )
 
-        return jwt;
+        val user = userRepository.findByEmailLc(command.email.toLowerCase())
+        ASSERT_NOT_NULL(
+            user.orElseGet(null),
+            command.email.toLowerCase()
+        )
+
+        userNotificationCommandHandler.create(
+            UserPushNotificationTokenCreateCommand(
+                userId = user.get().id,
+                token = command.pushToken
+            )
+        )
+
+        return jwt
     }
 
     private fun isAuthorized(
