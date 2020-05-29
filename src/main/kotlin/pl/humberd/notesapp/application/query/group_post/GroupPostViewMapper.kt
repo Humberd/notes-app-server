@@ -5,6 +5,7 @@ import pl.humberd.notesapp.application.query.group.GroupViewMapper
 import pl.humberd.notesapp.application.query.group_post.model.GroupPostView
 import pl.humberd.notesapp.application.query.resource.ResourceViewMapper
 import pl.humberd.notesapp.domain.entity.GroupPostEntity
+import pl.humberd.notesapp.domain.entity.UserId
 
 @Service
 class GroupPostViewMapper(
@@ -12,9 +13,9 @@ class GroupPostViewMapper(
     private val resourceViewMapper: ResourceViewMapper
 ) {
 
-    fun mapView(entity: GroupPostEntity) = GroupPostView(
+    fun mapView(entity: GroupPostEntity, userId: UserId) = GroupPostView(
         id = entity.id,
         group = groupViewMapper.mapMinimalView(entity.groupId),
-        resource = resourceViewMapper.mapView(entity.resourceId)
+        resource = resourceViewMapper.mapView(entity.resourceId, userId)
     )
 }

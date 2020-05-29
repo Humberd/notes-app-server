@@ -5,6 +5,7 @@ import pl.humberd.notesapp.application.query.group.model.GroupMinimalView
 import pl.humberd.notesapp.application.query.resource.model.ResourceView
 import pl.humberd.notesapp.domain.entity.GroupId
 import pl.humberd.notesapp.domain.entity.GroupPostId
+import pl.humberd.notesapp.domain.entity.UserId
 
 data class GroupPostView(
     val id: GroupPostId,
@@ -15,5 +16,6 @@ data class GroupPostView(
 typealias GroupPostViewList = DefaultViewList<GroupPostView>
 
 data class GroupPostViewListFilter(
-    val groupId: GroupId
+    val groupId: GroupId,
+    val userId: UserId
 )

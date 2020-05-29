@@ -25,7 +25,7 @@ class GroupPostQueryHandler(
         )
 
         return GroupPostViewList(
-            data = page.content.map(groupPostViewMapper::mapView),
+            data = page.content.map { groupPostViewMapper.mapView(it, filter.userId) },
             extra = ListViewExtra.from(page)
         )
     }

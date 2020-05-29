@@ -99,13 +99,14 @@ class GroupHttpController(
         principal: Principal
     ): ResponseEntity<GroupPostViewList> {
         userGroupMembershipQueryHandler.ASSERT_GROUP_MEMBERSHIP(
-            userId = principal.name,
-            groupId = groupId
+            groupId = groupId,
+            userId = principal.name
         )
 
         val viewList = groupPostQueryHandler.viewList(
             GroupPostViewListFilter(
-                groupId = groupId
+                groupId = groupId,
+                userId = principal.name
             )
         )
 
