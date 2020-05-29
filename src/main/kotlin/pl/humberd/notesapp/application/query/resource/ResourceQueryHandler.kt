@@ -8,4 +8,5 @@ class ResourceQueryHandler (
     private val resourceRepository: ResourceRepository,
     private val resourceViewMapper: ResourceViewMapper
 ) {
+
 }

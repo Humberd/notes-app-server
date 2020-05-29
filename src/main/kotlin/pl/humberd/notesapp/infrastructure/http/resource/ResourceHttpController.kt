@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import pl.humberd.notesapp.application.command.resource.ResourceCommandHandler
 import pl.humberd.notesapp.application.command.resource.model.ResourceCreateCommand
-import pl.humberd.notesapp.domain.entity.ResourceEntity
+import pl.humberd.notesapp.application.query.resource.ResourceViewMapper
+import pl.humberd.notesapp.application.query.resource.model.ResourceView
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.resource.model.ResourceCreateRequest
 import java.security.Principal
@@ -17,13 +18,14 @@ import kotlin.contracts.ExperimentalContracts
 @RestController
 @ExperimentalContracts
 class ResourceHttpController(
-    private val resourceCommandHandler: ResourceCommandHandler
+    private val resourceCommandHandler: ResourceCommandHandler,
+    private val resourceViewMapper: ResourceViewMapper
 ) {
     @PostMapping
     fun create(
         @RequestBody body: ResourceCreateRequest,
         principal: Principal
-    ): ResponseEntity<ResourceEntity> {
+    ): ResponseEntity<ResourceView> {
         val resource = resourceCommandHandler.create(
             ResourceCreateCommand(
                 authorId = principal.name,
@@ -33,6 +35,8 @@ class ResourceHttpController(
             )
         )
 
-        return ResponseBuilder.created(resource)
+        val view = resourceViewMapper.mapView(resource)
+
+        return ResponseBuilder.created(view)
     }
 }
