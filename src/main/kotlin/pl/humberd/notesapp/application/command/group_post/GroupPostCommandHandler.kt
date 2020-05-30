@@ -3,6 +3,8 @@ package pl.humberd.notesapp.application.command.group_post
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import pl.humberd.notesapp.application.command.group_post.model.GroupPostCreateCommand
+import pl.humberd.notesapp.application.command.notification.NotificationCommandHandler
+import pl.humberd.notesapp.application.common.transaction.TransactionHelper
 import pl.humberd.notesapp.application.query.group_post.GroupPostQueryHandler
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.GroupPostEntity
@@ -14,7 +16,8 @@ import kotlin.contracts.ExperimentalContracts
 @ExperimentalContracts
 class GroupPostCommandHandler(
     private val groupPostRepository: GroupPostRepository,
-    private val groupPostQueryHandler: GroupPostQueryHandler
+    private val groupPostQueryHandler: GroupPostQueryHandler,
+    private val notificationCommandHandler: NotificationCommandHandler
 )  {
 
     fun create(command: GroupPostCreateCommand): GroupPostEntity {
@@ -30,6 +33,9 @@ class GroupPostCommandHandler(
                 resourceId = command.resourceId
             )
         )
+        TransactionHelper.afterCommit {
+            this.notificationCommandHandler.notifyGroupPostCreated(groupPostEntity)
+        }
 
         return groupPostEntity
     }

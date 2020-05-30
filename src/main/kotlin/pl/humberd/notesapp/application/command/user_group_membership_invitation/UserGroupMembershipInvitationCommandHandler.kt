@@ -10,7 +10,7 @@ import pl.humberd.notesapp.application.command.user_group_membership_invitation.
 import pl.humberd.notesapp.application.command.user_group_membership_invitation.model.UserGroupMembershipInvitationCreateCommand
 import pl.humberd.notesapp.application.common.asserts.ASSERT_EXIST
 import pl.humberd.notesapp.application.common.asserts.ASSERT_NOT_NULL
-import pl.humberd.notesapp.application.common.transaction.TransactionsHelper
+import pl.humberd.notesapp.application.common.transaction.TransactionHelper
 import pl.humberd.notesapp.application.exceptions.AlreadyExistsException
 import pl.humberd.notesapp.domain.common.IdGenerator
 import pl.humberd.notesapp.domain.entity.UserGroupMembershipEntityPK
@@ -60,7 +60,7 @@ class UserGroupMembershipInvitationCommandHandler(
             )
         )
 
-        TransactionsHelper.afterCommit {
+        TransactionHelper.afterCommit {
             notificationCommandHandler.notify(invitation)
         }
 

@@ -227,7 +227,8 @@ values ('tag-nice-designs', 'user-bob', 'nice designs', null),
        ('tag-cool-articles', 'user-alice', 'articles', null);
 
 insert into user_group_membership_tag_trigger(user_id, group_id, tag_id)
-values ('user-bob', 'group-cool-bros', 'tag-nice-designs');
+values ('user-bob', 'group-cool-bros', 'tag-nice-designs'),
+       ('user-alice', 'group-cool-bros', 'tag-cool-articles');
 
 insert into resource(id, author_id)
 values ('resource-google_com', 'user-bob');

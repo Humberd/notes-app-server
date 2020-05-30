@@ -34,12 +34,17 @@ class ResourceTagCommandHandler(
             )
         )
 
-        val tagTriggers = tagTriggerRepository.findAllByTagId(command.tagId)
-        tagTriggers.filter { !command.omitPublishingToGroupIds.contains(it.groupId) }
-            .forEach { tagTrigger ->
+        val tagTriggers = tagTriggerRepository
+            .findAllByTagId(command.tagId)
+            .filter { !command.omitPublishingToGroupIds.contains(it.groupId) }
+            .map { it.groupId }
+            .toSet()
+
+        tagTriggers
+            .forEach { groupId ->
                 groupPostCommandHandler.create(
                     GroupPostCreateCommand(
-                        groupId = tagTrigger.groupId,
+                        groupId = groupId,
                         resourceId = command.resourceId
                     )
                 )

@@ -26,7 +26,7 @@ class UserNotificationCommandHandler(
         val notificationEntity = userPushNotificationTokenRepository.findById(command.token)
         val newNotification = if (notificationEntity.isPresent) {
             notificationEntity.get().userId = command.userId
-            notificationEntity.get().created_at = now()
+            notificationEntity.get().createdAt = now()
             notificationEntity.get()
         } else {
             userPushNotificationTokenRepository.save(

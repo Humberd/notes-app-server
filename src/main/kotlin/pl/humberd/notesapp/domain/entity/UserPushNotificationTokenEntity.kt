@@ -18,10 +18,10 @@ class UserPushNotificationTokenEntity(
 ) {
 
     @Column(name = "created_at", insertable = false)
-    var created_at = now()
+    var createdAt = now()
 
     override fun toString(): String {
-        return "UserNotificationEntity(user_id='$userId', token='$token', created_at=$created_at)"
+        return "UserNotificationEntity(user_id='$userId', token='$token', created_at=$createdAt)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -32,7 +32,7 @@ class UserPushNotificationTokenEntity(
 
         if (userId != other.userId) return false
         if (token != other.token) return false
-        if (created_at != other.created_at) return false
+        if (createdAt != other.createdAt) return false
 
         return true
     }
