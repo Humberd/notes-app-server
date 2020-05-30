@@ -39,6 +39,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
     implementation("io.github.microutils:kotlin-logging:1.7.9")
     implementation("it.skrape:skrapeit-core:1.0.0-alpha6")
+    implementation("com.google.firebase", "firebase-admin", "6.13.0")
 }
 
 tasks.withType<KotlinCompile> {
