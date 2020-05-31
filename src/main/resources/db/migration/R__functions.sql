@@ -1,45 +1,20 @@
-CREATE OR REPLACE FUNCTION trigger_set_timestamp()
-    RETURNS TRIGGER AS
+create or replace function trigger_set_timestamp()
+    returns trigger as
 $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+begin
+    new.updated_at = now();
+    return new;
+end;
+$$ language plpgsql;
 
-CREATE OR REPLACE FUNCTION trigger_increment_notes_count()
-    RETURNS TRIGGER AS
+create or replace function trigger_increment_resource_revisions_count()
+    returns trigger as
 $$
-BEGIN
-    update Tag
-    set notes_count = notes_count + 1
-    where id = NEW.tag_id;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE FUNCTION trigger_decrement_notes_count()
-    RETURNS TRIGGER AS
-$$
-BEGIN
-    update Tag
-    set notes_count = notes_count - 1
-    where id = OLD.tag_id;
-
-    RETURN OLD;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION trigger_set_search_vector()
-    RETURNS TRIGGER AS
-$$
-BEGIN
-    new.search_vector = setweight(to_tsvector('simple', new.title), 'D') ||
-                        setweight(to_tsvector('simple', coalesce(new.url, '')), 'C') ||
-                        setweight(to_tsvector('simple', coalesce(new.content, '')), 'B');
+begin
+    update resource
+    set revisions_count = revisions_count + 1
+    where id = new.resource_id;
 
     return new;
-END;
-$$ LANGUAGE plpgsql;
+end;
+$$ language plpgsql;

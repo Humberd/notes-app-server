@@ -142,6 +142,12 @@ create table resource_revision
     created_at  timestamp            not null default now()
 );
 
+create trigger update_revisions_count
+    before insert
+    on resource_revision
+    for each row
+execute procedure trigger_increment_resource_revisions_count();
+
 alter table resource
     add column latest_revision_id varchar(32) references resource_revision (id);
 
