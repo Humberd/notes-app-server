@@ -6,7 +6,6 @@ import pl.humberd.notesapp.application.query.resource_revision.ResourceRevisionV
 import pl.humberd.notesapp.application.query.user.UserViewMapper
 import pl.humberd.notesapp.domain.entity.ResourceEntity
 import pl.humberd.notesapp.domain.entity.ResourceId
-import pl.humberd.notesapp.domain.entity.UserId
 import pl.humberd.notesapp.domain.repository.ResourceRepository
 
 @Service
@@ -15,7 +14,7 @@ class ResourceViewMapper(
     private val userViewMapper: UserViewMapper,
     private val revisionViewMapper: ResourceRevisionViewMapper
 ) {
-    fun mapView(entity: ResourceEntity, userId: UserId) = ResourceView(
+    fun mapView(entity: ResourceEntity) = ResourceView(
         id = entity.id,
         author = userViewMapper.mapMinimalView(entity.authorId),
         latestRevision = revisionViewMapper.mapView(entity.latestRevisionId),
@@ -23,7 +22,7 @@ class ResourceViewMapper(
         createdAt = entity.createdAt
     )
 
-    fun mapView(id: ResourceId, userId: UserId): ResourceView {
-        return mapView(resourceRepository.findById(id).get(), userId)
+    fun mapView(id: ResourceId): ResourceView {
+        return mapView(resourceRepository.findById(id).get())
     }
 }

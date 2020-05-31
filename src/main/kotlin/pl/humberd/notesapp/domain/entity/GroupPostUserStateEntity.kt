@@ -42,15 +42,14 @@ class GroupPostUserStateEntity(
 
 }
 
-class GroupPostUserStateEntityPK(
+class GroupPostUserStateEntityPK: java.io.Serializable {
     @Id
     @Column(name = "group_post_id")
-    var groupPostId: GroupPostId,
+    lateinit var groupPostId: GroupPostId
 
     @Id
     @Column(name = "user_id")
-    var userId: UserId
-) : java.io.Serializable {
+    lateinit var userId: UserId
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

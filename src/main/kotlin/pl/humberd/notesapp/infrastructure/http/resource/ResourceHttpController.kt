@@ -37,7 +37,7 @@ class ResourceHttpController(
             )
         )
 
-        val view = resourceViewMapper.mapView(resource, principal.name)
+        val view = resourceViewMapper.mapView(resource)
 
         return ResponseBuilder.created(view)
     }
@@ -57,7 +57,7 @@ class ResourceHttpController(
             )
         )
 
-        val view = resourceViewMapper.mapView(resource, principal.name)
+        val view = resourceViewMapper.mapView(resource)
 
         return ResponseBuilder.created(view)
     }

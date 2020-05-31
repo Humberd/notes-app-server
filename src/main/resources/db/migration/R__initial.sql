@@ -272,4 +272,6 @@ values ('group-post-1', 'group-cool-bros', 'resource-google_com'),
 
 insert into group_post_user_state(group_post_id, user_id, resource_revision_id)
 values ('group-post-1', 'user-alice', 'resource-rev1-google_com'),
-       ('group-post-1', 'user-bob', 'resource-rev1-google_com');
+       ('group-post-1', 'user-bob', 'resource-rev1-google_com'),
+       ('group-post-2', 'user-alice', 'resource-rev1-reddit_com'),
+       ('group-post-2', 'user-bob', 'resource-rev1-reddit_com');
