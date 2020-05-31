@@ -24,7 +24,6 @@ class ResourceEntity(
 
     @Column(name = "revisions_count", updatable = false, insertable = false)
     var revisionsCount: Int = 0
-        private set
 
     @Column(name = "created_at", updatable = false, insertable = false)
     var createdAt = now()

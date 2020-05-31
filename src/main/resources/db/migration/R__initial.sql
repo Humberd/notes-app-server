@@ -237,7 +237,8 @@ values ('user-bob', 'group-cool-bros', 'tag-nice-designs'),
        ('user-alice', 'group-cool-bros', 'tag-cool-articles');
 
 insert into resource(id, author_id)
-values ('resource-google_com', 'user-bob');
+values ('resource-google_com', 'user-bob'),
+       ('resource-reddit_com', 'user-alice');
 
 insert into resource_revision(id, resource_id, change_kind, type, payload)
 values ('resource-rev1-google_com', 'resource-google_com', 'INSERT', 'LINK', '{
@@ -245,17 +246,29 @@ values ('resource-rev1-google_com', 'resource-google_com', 'INSERT', 'LINK', '{
   "title": "Google - search engine",
   "description": "The Internet, literally",
   "iconUrl": "http://google.com/favicon.ico"
-}');
+}'),
+       ('resource-rev1-reddit_com', 'resource-reddit_com', 'INSERT', 'LINK', '{
+         "url": "https://reddit.com",
+         "title": "Reddit - Internet site",
+         "description": "The Site",
+         "iconUrl": "http://reddit.com/favicon.ico"
+       }');
 
 update resource
 set latest_revision_id = 'resource-rev1-google_com'
 where id = 'resource-google_com';
 
+update resource
+set latest_revision_id = 'resource-rev1-reddit_com'
+where id = 'resource-reddit_com';
+
 insert into resource_tag(resource_id, tag_id)
-values ('resource-google_com', 'tag-nice-designs');
+values ('resource-google_com', 'tag-nice-designs'),
+       ('resource-reddit_com', 'tag-cool-articles');
 
 insert into group_post(id, group_id, resource_id)
-values ('group-post-1', 'group-cool-bros', 'resource-google_com');
+values ('group-post-1', 'group-cool-bros', 'resource-google_com'),
+       ('group-post-2', 'group-cool-bros', 'resource-reddit_com');
 
 insert into group_post_user_state(group_post_id, user_id, resource_revision_id)
 values ('group-post-1', 'user-alice', 'resource-rev1-google_com'),
