@@ -10,7 +10,7 @@ import pl.humberd.notesapp.application.query.resource.ResourceViewMapper
 import pl.humberd.notesapp.application.query.resource.model.ResourceView
 import pl.humberd.notesapp.infrastructure.common.ResponseBuilder
 import pl.humberd.notesapp.infrastructure.http.resource.model.ResourceCreateRequest
-import pl.humberd.notesapp.infrastructure.http.resource.model.ResourceUpdateReuqest
+import pl.humberd.notesapp.infrastructure.http.resource.model.ResourceUpdateRequest
 import java.security.Principal
 import javax.validation.Valid
 import kotlin.contracts.ExperimentalContracts
@@ -45,7 +45,7 @@ class ResourceHttpController(
     @PutMapping("/{resourceId}")
     fun update(
         @PathVariable resourceId: String,
-        @RequestBody @Valid body: ResourceUpdateReuqest,
+        @RequestBody @Valid body: ResourceUpdateRequest,
         principal: Principal
     ): ResponseEntity<ResourceView> {
         resourceQueryHandler.ASSERT_IS_AUTHOR(resourceId, principal.name)

@@ -45,7 +45,8 @@ class ResourceTagCommandHandler(
                 groupPostCommandHandler.create(
                     GroupPostCreateCommand(
                         groupId = groupId,
-                        resourceId = command.resourceId
+                        resourceId = command.resourceId,
+                        resourceRevisionId = command.resourceRevisionId
                     )
                 )
             }

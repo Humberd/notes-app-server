@@ -10,6 +10,7 @@ import pl.humberd.notesapp.domain.entity.ResourceId
 
 interface GroupPostRepository : RefreshableJpaRepository<GroupPostEntity, GroupPostId> {
     fun findAllByGroupId(groupId: GroupId, pageable: Pageable): Page<GroupPostEntity>
+    fun findAllByResourceId(resourceId: ResourceId): List<GroupPostEntity>
 
     fun existsByGroupIdAndResourceId(groupId: GroupId, resourceId: ResourceId): Boolean
 }
