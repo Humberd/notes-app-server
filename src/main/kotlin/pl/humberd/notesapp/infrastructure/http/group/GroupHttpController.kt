@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import pl.humberd.notesapp.application.command.group.GroupCommandHandler
 import pl.humberd.notesapp.application.command.group.model.GroupCreateCommand
+import pl.humberd.notesapp.application.command.group_post.GroupPostCommandHandler
+import pl.humberd.notesapp.application.command.group_post.model.GroupPostSetLatestRevisionCommand
 import pl.humberd.notesapp.application.command.user_group_membership_invitation.UserGroupMembershipInvitationCommandHandler
 import pl.humberd.notesapp.application.command.user_group_membership_invitation.model.UserGroupMembershipInvitationCreateCommand
 import pl.humberd.notesapp.application.query.group.GroupQueryHandler
@@ -13,6 +15,8 @@ import pl.humberd.notesapp.application.query.group.model.GroupView
 import pl.humberd.notesapp.application.query.group.model.GroupViewList
 import pl.humberd.notesapp.application.query.group.model.GroupViewListFilter
 import pl.humberd.notesapp.application.query.group_post.GroupPostQueryHandler
+import pl.humberd.notesapp.application.query.group_post.GroupPostViewMapper
+import pl.humberd.notesapp.application.query.group_post.model.GroupPostView
 import pl.humberd.notesapp.application.query.group_post.model.GroupPostViewList
 import pl.humberd.notesapp.application.query.group_post.model.GroupPostViewListFilter
 import pl.humberd.notesapp.application.query.user_group_membership.UserGroupMembershipQueryHandler
@@ -32,6 +36,8 @@ class GroupHttpController(
     private val groupQueryHandler: GroupQueryHandler,
     private val groupViewMapper: GroupViewMapper,
     private val groupPostQueryHandler: GroupPostQueryHandler,
+    private val groupPostCommandHandler: GroupPostCommandHandler,
+    private val groupPostViewMapper: GroupPostViewMapper,
     private val userGroupMembershipInvitationCommandHandler: UserGroupMembershipInvitationCommandHandler,
     private val userGroupMembershipQueryHandler: UserGroupMembershipQueryHandler,
     private val userGroupMembershipInvitationQueryHandler: UserGroupMembershipInvitationQueryHandler
@@ -111,5 +117,23 @@ class GroupHttpController(
         )
 
         return ResponseBuilder.ok(viewList)
+    }
+
+    @PostMapping("{groupId}/posts/{groupPostId}/set-latest")
+    fun setLatestRevision(
+        @PathVariable("groupId") groupId: String,
+        @PathVariable("groupPostId") groupPostId: String,
+        principal: Principal
+    ): ResponseEntity<GroupPostView> {
+        val groupPostEntity = groupPostCommandHandler.setToLatestRevision(
+            GroupPostSetLatestRevisionCommand(
+                groupPostId = groupPostId,
+                userId = principal.name
+            )
+        )
+
+        val view = groupPostViewMapper.mapView(groupPostEntity, principal.name)
+
+        return ResponseBuilder.ok(view)
     }
 }
