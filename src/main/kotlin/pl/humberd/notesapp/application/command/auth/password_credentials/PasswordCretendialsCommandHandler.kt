@@ -70,7 +70,7 @@ class PasswordCretendialsCommandHandler(
     fun login(command: PasswordCredentialsLoginCommand): String {
         val user = userRepository.findByEmailLc(command.email.toLowerCase())
         ASSERT_NOT_NULL(
-            user.orElseGet(null),
+            user.orElseGet{ null },
             command.email.toLowerCase()
         )
 
